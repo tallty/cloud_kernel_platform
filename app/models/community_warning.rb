@@ -2,8 +2,8 @@ class CommunityWarning < ActiveRecord::Base
   validates :publish_time, :warning_type, :level, :unit, presence: true
 
   def process
-    settings = Settings.__send__ "WarningCommunity"
-    WarningCommunity.process_dir(settings.resource_folder)
+    settings = Settings.__send__ "CommunityWarning"
+    CommunityWarning.process_dir(settings.resource_folder)
     # clear_cache
   end
 
@@ -16,7 +16,7 @@ class CommunityWarning < ActiveRecord::Base
         end
       end
     else
-      WarningCommunity.analy_file dir_path
+      CommunityWarning.analy_file dir_path
     end
   end
 
@@ -32,7 +32,7 @@ class CommunityWarning < ActiveRecord::Base
     if contents.present?
       units = contents[3].split('、')
       units.each do |unit|
-        warning = WarningCommunity.find_or_create_by(publishtime: contents[1], unit: unit, warning_type: contents[4])
+        warning = CommunityWarning.find_or_create_by(publish_time: contents[1], unit: unit, warning_type: contents[4])
         warning.level = contents[6]
         warning.content = contents[7]
         warning.save
@@ -45,7 +45,7 @@ class CommunityWarning < ActiveRecord::Base
 
   def as_json options=nil
     {
-      publish_time: publishtime,
+      publish_time: publish_time,
       warning_type: warning_type,
       level: level,
       content: content,
