@@ -3,44 +3,38 @@ class CommunityWarning < ActiveRecord::Base
 
   def process
     settings = Settings.__send__ "CommunityWarning"
-    CommunityWarning.process_dir(settings.resource_folder)
-    # clear_cache
+    CommunityWarningProcess.new.process
+    clear_cache
   end
 
-  # 遍历目录
-  def self.process_dir(dir_path)
-    if File.directory?(dir_path)
-      Dir.foreach(dir_path) do |filename|
-        if filename != "." and filename != ".."
-          process_dir(dir_path + "/" + filename)
+  class CommunityWarningProcess < BaseLocalFile
+    def initialize
+      super
+    end
+
+    def file_format
+
+    end
+
+    def parse local_file
+      file_content = ""
+      File.foreach(file, encoding: 'gbk') do |line|
+        line = line.encode('utf-8')
+        file_content << line
+      end
+      contents = /上海中心气象台(.*?)(发布|解除|撤销|更新)(.*)(雷电|暴雨|暴雨内涝|暴雨积涝)(风险)(I|II|III|IV)级预警：(.*)/.match(file_content)
+      if contents.present?
+        units = contents[3].split('、')
+        units.each do |unit|
+          warning = CommunityWarning.find_or_create_by(publish_time: contents[1], unit: unit, warning_type: contents[4])
+          warning.level = contents[6]
+          warning.content = contents[7]
+          warning.save
+
+          $redis.hset("warning_communities", "#{warning.unit}_#{warning.warning_type}", warning.to_json)
         end
       end
-    else
-      CommunityWarning.analy_file dir_path
     end
-  end
-
-  def self.analy_file file
-    p file
-    file_content = ""
-    File.foreach(file, encoding: 'gbk') do |line|
-      line = line.encode('utf-8')
-      file_content << line
-    end
-    contents = /上海中心气象台(.*?)(发布|解除|撤销|更新)(.*)(雷电|暴雨|暴雨内涝|暴雨积涝)(风险)(I|II|III|IV)级预警：(.*)/.match(file_content)
-    p contents
-    if contents.present?
-      units = contents[3].split('、')
-      units.each do |unit|
-        warning = CommunityWarning.find_or_create_by(publish_time: contents[1], unit: unit, warning_type: contents[4])
-        warning.level = contents[6]
-        warning.content = contents[7]
-        warning.save
-
-        $redis.hset("warning_communities", "#{warning.unit}_#{warning.warning_type}", warning.to_json)
-      end
-    end
-
   end
 
   def as_json options=nil
