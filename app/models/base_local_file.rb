@@ -4,6 +4,7 @@ class BaseLocalFile
     settings.each do | k, v |
       instance_variable_set "@#{k}", v
     end
+    @file_list = []
   end
 
   ##########################################################
@@ -19,34 +20,41 @@ class BaseLocalFile
   end
   ###########################################################
 
-  # 遍历目录
-  def process
-    file_regexp = Regexp.new file_format
-    file_list = []
-    Dir.foreach(@resource_folder) do | filename |
-      matcher = file_regexp.match(filename)
-      if matcher.present?
-        begin
-          local_file = File.join @resource_folder, filename
-          file_ext_name = File.extname(filename)
-          file_base_name = File.basename(local_file, file_ext_name)
-          new_file = File.join(@resource_folder, file_base_name << '.dat')
-          if @is_backup
-            FileUtils.makedirs(@backup_folder) unless File.exist? @backup_folder
-            FileUtils.cp(local_file, @backup_folder)
-          end
-          FileUtils.mv local_file, new_file, :force => true
-          file_list << new_file  
-        rescue Exception => e
-          next
+  def traverse_folder file
+    if File.directory?(file)
+      Dir.foreach(file) do |item|
+        if item != "." and item != ".."
+          self.traverse_folder File.join(file, item)
         end
       end
+    else
+      file_regexp = Regexp.new file_format
+      matcher = file_regexp.match file
+      if matcher.present?
+        @file_list << file
+      end
     end
-    puts "#{file_list.length}"
-    file_list.each do | file |
-      parse file
-      FileUtils.rm(file) if @file_delete
+  end
+
+  # 遍历目录
+  def process
+    self.traverse_folder @resource_folder
+    @file_list.each do |item|
+      begin
+        if @is_backup
+          backup_file = item.gsub(@resource_folder, @backup_folder)
+          backup_dir = File.dirname(backup_file)
+          FileUtils.makedirs(backup_dir) unless File.exist? backup_dir
+          FileUtils.cp("#{item}", backup_dir)
+        end
+        parse item
+        FileUtils.rm(item) if @file_delete
+      rescue Exception => e
+        logger.error "e"
+        next
+      end
     end
+    nil
   end
 
 end
