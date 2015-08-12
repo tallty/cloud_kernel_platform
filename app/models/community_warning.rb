@@ -12,7 +12,7 @@ class CommunityWarning < ActiveRecord::Base
     end
 
     def file_format
-
+      ".*.txt"
     end
 
     def parse local_file
