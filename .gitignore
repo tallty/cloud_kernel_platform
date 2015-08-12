@@ -17,3 +17,4 @@
 /tmp
 /spec
 /config/initializers/redis.rb
+/config/application.yml
