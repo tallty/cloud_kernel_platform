@@ -17,7 +17,7 @@ class CommunityWarning < ActiveRecord::Base
 
     def parse local_file
       file_content = ""
-      File.foreach(file, encoding: 'gbk') do |line|
+      File.foreach(local_file, encoding: 'gbk') do |line|
         line = line.encode('utf-8')
         file_content << line
       end
@@ -25,7 +25,8 @@ class CommunityWarning < ActiveRecord::Base
       if contents.present?
         units = contents[3].split('、')
         units.each do |unit|
-          warning = CommunityWarning.find_or_create_by(publish_time: contents[1], unit: unit, warning_type: contents[4])
+          datetime = Time.strptime(contents[1],"%Y年%m月%d日%H时%M分").to_time
+          warning = CommunityWarning.find_or_create_by(publish_time: datetime, unit: unit, warning_type: contents[4])
           warning.level = contents[6]
           warning.content = contents[7]
           warning.save
@@ -38,7 +39,7 @@ class CommunityWarning < ActiveRecord::Base
 
   def as_json options=nil
     {
-      publish_time: publish_time,
+      publish_time: publish_time.strftime("%Y年%m月%d日%H时%M分"),
       warning_type: warning_type,
       level: level,
       content: content,
