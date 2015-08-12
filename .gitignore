@@ -16,3 +16,4 @@
 !/log/.keep
 /tmp
 /spec
+/config/initializers/redis.rb
