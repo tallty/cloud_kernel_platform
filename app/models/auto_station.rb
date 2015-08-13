@@ -54,7 +54,7 @@ class AutoStation < ActiveRecord::Base
 
           datas.map do |e, v|
             next if v.eql?('////')
-            stationInfo = ShStationInfo.find_by_redis e
+            stationInfo = StationInfo.find_by_redis e
             next if stationInfo.lon.nil? or stationInfo.lat.nil?
             sheet.add_row [e, stationInfo.lon, stationInfo.lat, v]
           end
