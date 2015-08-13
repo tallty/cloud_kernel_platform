@@ -21,4 +21,9 @@ class StationInfo < ActiveRecord::Base
       $redis.hset "station_infos", station.site_number, station.to_json
     end
   end
+
+  def self.find_by_redis site_number
+    station_hash = MultiJson.load($redis.hget("station_infos", site_number)) rescue {}
+    station = StationInfo.new station_hash
+  end
 end
