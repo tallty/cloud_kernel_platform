@@ -27,3 +27,10 @@ test:
 production:
   <<: *default
   database: cloud_platform_production
+
+old_database:
+  adapter: mysql2
+  encoding: utf8
+  host: 10.228.96.121
+  username: root
+  password: just4you
