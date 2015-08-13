@@ -18,3 +18,4 @@
 /spec
 /config/initializers/redis.rb
 /config/application.yml
+/config/database.yml
