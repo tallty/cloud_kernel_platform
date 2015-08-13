@@ -11,7 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150812072019) do
+ActiveRecord::Schema.define(version: 20150813175758) do
+
+  create_table "auto_stations", force: :cascade do |t|
+    t.string   "datetime",       limit: 255
+    t.string   "sitenumber",     limit: 255
+    t.string   "name",           limit: 255
+    t.string   "tempe",          limit: 255
+    t.string   "rain",           limit: 255
+    t.string   "wind_direction", limit: 255
+    t.string   "wind_speed",     limit: 255
+    t.string   "visibility",     limit: 255
+    t.string   "humi",           limit: 255
+    t.string   "max_tempe",      limit: 255
+    t.string   "min_tempe",      limit: 255
+    t.string   "max_speed",      limit: 255
+    t.string   "max_direction",  limit: 255
+    t.string   "pressure",       limit: 255
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
 
   create_table "community_warnings", force: :cascade do |t|
     t.datetime "publish_time"
@@ -26,5 +45,21 @@ ActiveRecord::Schema.define(version: 20150812072019) do
   add_index "community_warnings", ["publish_time"], name: "index_community_warnings_on_publish_time", using: :btree
   add_index "community_warnings", ["unit"], name: "index_community_warnings_on_unit", using: :btree
   add_index "community_warnings", ["warning_type"], name: "index_community_warnings_on_warning_type", using: :btree
+
+  create_table "station_infos", force: :cascade do |t|
+    t.string   "name",        limit: 255
+    t.string   "alias_name",  limit: 255
+    t.string   "site_number", limit: 255
+    t.string   "district",    limit: 255
+    t.string   "address",     limit: 255
+    t.float    "lon",         limit: 24
+    t.float    "lat",         limit: 24
+    t.float    "high",        limit: 24
+    t.string   "province",    limit: 255
+    t.string   "site_type",   limit: 255
+    t.string   "subjection",  limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
 
 end
