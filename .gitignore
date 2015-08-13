@@ -19,3 +19,5 @@
 /config/initializers/redis.rb
 /config/application.yml
 /config/database.yml
+/config/database.yml
+/test/*
