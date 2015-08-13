@@ -1,5 +1,6 @@
 class AutoStation < ActiveRecord::Base
-  establish_connection :auto_station
+  establish_connection :old_database
+  self.table_name = "auto_stations"
 
   scope :max_tempe_all_station, -> { where("datetime > ? and datetime < ?", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000")).group(:sitenumber).maximum(:max_tempe) }
   scope :min_tempe_all_station, -> { where("datetime > ? and datetime < ?", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000")).group(:sitenumber).minimum(:min_tempe) }
