@@ -10,10 +10,11 @@ class AutoStation < ActiveRecord::Base
 
   scope :hour_tempe_all_station, -> { where("datetime = ?", Time.zone.now.strftime("%Y%m%d%H00")).group(:sitenumber).pluck(:sitenumber, :tempe) }
 
-  scope :all_day_rain, -> { where("datetime > ? and datetime < ?", "201508062000", "201508072000").group(:sitenumber).sum(:rain) }
+  scope :all_day_rain, -> { where("datetime > ? and datetime < ?", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000")).group(:sitenumber).sum(:rain) }
 
-  # scope :min_visibility, -> { where("datetime = ?", (Time.zone.now - 1.hour).strftime("%Y%m%d%H%00")) }
-  # scope :max_win_speed, -> { where () }
+  scope :hour_rain, -> { where("datetime = ?", Time.zone.now.strftime("%Y%m%d%H00"))}
+  scope :hour_min_visibility, -> { where("datetime like ? and visibility <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).minimum(:visibility) }
+  scope :hour_max_win_speed, ->  { where("datetime like ? and max_speed <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).maximum(:max_speed) }
   #
   #
 
@@ -41,8 +42,12 @@ class AutoStation < ActiveRecord::Base
     def hour_process
       now_date = Time.zone.now
       format_date = now_date.strftime("%y年%m月%d日 %H时")
-      datas = AutoStation.hour_tempe_all_station
-      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时温度", "sh/station/rainhour", "#{now_date.strftime('%y%m%d%H')}")
+      datas = AutoStation.hour_rain
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时雨量", "sh/station/rainhour", "#{now_date.strftime('%y%m%d%H')}")
+      datas = AutoStation.hour_min_visibility
+      write_data_to_excel(datas, "#{format_date} 全市自动站最低能见度", "sh/station/rainhour", "#{now_date.strftime('%y%m%d%H')}")
+      datas = AutoStation.hour_max_win_speed
+      write_data_to_excel(datas, "#{format_date} 全市自动站最大风速", "sh/station/rainhour", "#{now_date.strftime('%y%m%d%H')}")
     end
 
     def write_data_to_excel(datas, type, dir, filename)
