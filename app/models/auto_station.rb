@@ -20,21 +20,21 @@ class AutoStation < ActiveRecord::Base
   class DataProcess
 
     def day_process
-      now_date = (Time.zone.now.to_date - 1.day).strftime("%y%m%d")
+      now_date = (Time.zone.now.to_date - 1.day)
       datas = AutoStation.max_tempe_all_station
-      write_data_to_excel(datas, "#{now_date} 全市自动站最高温度", "sh/station/tmaxall", "#{now_date}20.xlsx")
+      write_data_to_excel(datas, "#{now_date.strftime('%y年%m月%d日20点')} 全市自动站最高温度", "sh/station/tmaxall", "#{now_date.strftime('%y%m%d')}20")
 
       datas = AutoStation.min_tempe_all_station
-      write_data_to_excel(datas, "#{now_date} 全市自动站最低温度", "sh/station/tminall", "#{now_date}20.xlsx")
+      write_data_to_excel(datas, "#{now_date.strftime('%y年%m月%d日20点')} 全市自动站最低温度", "sh/station/tminall", "#{now_date.strftime('%y%m%d')}20")
 
       datas = AutoStation.max_tempe_main_district
-      write_data_to_excel(datas, "#{now_date} 各区县主站最高温度", "sh/station/tmaxday", "#{now_date}20.xlsx")
+      write_data_to_excel(datas, "#{now_date.strftime('%y年%m月%d日20点')} 各区县主站最高温度", "sh/station/tmaxday", "#{now_date.strftime('%y%m%d')}20")
 
       datas = AutoStation.min_tempe_main_district
-      write_data_to_excel(datas, "#{now_date} 各区县主站最低温度", "sh/station/tminday", "#{now_date}20.xlsx")
+      write_data_to_excel(datas, "#{now_date.strftime('%y年%m月%d日20点')} 各区县主站最低温度", "sh/station/tminday", "#{now_date.strftime('%y%m%d')}20")
 
       datas = AutoStation.all_day_rain
-      write_data_to_excel(datas, "#{now_date} 全天雨量累积", "sh/station/rainday", "#{now_date}20.xlsx")
+      write_data_to_excel(datas, "#{now_date.strftime('%y年%m月%d日20点')} 全天雨量累积", "sh/station/rainday", "#{now_date.strftime('%y%m%d')}20")
 
     end
 
@@ -46,9 +46,8 @@ class AutoStation < ActiveRecord::Base
     end
 
     def write_data_to_excel(datas, type, dir, filename)
-      datetime = Time.zone.now.strftime('%y%m%d%')
       Axlsx::Package.new do |p|
-        p.workbook.add_worksheet(:name => "#{datetime}") do |sheet|
+        p.workbook.add_worksheet(:name => "#{filename}") do |sheet|
           sheet.add_row ["#{type}"]
           sheet.merge_cells("A1:D1")
 
@@ -62,7 +61,7 @@ class AutoStation < ActiveRecord::Base
         end
         folder = File.join("/home/deploy/ftp/weathers/", dir)
         FileUtils.mkdir(folder) unless File.exist?(folder)
-        p.serialize("#{folder}/#{filename}")
+        p.serialize("#{folder}/#{filename}.xlsx")
       end
     end
   end
