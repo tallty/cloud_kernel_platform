@@ -23,6 +23,10 @@ every 1.minutes do
   runner "CommunityWarning.new.process"
 end
 
+every 1.hours, :at => 25 do
+  runner "AutoStation::DataProcess.new.hour_process"
+end
+
 every 1.day, :at => "21:30" do
   runner "AutoStation::DataProcess.new.day_process"
 end
