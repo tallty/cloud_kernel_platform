@@ -22,19 +22,19 @@ class AutoStation < ActiveRecord::Base
     def day_process
       now_date = (Time.zone.now.to_date - 1.day).strftime("%y%m%d")
       datas = AutoStation.max_tempe_all_station
-      write_data_to_excel(datas, "#{now_date} 全市自动站最高温度", "sh/station/tmaxall", "#{now_date}.xlsx")
+      write_data_to_excel(datas, "#{now_date} 全市自动站最高温度", "sh/station/tmaxall", "#{now_date}20.xlsx")
 
       datas = AutoStation.min_tempe_all_station
-      write_data_to_excel(datas, "#{now_date} 全市自动站最低温度", "sh/station/tminall", "#{now_date}.xlsx")
+      write_data_to_excel(datas, "#{now_date} 全市自动站最低温度", "sh/station/tminall", "#{now_date}20.xlsx")
 
       datas = AutoStation.max_tempe_main_district
-      write_data_to_excel(datas, "#{now_date} 各区县主站最高温度", "sh/station/tmaxday", "#{now_date}.xlsx")
+      write_data_to_excel(datas, "#{now_date} 各区县主站最高温度", "sh/station/tmaxday", "#{now_date}20.xlsx")
 
       datas = AutoStation.min_tempe_main_district
-      write_data_to_excel(datas, "#{now_date} 各区县主站最低温度", "sh/station/tminday", "#{now_date}.xlsx")
+      write_data_to_excel(datas, "#{now_date} 各区县主站最低温度", "sh/station/tminday", "#{now_date}20.xlsx")
 
       datas = AutoStation.all_day_rain
-      write_data_to_excel(datas, "#{now_date} 全天雨量累积", "sh/station/rainday", "#{now_date}.xlsx")
+      write_data_to_excel(datas, "#{now_date} 全天雨量累积", "sh/station/rainday", "#{now_date}20.xlsx")
 
     end
 
