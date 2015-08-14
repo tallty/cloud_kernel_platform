@@ -40,9 +40,9 @@ class AutoStation < ActiveRecord::Base
 
     def hour_process
       now_date = Time.zone.now
-      format_date = now_date.strftime("%Y年%m月%d日 %H时")
+      format_date = now_date.strftime("%y年%m月%d日 %H时")
       datas = AutoStation.hour_tempe_all_station
-      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时温度", "hour_tmepe", "#{now_date.strftime('%Y%m%d%H%M')}.xlsx")
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时温度", "sh/station/rainhour", "#{now_date.strftime('%y%m%d%H')}")
     end
 
     def write_data_to_excel(datas, type, dir, filename)
