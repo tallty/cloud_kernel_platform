@@ -20,7 +20,7 @@ class AutoStation < ActiveRecord::Base
   class DataProcess
 
     def day_process
-      now_date = (Time.zone.now.to_date - 1.day).strftime("%y-%m-%d")
+      now_date = (Time.zone.now.to_date - 1.day).strftime("%y%m%d")
       datas = AutoStation.max_tempe_all_station
       write_data_to_excel(datas, "#{now_date} 全市自动站最高温度", "sh/station/tmaxall", "#{now_date}.xlsx")
 
