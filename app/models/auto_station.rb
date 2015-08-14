@@ -2,15 +2,15 @@ class AutoStation < ActiveRecord::Base
   establish_connection :old_database
   self.table_name = "auto_stations"
 
-  scope :max_tempe_all_station, -> { where("datetime > ? and datetime < ?", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000")).group(:sitenumber).maximum(:max_tempe) }
-  scope :min_tempe_all_station, -> { where("datetime > ? and datetime < ?", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000")).group(:sitenumber).minimum(:min_tempe) }
+  scope :max_tempe_all_station, -> { where("datetime > ? and datetime <= ?", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000")).group(:sitenumber).maximum(:max_tempe) }
+  scope :min_tempe_all_station, -> { where("datetime > ? and datetime <= ?", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000")).group(:sitenumber).minimum(:min_tempe) }
 
-  scope :max_tempe_main_district, -> { where("datetime > ? and datetime < ? and sitenumber in (?)", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000"), ["58361", "58362","58365","58460","58461","58462","58463","58366","58367","58370"]).group(:sitenumber).maximum(:max_tempe) }
-  scope :min_tempe_main_district, -> { where("datetime > ? and datetime < ? and sitenumber in (?)", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000"), ["58361", "58362","58365","58460","58461","58462","58463","58366","58367","58370"]).group(:sitenumber).minimum(:min_tempe) }
+  scope :max_tempe_main_district, -> { where("datetime > ? and datetime <= ? and sitenumber in (?)", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000"), ["58361", "58362","58365","58460","58461","58462","58463","58366","58367","58370"]).group(:sitenumber).maximum(:max_tempe) }
+  scope :min_tempe_main_district, -> { where("datetime > ? and datetime <= ? and sitenumber in (?)", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000"), ["58361", "58362","58365","58460","58461","58462","58463","58366","58367","58370"]).group(:sitenumber).minimum(:min_tempe) }
 
   scope :hour_tempe_all_station, -> { where("datetime = ?", Time.zone.now.strftime("%Y%m%d%H00")).group(:sitenumber).pluck(:sitenumber, :tempe) }
 
-  scope :all_day_rain, -> { where("datetime > ? and datetime < ?", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000")).group(:sitenumber).sum(:rain) }
+  scope :all_day_rain, -> { where("datetime > ? and datetime <= ? and RIGHT(datetime, 4) = '0000'", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000")).group(:sitenumber).sum(:rain) }
 
   scope :hour_rain, -> { where("datetime = ?", Time.zone.now.strftime("%Y%m%d%H00"))}
   scope :hour_min_visibility, -> { where("datetime like ? and visibility <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).minimum(:visibility) }
@@ -48,6 +48,8 @@ class AutoStation < ActiveRecord::Base
       write_data_to_excel(datas, "#{format_date} 全市自动站最低能见度", "sh/station/vid", "#{now_date.strftime('%y%m%d%H')}")
       datas = AutoStation.hour_max_win_speed
       write_data_to_excel(datas, "#{format_date} 全市自动站最大风速", "sh/station/wind", "#{now_date.strftime('%y%m%d%H')}")
+      datas = AutoStation.hour_tempe_all_station
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时温度", "sh/station/temphour", "#{now_date.strftime('%y%m%d%H')}")
     end
 
     def write_data_to_excel(datas, type, dir, filename)
