@@ -15,9 +15,14 @@ class BaseLocalFile
     puts "ftpfile_format method should be implement correctly"
   end
 
+  def get_report_time_string filename
+    puts "get_report_time_string method should be implement correctly"  
+  end
+
   def parse local_file
     puts "parse local_file methold should be implement correctly"
   end
+
   ###########################################################
 
   def traverse_folder file
@@ -31,26 +36,42 @@ class BaseLocalFile
       file_regexp = Regexp.new file_format
       matcher = file_regexp.match file
       if matcher.present?
-        @file_list << file
+        report_time_string = get_report_time_string file
+        # p report_time_string
+        # p @last_report_time.strftime("%Y-%m-%d %H:%M:%S")
+        if report_time_string > @last_report_time
+          @file_list << [report_time_string, file]
+        end
       end
     end
   end
 
+  def to_date_string datetime
+    date_string = datetime.strftime('%Y%m%d')
+  end
+
   # 遍历目录
   def process
+    time_string = $redis.get(@redis_last_report_time_key)
+    today = Time.zone.now.to_date
+    day_to_fetch = @day_to_fetch || 1
+    last_day_string = to_date_string(today - day_to_fetch)
+    @last_report_time = time_string.blank? ? Time.zone.parse(last_day_string) : Time.zone.parse(time_string) 
     self.traverse_folder @resource_folder
-    @file_list.each do |item|
+    @file_list.each do |report_time_string, file|
       begin
         if @is_backup
-          backup_file = item.gsub(@resource_folder, @backup_folder)
+          backup_file = file.gsub(@resource_folder, @backup_folder)
           backup_dir = File.dirname(backup_file)
           FileUtils.makedirs(backup_dir) unless File.exist? backup_dir
-          FileUtils.cp("#{item}", backup_dir)
+          FileUtils.cp("#{file}", backup_dir)
         end
-        parse item
-        FileUtils.rm(item) if @file_delete
+        p "处理文件: #{file}"
+        parse file
+        FileUtils.rm(file) if @file_delete
+        $redis.set @redis_last_report_time_key, report_time_string
       rescue Exception => e
-        logger.error "e"
+        p e.message
         next
       end
     end
