@@ -16,9 +16,8 @@ class ExchangeFile
       ".*"
     end
 
-    def get_report_time_string filename
-      file_time = "20#{filename.split(/\.|\//)[-2]}"
-      Time.parse(file_time)
+    def get_report_time_string file_name
+      File.ctime(file_name)
     end
 
     def parse file_name
@@ -53,13 +52,8 @@ class ExchangeFile
       ".*"
     end
 
-    def get_report_time_string filename
-      file_time = "20#{filename.split(/\.|\//)[-2]}"
-      begin
-        Time.parse(file_time)  
-      rescue Exception => e
-        return nil
-      end
+    def get_report_time_string file_name
+      File.ctime(file_name)
     end
 
     def parse file_name
