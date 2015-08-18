@@ -55,6 +55,7 @@ class ExchangeFile
 
     def get_report_time_string filename
       file_time = "20#{filename.split(/\.|\//)[-2]}"
+      p file_time
       Time.parse(file_time)
     end
 
