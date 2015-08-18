@@ -15,7 +15,7 @@ class WeatherReport < ActiveRecord::Base
   class ShortTimeReportProcess < BaseForecast
     def initialize
       super
-
+      @remote_dir = @remote_dir.encode('gbk')
       @redis_last_report_time_key = "short_time_report_last_report_time"
     end
 
