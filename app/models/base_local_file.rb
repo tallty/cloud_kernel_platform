@@ -39,7 +39,7 @@ class BaseLocalFile
         report_time_string = get_report_time_string file
         # p report_time_string
         # p @last_report_time.strftime("%Y-%m-%d %H:%M:%S")
-        if report_time_string > @last_report_time
+        if reprot_time_string.present? and report_time_string > @last_report_time
           @file_list << [report_time_string, file]
         end
       end
