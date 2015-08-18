@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150813175758) do
+ActiveRecord::Schema.define(version: 20150818140317) do
 
   create_table "auto_stations", force: :cascade do |t|
     t.string   "datetime",       limit: 255
@@ -45,6 +45,18 @@ ActiveRecord::Schema.define(version: 20150813175758) do
   add_index "community_warnings", ["publish_time"], name: "index_community_warnings_on_publish_time", using: :btree
   add_index "community_warnings", ["unit"], name: "index_community_warnings_on_unit", using: :btree
   add_index "community_warnings", ["warning_type"], name: "index_community_warnings_on_warning_type", using: :btree
+
+  create_table "short_time_reports", force: :cascade do |t|
+    t.datetime "datetime"
+    t.string   "promulgator",    limit: 255
+    t.string   "report_type",    limit: 255
+    t.text     "report_content", limit: 65535
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "short_time_reports", ["datetime"], name: "index_short_time_reports_on_datetime", using: :btree
+  add_index "short_time_reports", ["promulgator"], name: "index_short_time_reports_on_promulgator", using: :btree
 
   create_table "station_infos", force: :cascade do |t|
     t.string   "name",        limit: 255
