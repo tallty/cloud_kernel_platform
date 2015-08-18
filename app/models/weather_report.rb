@@ -36,7 +36,7 @@ class WeatherReport < ActiveRecord::Base
       end
 
       datetime = get_report_time_string file_name
-      report = WeatherReport.find_or_create_by(datetime: Time.parse(datetime), report_type: "短时预报")
+      report = WeatherReport.find_or_create_by(datetime: Time.zone.parse(datetime), report_type: "短时预报")
       report.promulgator = "中心台"
       report.content = file_content
       report.save
