@@ -4,7 +4,7 @@ class WeatherReport < ActiveRecord::Base
     ShortTimeReportProcess.new.process
   end
 
-  def as_json
+  def as_json(options=nil)
     {
       datetime: datetime.strftime("%Y-%m-%d %H:%M"),
       type: report_type,
