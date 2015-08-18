@@ -41,7 +41,7 @@ class WeatherReport < ActiveRecord::Base
       report.content = file_content
       report.save
 
-      $redis.hset("weather_reports", report.report_type, file_content.to_json)
+      $redis.hset("weather_reports", report.report_type, report.to_json)
     end
   end
 end
