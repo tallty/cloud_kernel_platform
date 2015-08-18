@@ -27,6 +27,10 @@ every 2.minutes do
   runner "QPF.new.process"
 end
 
+every 10.minutes do
+  runner "ExchangeFile.new.process"
+end
+
 every 1.hours, :at => 25 do
   runner "AutoStation::DataProcess.new.hour_process"
 end
