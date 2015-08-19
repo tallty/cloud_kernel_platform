@@ -36,10 +36,7 @@ class BaseLocalFile
       file_regexp = Regexp.new file_format
       matcher = file_regexp.match file
       if matcher.present?
-        report_time_string = get_report_time_string file
-        p file
-        p report_time_string
-        p @last_report_time.strftime("%Y-%m-%d %H:%M:%S")
+        report_time_string = Time.zone.parse(get_report_time_string file)
         if report_time_string > @last_report_time
           @file_list << [report_time_string, file]
         end

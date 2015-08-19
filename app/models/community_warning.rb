@@ -15,6 +15,10 @@ class CommunityWarning < ActiveRecord::Base
       ".*.txt"
     end
 
+    def get_report_time_string filename
+      report_time_string = filename.split(/\/|\./)[-2]
+    end
+
     def parse local_file
       file_content = ""
       File.foreach(local_file, encoding: 'gbk') do |line|
