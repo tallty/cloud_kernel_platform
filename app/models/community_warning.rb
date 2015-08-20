@@ -11,7 +11,7 @@ class CommunityWarning < ActiveRecord::Base
       super
 
       @redis_last_report_time_key = "community_warning_last_report_time"
-      $redis.del @redis_last_report_time_key
+      # $redis.del @redis_last_report_time_key
     end
 
     def file_format
