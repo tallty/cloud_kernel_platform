@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818140317) do
+ActiveRecord::Schema.define(version: 20150820040507) do
 
   create_table "auto_stations", force: :cascade do |t|
     t.string   "datetime",       limit: 255
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20150818140317) do
     t.string   "unit",         limit: 255
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+    t.string   "status",       limit: 255
   end
 
   add_index "community_warnings", ["publish_time"], name: "index_community_warnings_on_publish_time", using: :btree
@@ -73,5 +74,17 @@ ActiveRecord::Schema.define(version: 20150818140317) do
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
+
+  create_table "weather_reports", force: :cascade do |t|
+    t.datetime "datetime"
+    t.string   "promulgator", limit: 255
+    t.string   "report_type", limit: 255
+    t.text     "content",     limit: 65535
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "weather_reports", ["datetime"], name: "index_weather_reports_on_datetime", using: :btree
+  add_index "weather_reports", ["report_type"], name: "index_weather_reports_on_report_type", using: :btree
 
 end
