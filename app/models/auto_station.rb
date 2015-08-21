@@ -12,7 +12,7 @@ class AutoStation < ActiveRecord::Base
 
   scope :all_day_rain, -> { where("datetime > ? and datetime <= ? and RIGHT(datetime, 4) = '0000'", (Time.zone.now.to_date - 2.day).strftime("%Y%m%d2000"), (Time.zone.now.to_date - 1.day).strftime("%Y%m%d2000")).group(:sitenumber).sum(:rain) }
 
-  scope :hour_rain, -> { where("datetime = ?", Time.zone.now.strftime("%Y%m%d%H00")).pluck(:rain)}
+  scope :hour_rain, -> { where("datetime = ?", Time.zone.now.strftime("%Y%m%d%H00")).pluck(:sitenumber, :rain)}
   scope :hour_min_visibility, -> { where("datetime like ? and visibility <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).minimum(:visibility) }
   scope :hour_max_win_speed, ->  { where("datetime like ? and max_speed <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).maximum(:max_speed) }
   #
