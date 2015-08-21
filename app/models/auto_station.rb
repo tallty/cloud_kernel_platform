@@ -44,7 +44,7 @@ class AutoStation < ActiveRecord::Base
       format_date = now_date.strftime("%y年%m月%d日 %H时")
       datas = AutoStation.hour_rain
       write_data_to_excel(datas, "#{format_date} 全市自动站逐小时雨量", "sh/station/rainhour", "#{now_date.strftime('%y%m%d%H')}")
-      datas = AutoStation.hour_min_visibility.(:)
+      datas = AutoStation.hour_min_visibility
       write_data_to_excel(datas, "#{format_date} 全市自动站最低能见度", "sh/station/vid", "#{now_date.strftime('%y%m%d%H')}")
       datas = AutoStation.hour_max_win_speed
       write_data_to_excel(datas, "#{format_date} 全市自动站最大风速", "sh/station/wind", "#{now_date.strftime('%y%m%d%H')}")
