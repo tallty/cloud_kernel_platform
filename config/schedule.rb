@@ -23,6 +23,10 @@ every 1.minutes do
   runner "CommunityWarning.new.process"
 end
 
+every 1.minutes do
+  runner "GridLive.new.process"
+end
+
 every 2.minutes do
   runner "QPF.new.process"
 end
