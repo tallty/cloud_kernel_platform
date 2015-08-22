@@ -9,9 +9,11 @@ class GridLive
       super
 
       @redis_last_report_time_key = "grid_500_last_report_time"
-      $redis.del @redis_last_report_time_key
+      
       @grid_info_redis_key = "grid_500_info"
       @redis_key = "grid_500m"
+
+      @remote_dir = @remote_dir.encode('gbk')
     end
 
     def get_report_time_string file_name
