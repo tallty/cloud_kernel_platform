@@ -46,12 +46,12 @@ class BaseForecast
   end
 
   def process
-    today = Time.zone.now.to_date
+    today = Time.now.to_date
     today_string = to_date_string today
     day_to_fetch = @day_to_fetch || 1
     last_day_string = to_date_string(today - day_to_fetch)
     time_string = $redis.get(@redis_last_report_time_key)
-    @last_report_time = time_string.blank? ? Time.zone.parse(last_day_string) : Time.zone.parse(time_string) 
+    @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string) 
     connect! unless @connection
     @connection.chdir @remote_dir
     file_infos = []
@@ -70,9 +70,9 @@ class BaseForecast
 
     puts "files is :#{file_infos}"
     file_infos.each do |report_time_string, filename|
-      @report_time = Time.zone.parse report_time_string
+      @report_time = Time.parse report_time_string
       @report_time_string = report_time_string
-      if @report_time > @last_report_time && @report_time <= Time.zone.now
+      if @report_time > @last_report_time && @report_time <= Time.now
         @is_process = true
         puts "#{DateTime.now}: process #{@redis_key} report file:#{filename}"
 
