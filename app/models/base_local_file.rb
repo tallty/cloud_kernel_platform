@@ -36,7 +36,9 @@ class BaseLocalFile
       file_regexp = Regexp.new file_format
       matcher = file_regexp.match file
       if matcher.present?
-        report_time_string = Time.zone.parse(get_report_time_string file)
+        p file
+        report_time_string = Time.parse(get_report_time_string file)
+        p report_time_string
         if report_time_string > @last_report_time
           @file_list << [report_time_string, file]
         end
@@ -51,10 +53,10 @@ class BaseLocalFile
   # 遍历目录
   def process
     time_string = $redis.get(@redis_last_report_time_key)
-    today = Time.zone.now.to_date
+    today = Time.now.to_date
     day_to_fetch = @day_to_fetch || 1
     last_day_string = to_date_string(today - day_to_fetch)
-    @last_report_time = time_string.blank? ? Time.zone.parse(last_day_string) : Time.zone.parse(time_string) 
+    @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string) 
     self.traverse_folder @resource_folder
     @file_list.each do |report_time_string, file|
       begin
