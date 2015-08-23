@@ -36,9 +36,7 @@ class BaseLocalFile
       file_regexp = Regexp.new file_format
       matcher = file_regexp.match file
       if matcher.present?
-        p file
         report_time_string = Time.parse(get_report_time_string file)
-        p report_time_string
         if report_time_string > @last_report_time
           @file_list << [report_time_string, file]
         end

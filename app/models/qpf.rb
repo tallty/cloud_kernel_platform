@@ -16,9 +16,8 @@ class QPF
       ".*.(000|006|012|018|024|030|036|042|048|054|060|066|072|078|084|090)"
     end
 
-    def get_report_time_string filename
-      file_time = "20#{filename.split(/\.|\//)[-2]}"
-      Time.parse(file_time)
+    def get_report_time_string filen_ame
+      file_time = "20#{file_name.split(/\.|\//)[-2]}"
     end
 
     def parse file
