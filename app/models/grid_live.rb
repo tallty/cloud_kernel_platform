@@ -26,7 +26,7 @@ class GridLive
 
     def parse file_name
       file_info = file_name.split(/\/|\_|\./)
-      file_type = file_info[-3]
+      file_type = file_info[-3].delete("10m")
       file_date_time = file_info[-2]
       line_count = 0
       File.foreach(file_name, encoding: @file_encoding) do |line|
