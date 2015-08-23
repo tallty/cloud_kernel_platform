@@ -29,6 +29,7 @@ class WeatherReport < ActiveRecord::Base
     end
 
     def parse file_name
+      p "process weather report: #{file_name}"
       file_content = ""
       File.foreach(file_name, encoding: @file_encoding) do |line|
         line = line.encode 'utf-8'
