@@ -59,18 +59,16 @@ class CommunityWarning < ActiveRecord::Base
   end
 
   def clear_cache
-    warning_key = $redis.keys "warning_communities"
+    warning_key = $redis.hgetall "warning_communities"
     clear_time = Time.now - 3.hours
-    warning_key.each do |key|
-      $redis.hgetall(key).map do |e, item|
-        item = MultiJson.load item
-        if item["status"].eql?("解除") or item["status"].eql?("撤销")
-          if Time.strptime(item["publish_time"],"%Y年%m月%d日%H时%M分").to_time < clear_time
-            $redis.hdel(warning_key, e)
-          end
+    $redis.hgetall(key).map do |e, item|
+      item = MultiJson.load item
+      if item["status"].eql?("解除") or item["status"].eql?("撤销")
+        if Time.strptime(item["publish_time"],"%Y年%m月%d日%H时%M分").to_time < clear_time
+          $redis.hdel(warning_key, e)
         end
       end
-
+      
     end
   end
 end
