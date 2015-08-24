@@ -64,7 +64,7 @@ class CommunityWarning < ActiveRecord::Base
     warning_key.each do |key|
       $redis.hgetall(key).map do |e, item|
         item = MultiJson.load item
-        if item["level"].eql?("解除") or item["level"].eql?("撤销")
+        if item["status"].eql?("解除") or item["status"].eql?("撤销")
           if Time.zone.parse(item["publish_time"]) < clear_time
             $redis.hdel(warning_key, e)
           end
