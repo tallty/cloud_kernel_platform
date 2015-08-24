@@ -3,7 +3,7 @@ class CommunityWarning < ActiveRecord::Base
 
   def process
     CommunityWarningProcess.new.process
-    # clear_cache
+    clear_cache
   end
 
   class CommunityWarningProcess < BaseLocalFile
