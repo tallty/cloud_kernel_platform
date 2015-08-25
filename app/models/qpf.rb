@@ -22,7 +22,7 @@ class QPF
 
     def parse file
       file_tag = file.split(/\.|\//)
-      $redis.hset "qpf_info", "origin_time", Time.parse(file_tag[-2]) + 8.hour
+      $redis.hset "qpf_info", "origin_time", Time.parse("20#{file_tag[-2]}") + 8.hour
       file_index = file_tag[-1].to_i
       lon_count = 0
       lat_count = 0
