@@ -33,7 +33,7 @@ class CommunityWarning < ActiveRecord::Base
       if contents.present?
         units = contents[3].split('、')
         units.each do |unit|
-          datetime = Time.strptime(contents[1],"%Y年%m月%d日%H时%M分").to_time
+          datetime = Time.strptime(contents[1],"%Y年%m月%d日%H时%M分").to_time + 8.hour
           p datetime
           warning = CommunityWarning.find_or_create_by(publish_time: datetime, unit: unit, warning_type: contents[4])
           warning.status = contents[2]
