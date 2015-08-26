@@ -20,7 +20,7 @@ class CommunityWarning < ActiveRecord::Base
 
     def get_report_time_string file_name
       # report_time_string = filename.split(/\/|\./)[-2]
-      File.ctime(file_name)
+      File.ctime(file_name).strftime("%Y-%m-%d %H:%M:%S")
     end
 
     def parse local_file
