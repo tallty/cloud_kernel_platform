@@ -18,7 +18,7 @@ class CommunityWarning < ActiveRecord::Base
       ".*.txt"
     end
 
-    def get_report_time_string filename
+    def get_report_time_string file_name
       # report_time_string = filename.split(/\/|\./)[-2]
       File.ctime(file_name)
     end
