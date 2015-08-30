@@ -72,7 +72,7 @@ class GridLive
           $redis.hset @grid_info_redis_key, "lon_count", line_contents[0]
           $redis.hset @grid_info_redis_key, "lat_count", line_contents[1]
         elsif type == :data
-          $redis.hset("#{@redis_key}_#{time}", "#{file_type}_#{line_count}", line)
+          $redis.hset("#{@redis_key}_#{time}", "#{file_type}_#{line_count}", line.to_json)
           line_count = line_count + 1
         end
       end
