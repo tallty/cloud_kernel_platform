@@ -41,7 +41,7 @@ class GridLive
         line = line.encode "utf-8"
         line_contents = line.chomp.split(',')
         if station_line_type(line_contents) == :file_data
-          p line_contents
+          # p line_contents
           obj = {
             jd: line_contents[1].to_f,
             wd: line_contents[2].to_f,
@@ -52,6 +52,7 @@ class GridLive
           line_count += 1
         end
       end
+      $redis.hset @grid_info_redis_key, "wind_count", line_count
     end
 
     def parse_grid_file(file_name, file_type, time)
