@@ -9,7 +9,7 @@ class GridLive
       super
 
       @redis_last_report_time_key = "grid_500_last_report_time"
-      # $redis.del @redis_last_report_time_key
+      $redis.del @redis_last_report_time_key
       @grid_info_redis_key = "grid_500_info"
       @redis_key = "grid_500m"
 
@@ -48,7 +48,7 @@ class GridLive
             wind_direction: line_contents[3].to_f,
             wind_speed: line_contents[4].to_f
           }
-          $redis.hset "#{@redis_key}_#{time}", "#{file_type}_#{line_count}", obj
+          $redis.hset "#{@redis_key}_#{time}", "#{file_type}_#{line_count}", obj.to_json
           line_count += 1
         end
       end
