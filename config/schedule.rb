@@ -24,7 +24,7 @@ every 1.minutes do
 end
 
 every 1.minutes do
-  runner "GridLive.new.process"
+  runner "GridLive.process"
 end
 
 every 2.minutes do
