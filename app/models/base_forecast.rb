@@ -5,20 +5,12 @@ class BaseForecast
   def initialize
     settings = Settings.__send__ self.class.to_s
     settings.each do |k, v|
-      p "---------------------------------------------------------------"
-      p k
-      p v
-      p "---------------------------------------------------------------"  
       instance_variable_set "@#{k}", v
     end
   end
 
   def connect!
     @connection = Net::FTP.new
-    p "---------------------------------------------------------------"
-    p @server
-    p @port
-    p "---------------------------------------------------------------"
     @connection.connect(@server, @port)
     @connection.passive = @passive || false
     @connection.login(@user, @password)

@@ -19,7 +19,7 @@ class WorldForecast
 
   class WorldForecastProcess < BaseForecast
     def initialize()
-      # super
+      super
       @redis_key = "world_forecast_v2"
       @redis_last_report_time_key = "world_forecast_last_report_time"
 
