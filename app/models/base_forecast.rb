@@ -11,6 +11,10 @@ class BaseForecast
 
   def connect!
     @connection = Net::FTP.new
+    p "---------------------------------------------------------------"
+    p @server
+    p @port
+    p "---------------------------------------------------------------"
     @connection.connect(@server, @port)
     @connection.passive = @passive || false
     @connection.login(@user, @password)
