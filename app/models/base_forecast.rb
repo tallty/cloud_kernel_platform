@@ -5,6 +5,10 @@ class BaseForecast
   def initialize
     settings = Settings.__send__ self.class.to_s
     settings.each do |k, v|
+      p "---------------------------------------------------------------"
+      p k
+      p v
+      p "---------------------------------------------------------------"  
       instance_variable_set "@#{k}", v
     end
   end
