@@ -17,7 +17,7 @@ class WorldForecast
     }
   end
 
-  class WorldForecastProcess < BaseForcast
+  class WorldForecastProcess < BaseForecast
     def initialize()
       super
       @redis_key = "world_forecast_v2"
