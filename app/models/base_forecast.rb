@@ -37,6 +37,10 @@ class BaseForecast
   end
   ###########################################################
 
+  def get_report_time_string_from_ftp filename
+    @connection.mtime(filename).strftime("%Y-%m-%d %H:%M:%S")
+  end
+
   def to_date_string datetime
     date_string = datetime.strftime('%Y%m%d')
   end
@@ -60,7 +64,7 @@ class BaseForecast
       file_arr.concat @connection.nlst(ftpfile_format(today-index)) rescue []
     end
     file_arr.each do |filename|
-      report_time_string = get_report_time_string filename
+      report_time_string = get_report_time_string_from_ftp filename
       filename = filename.encode! 'utf-8', 'gb2312', {:invalid => :replace}
       file_infos << [report_time_string, filename]
     end
@@ -74,20 +78,18 @@ class BaseForecast
       @report_time_string = report_time_string
       if @report_time > @last_report_time && @report_time <= Time.now
         @is_process = true
-        puts "#{DateTime.now}: process #{@redis_key} report file:#{filename}"
-
+        
         FileUtils.makedirs(@local_dir) unless File.exist?(@local_dir)
         file_local_dir = File.join @local_dir, to_date_string(@report_time)
         FileUtils.makedirs(file_local_dir) unless File.exist?(file_local_dir)
         local_file = File.join file_local_dir, filename
-        # puts filename
+        
         connect! unless @connection
         @connection.chdir @remote_dir
         filename = filename.encode('gbk')
         begin
           Timeout.timeout(20) do
             @connection.getbinaryfile(filename, local_file)  
-            # if file_delete set
             @connection.delete(filename) if @file_delete
           end
         rescue
