@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150820040507) do
+ActiveRecord::Schema.define(version: 20150902035121) do
 
   create_table "auto_stations", force: :cascade do |t|
     t.string   "datetime",       limit: 255
@@ -46,6 +46,35 @@ ActiveRecord::Schema.define(version: 20150820040507) do
   add_index "community_warnings", ["publish_time"], name: "index_community_warnings_on_publish_time", using: :btree
   add_index "community_warnings", ["unit"], name: "index_community_warnings_on_unit", using: :btree
   add_index "community_warnings", ["warning_type"], name: "index_community_warnings_on_warning_type", using: :btree
+
+  create_table "country_real_aqis", force: :cascade do |t|
+    t.datetime "datetime"
+    t.string   "area",              limit: 255
+    t.string   "position_name",     limit: 255
+    t.string   "station_code",      limit: 255
+    t.string   "primary_pollutant", limit: 255
+    t.string   "quality",           limit: 255
+    t.float    "aqi",               limit: 24
+    t.float    "co",                limit: 24
+    t.float    "co_24h",            limit: 24
+    t.float    "no2",               limit: 24
+    t.float    "no2_24h",           limit: 24
+    t.float    "o3",                limit: 24
+    t.float    "o3_24h",            limit: 24
+    t.float    "o3_8h",             limit: 24
+    t.float    "o3_8h_24h",         limit: 24
+    t.float    "pm10",              limit: 24
+    t.float    "pm10_24h",          limit: 24
+    t.float    "pm2_5",             limit: 24
+    t.float    "pm2_5_24h",         limit: 24
+    t.float    "so2",               limit: 24
+    t.float    "so2_24h",           limit: 24
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "country_real_aqis", ["datetime"], name: "index_country_real_aqis_on_datetime", using: :btree
+  add_index "country_real_aqis", ["position_name"], name: "index_country_real_aqis_on_position_name", using: :btree
 
   create_table "short_time_reports", force: :cascade do |t|
     t.datetime "datetime"
