@@ -39,6 +39,10 @@ every 10.minutes do
   runner "WeatherReport.new.process"
 end
 
+every 1.hours, :at => 30 do
+  runner "CountryRealAqi.process"
+end
+
 every 1.hours, :at => 25 do
   runner "AutoStation::DataProcess.new.hour_process"
 end
