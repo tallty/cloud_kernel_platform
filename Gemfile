@@ -40,6 +40,8 @@ gem 'redis'
 gem 'devise'
 gem 'axlsx'
 
+gem "faraday"
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
