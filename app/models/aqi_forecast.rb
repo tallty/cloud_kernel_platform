@@ -1,6 +1,5 @@
 class AqiForecast
-  attr_accessor :datetime, :prompt
-  has_many :items, class_name: "AqiItem"
+  attr_accessor :datetime, :prompt, :items
 
   def as_json(options=nil)
     {
@@ -8,6 +7,10 @@ class AqiForecast
       prompt: prompt,
       list: items.as_json
     }
+  end
+
+  def self.process
+    AqiForecastProcess.new.process
   end
 
   class AqiForecastProcess < BaseForecast
