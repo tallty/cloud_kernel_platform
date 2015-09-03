@@ -110,6 +110,7 @@ class GridLive
       keys.each do |item|
         $redis.del item unless "#{@redis_key}_#{last_redis_key}".eql?(item)
       end
+      nil
     end
   end
 end
