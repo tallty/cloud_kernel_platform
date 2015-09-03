@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150902035121) do
+ActiveRecord::Schema.define(version: 20150903064626) do
 
   create_table "auto_stations", force: :cascade do |t|
     t.string   "datetime",       limit: 255
@@ -75,6 +75,19 @@ ActiveRecord::Schema.define(version: 20150902035121) do
 
   add_index "country_real_aqis", ["datetime"], name: "index_country_real_aqis_on_datetime", using: :btree
   add_index "country_real_aqis", ["position_name"], name: "index_country_real_aqis_on_position_name", using: :btree
+
+  create_table "real_time_aqis", force: :cascade do |t|
+    t.datetime "datetime"
+    t.integer  "aqi",        limit: 4
+    t.string   "level",      limit: 255
+    t.string   "pripoll",    limit: 255
+    t.string   "content",    limit: 255
+    t.string   "measure",    limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "real_time_aqis", ["datetime"], name: "index_real_time_aqis_on_datetime", using: :btree
 
   create_table "short_time_reports", force: :cascade do |t|
     t.datetime "datetime"
