@@ -35,7 +35,6 @@ class CommunityWarning < ActiveRecord::Base
         units = contents[3].split('、')
         units.each do |unit|
           datetime = Time.strptime(contents[1],"%Y年%m月%d日%H时%M分").to_time + 8.hour
-          p datetime
           warning = CommunityWarning.find_or_create_by(publish_time: datetime, unit: unit, warning_type: contents[4])
           warning.status = contents[2]
           warning.level = contents[6]
@@ -66,7 +65,7 @@ class CommunityWarning < ActiveRecord::Base
       item = MultiJson.load item
       if item["status"].eql?("解除") or item["status"].eql?("撤销")
         if Time.strptime(item["publish_time"],"%Y年%m月%d日%H时%M分").to_time < clear_time
-          $redis.hdel(warning_key, e)
+          $redis.hdel("warning_communities", e)
         end
       end
       
