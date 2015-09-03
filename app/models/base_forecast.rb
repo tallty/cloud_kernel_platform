@@ -57,7 +57,7 @@ class BaseForecast
     time_string = $redis.get(@redis_last_report_time_key)
     @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string) 
     connect! unless @connection
-    p @remote_dir
+    
     @connection.chdir @remote_dir
     file_infos = []
     file_arr = []
