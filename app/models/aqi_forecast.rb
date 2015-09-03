@@ -34,7 +34,7 @@ class AqiForecast
     def parse local_file
       report_time_string = @report_time_string
       aqi = AqiForecast.new
-      aqi.datetime = Time.parse(report_time_string).strftime("%Y年%m月%d日 %H时")
+      aqi.datetime = Time.parse(report_time_string).strftime("%Y年%m月%d日 17时")
       aqi.prompt = ""
 
       items = []
