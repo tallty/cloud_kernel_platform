@@ -26,9 +26,8 @@ class RealTimeAqi < ActiveRecord::Base
       result = analysis content
       
       time_str = result[1].gsub(/[[:blank:]]/, '')
-      p time_str
+      
       date_time = Time.strptime(time_str, "%Y年%m月%d日%H时").to_time
-      p date_time
       item = RealTimeAqi.find_or_create_by datetime: date_time + 8.hour
       item.aqi = result[3].to_i
       item.level = result[4]
