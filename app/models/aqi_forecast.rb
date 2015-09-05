@@ -10,6 +10,7 @@ class AqiForecast
   end
 
   def self.process
+    p "-------------------------aqi task---------------------------------------"
     AqiForecastProcess.new.process
   end
 
