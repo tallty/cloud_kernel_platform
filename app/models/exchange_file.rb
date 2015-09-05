@@ -1,6 +1,6 @@
 class ExchangeFile
 
-  def process
+  def self.process
     AirPressureProcess.new.process
     SurfacePressureProcess.new.process
   end
@@ -53,7 +53,7 @@ class ExchangeFile
     end
 
     def get_report_time_string file_name
-      File.ctime(file_name)
+      File.ctime(file_name).strftime("%Y%m%d%H%M%S")
     end
 
     def parse file_name

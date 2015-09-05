@@ -40,7 +40,7 @@ every 5.minutes do
 end
 
 every 10.minutes do
-  runner "ExchangeFile.new.process"
+  runner "ExchangeFile.process"
 end
 
 every 10.minutes do
