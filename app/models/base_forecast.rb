@@ -73,7 +73,7 @@ class BaseForecast
     @is_process = false
     close!
 
-    puts "files is :#{file_infos}"
+    # puts "files is :#{file_infos}"
     file_infos.each do |report_time_string, filename|
       @report_time = Time.parse report_time_string
       @report_time_string = report_time_string
