@@ -2,6 +2,7 @@ class CommunityWarning < ActiveRecord::Base
   validates :publish_time, :warning_type, :level, :unit, presence: true
 
   def process
+    p "#{Time.now}: process community warning task..."
     CommunityWarningProcess.new.process
     clear_cache
   end
@@ -24,6 +25,7 @@ class CommunityWarning < ActiveRecord::Base
     end
 
     def parse local_file
+      p "process community warning ---> #{local_file}"
       file_content = ""
       File.foreach(local_file, encoding: 'gbk') do |line|
         line = line.encode('utf-8')

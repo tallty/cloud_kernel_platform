@@ -12,6 +12,7 @@ class CountryRealAqi < ActiveRecord::Base
   end
 
   def self.process
+    p "#{Time.now}: process country real aqi task"
     CountryRealAqiProcess.new.fetch
     clear_cache
   end
@@ -30,7 +31,7 @@ class CountryRealAqi < ActiveRecord::Base
     def fetch
       conn = Faraday.new(:url => "http://www.pm25.in") do |faraday|
         faraday.request  :url_encoded
-        faraday.response :logger
+        # faraday.response :logger
         faraday.adapter  Faraday.default_adapter
       end
 

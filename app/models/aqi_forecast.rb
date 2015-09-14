@@ -10,7 +10,7 @@ class AqiForecast
   end
 
   def self.process
-    p "-------------------------aqi task---------------------------------------"
+    p "#{Time.now}: process aqi forecast task..."
     AqiForecastProcess.new.process
   end
 
