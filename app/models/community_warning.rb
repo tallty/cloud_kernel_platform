@@ -31,7 +31,7 @@ class CommunityWarning < ActiveRecord::Base
         line = line.encode('utf-8')
         file_content << line
       end
-      contents = /上海中心气象台(.*?)(发布|解除|撤销|更新)(.*)(雷电|暴雨|暴雨内涝|暴雨积涝)(风险)(I|II|III|IV)级预警：(.*)/.match(file_content)
+      contents = /上海中心气象台(.*?)(发布|解除|撤销|更新)(.*?)(雷电|暴雨|暴雨内涝|暴雨积涝)(风险)?(I|II|III|IV)级预警信号：(.*)/.match(file_content)
 
       if contents.present?
         units = contents[3].split('、')
