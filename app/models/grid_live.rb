@@ -56,6 +56,7 @@ class GridLive
     end
 
     def parse_grid_file(file_name, file_type, time)
+      $redis.hset @grid_info_redis_key, "last_time", time
       line_count = 0
       File.foreach(file_name, encoding: @file_encoding) do |line|
         line = line.encode 'utf-8'
@@ -104,12 +105,12 @@ class GridLive
     end
 
     def after_process
-      # last_redis_key = $redis.get @redis_last_report_time_key
-
-      # keys = $redis.keys "#{@redis_key}*"
-      # keys.each do |item|
-        # $redis.del item unless "#{@redis_key}_#{last_redis_key}".eql?(item)
-      # end
+      last_redis_key =$redis.hget @grid_info_redis_key, "last_time"
+      last_redis_key
+      keys = $redis.keys "#{@redis_key}*"
+      keys.each do |item|
+        $redis.del item unless "#{@redis_key}_#{last_redis_key}".eql?(item)
+      end
       nil
     end
   end
