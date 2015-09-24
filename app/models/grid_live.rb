@@ -104,12 +104,12 @@ class GridLive
     end
 
     def after_process
-      last_redis_key = $redis.get @redis_last_report_time_key
+      # last_redis_key = $redis.get @redis_last_report_time_key
 
-      keys = $redis.keys "#{@redis_key}*"
-      keys.each do |item|
-        $redis.del item unless "#{@redis_key}_#{last_redis_key}".eql?(item)
-      end
+      # keys = $redis.keys "#{@redis_key}*"
+      # keys.each do |item|
+        # $redis.del item unless "#{@redis_key}_#{last_redis_key}".eql?(item)
+      # end
       nil
     end
   end
