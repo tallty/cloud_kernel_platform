@@ -1,47 +1,16 @@
 class MachineInfo
 
+  # cpu, filesystem, kernel, memory, network, counters, ipaddress, 
+  # macaddress, ip6address, os, os_version, platform, platform_version, 
+  # platform_build, platform_family, uptime_seconds, uptime, virtualization, 
+  # languages, chef_packages, gce, cloud, command, filesystem2, dmi, hostname, 
+  # fqdn, machinename, keys, ohai_time, etc, current_user, root_group
   def initialize
-    p "------------------------------------------------"  
-    p "MachineInfo initialize"
-    
-    system = Ohai::System.new
-    system.all_plugins
-    @output = MultiJson.load system.to_json
-    p @output.keys
-    p "------------------------------------------------"  
-    get_cpu_info
-    get_memory_info
-    get_network_info
-    get_disk_info
+    @system = Ohai::System.new
   end
 
-  def get_cpu_info
-    p "------------------------------------------------"  
-    p "cpu info"
-    p "------------------------------------------------"  
-    p @output["cpu"]
+  def get_info mod
+    @system.all_plugins("#{mod}")
+    data = MultiJson.load @system.to_json 
   end
-
-  def get_memory_info
-    p "------------------------------------------------"  
-    p "memory info"
-    p "------------------------------------------------"  
-    p @output["memory"]
-  end
-
-  def get_network_info
-    p "------------------------------------------------"  
-    p "network info"
-    # ["interfaces", "default_gateway", "default_interface", "settings"]
-    p "------------------------------------------------"  
-    p @output["network"]["interfaces"]
-  end
-
-  def get_disk_info
-    p "------------------------------------------------"  
-    p "file system info"
-    p "------------------------------------------------"  
-    p @output["filesystem"]
-  end
-
 end
