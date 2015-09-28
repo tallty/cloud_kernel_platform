@@ -33,6 +33,7 @@ class BaseLocalFile
         end
       end
     else
+      p file
       file_regexp = Regexp.new file_format
       matcher = file_regexp.match file
       if matcher.present?
