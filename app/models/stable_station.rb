@@ -15,6 +15,7 @@ class StableStation < ActiveRecord::Base
   end
 
   def self.process
+    p "#{Time.now}: process stable stations"
     StableStationProcess.new.process    
   end
 
