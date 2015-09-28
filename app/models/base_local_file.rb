@@ -54,6 +54,7 @@ class BaseLocalFile
     today = Time.now.to_date
     day_to_fetch = @day_to_fetch || 1
     last_day_string = to_date_string(today - day_to_fetch)
+    p last_day_string
     @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string) 
     self.traverse_folder @resource_folder
 
