@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150903064626) do
+ActiveRecord::Schema.define(version: 20150928122459) do
 
   create_table "auto_stations", force: :cascade do |t|
     t.string   "datetime",       limit: 255
@@ -100,6 +100,24 @@ ActiveRecord::Schema.define(version: 20150903064626) do
 
   add_index "short_time_reports", ["datetime"], name: "index_short_time_reports_on_datetime", using: :btree
   add_index "short_time_reports", ["promulgator"], name: "index_short_time_reports_on_promulgator", using: :btree
+
+  create_table "stable_stations", force: :cascade do |t|
+    t.datetime "datetime"
+    t.string   "site_number",    limit: 255
+    t.string   "site_name",      limit: 255
+    t.float    "tempe",          limit: 24
+    t.float    "rain",           limit: 24
+    t.float    "humi",           limit: 24
+    t.float    "air_press",      limit: 24
+    t.float    "wind_direction", limit: 24
+    t.float    "wind_speed",     limit: 24
+    t.float    "vis",            limit: 24
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "stable_stations", ["datetime"], name: "index_stable_stations_on_datetime", using: :btree
+  add_index "stable_stations", ["site_number"], name: "index_stable_stations_on_site_number", using: :btree
 
   create_table "station_infos", force: :cascade do |t|
     t.string   "name",        limit: 255
