@@ -39,7 +39,7 @@ class StableStation < ActiveRecord::Base
     def parse local_file
       p "process stable station ---> #{local_file}"
       file_content = ""
-      File.foreach(local_file, encoding: 'gbk') do |line|
+      File.foreach(local_file, encoding: @file_encoding) do |line|
         line = line.encode('utf-8')
         line_content = line.split(' ')
         datetime = Time.parse(line_content[0])
