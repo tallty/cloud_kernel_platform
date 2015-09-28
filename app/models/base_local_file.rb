@@ -56,8 +56,9 @@ class BaseLocalFile
     last_day_string = to_date_string(today - day_to_fetch)
     @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string) 
     self.traverse_folder @resource_folder
-    p @resource_folder
+
     @file_list.each do |report_time_string, file|
+      p file
       begin
         if @is_backup
           backup_file = file.gsub(@resource_folder, @backup_folder)
