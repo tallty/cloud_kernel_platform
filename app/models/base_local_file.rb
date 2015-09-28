@@ -36,6 +36,7 @@ class BaseLocalFile
       file_regexp = Regexp.new file_format
       matcher = file_regexp.match file
       if matcher.present?
+        p file
         report_time_string = Time.parse(get_report_time_string file)
         if report_time_string > @last_report_time
           @file_list << [report_time_string, file]
@@ -54,7 +55,7 @@ class BaseLocalFile
     today = Time.now.to_date
     day_to_fetch = @day_to_fetch || 1
     last_day_string = to_date_string(today - day_to_fetch)
-    p last_day_string
+
     @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string) 
     self.traverse_folder @resource_folder
 
