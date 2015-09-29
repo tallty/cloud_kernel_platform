@@ -33,11 +33,9 @@ class BaseLocalFile
         end
       end
     else
-      p file
       file_regexp = Regexp.new file_format
       matcher = file_regexp.match file
       if matcher.present?
-        p file
         report_time_string = Time.parse(get_report_time_string file)
         if report_time_string > @last_report_time
           @file_list << [report_time_string, file]
@@ -61,7 +59,6 @@ class BaseLocalFile
     self.traverse_folder @resource_folder
 
     @file_list.each do |report_time_string, file|
-      p file
       begin
         if @is_backup
           backup_file = file.gsub(@resource_folder, @backup_folder)
