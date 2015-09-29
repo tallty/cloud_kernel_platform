@@ -23,42 +23,14 @@ class WorldForecast
       @redis_key = "world_forecast_v2"
       @redis_last_report_time_key = "world_forecast_last_report_time"
 
-      # connect! unless @connection
     end
 
-    # def process
-    #   get_report_time_string @file
-    #   last_report_time = $redis.get @redis_last_report_time_key
-    #   if(nil == last_report_time || last_report_time != @report_time_string)
-    #     parse @local_file
-    #     $redis.set @redis_last_report_time_key, "#{@report_time_string}"
-    #     puts "世界城市预报更新结束."
-    #   end
-    # end 
-
-    # def get_report_time_string filename
-    #   FileUtils.makedirs(@local_dir) unless File.exist?(@local_dir)
-    #   today = Time.new
-    #   file_local_dir = File.join @local_dir, today.strftime('%Y-%m-%d')
-    #   FileUtils.makedirs(file_local_dir) unless File.exist?(file_local_dir)
-    #   @local_file = File.join file_local_dir, filename
-    #   @connection.getbinaryfile(filename, @local_file)
-
-    #   file = File.open(@local_file, :encoding => 'gb2312')
-    #   line = file.readline
-    #   line = line.encode('utf-8').chomp
-      
-    #   md = /上海中心气象台国际城市天气预报：(\d{1,2})月(\d{1,2})日(..)/.match(line)
-    #   file.close
-    #   @report_time_string = "#{today.strftime('%Y')}-#{$1}-#{$2}"
-    # end
-
-    # def process
-    #   parse "/Users/Alex/Documents/City2.txt"
-    # end
+    def get_report_time_string filename
+      @connection.mtime(filename).strftime("%Y-%m-%d %H:%M:%S")
+    end
 
     def ftpfile_format day
-      @file
+      "City2.txt"
     end
 
     def parse local_file
