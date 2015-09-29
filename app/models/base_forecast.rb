@@ -55,6 +55,8 @@ class BaseForecast
     day_to_fetch = @day_to_fetch || 1
     last_day_string = to_date_string(today - day_to_fetch)
     time_string = $redis.get(@redis_last_report_time_key)
+    p "last_day_string: #{last_day_string}"
+    p "time_string: #{time_string}"
     @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string) 
     connect! unless @connection
     
