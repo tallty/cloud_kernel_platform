@@ -26,6 +26,7 @@ class WorldForecast
     end
 
     def get_report_time_string filename
+      p filename
       @connection.mtime(filename).strftime("%Y-%m-%d %H:%M:%S")
     end
 
