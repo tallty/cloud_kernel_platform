@@ -1,6 +1,6 @@
 class MachineInfo
 
-  # cpu, filesystem, kernel, memory, network, counters, ipaddress, 
+  # cpu, filesystem, kernel, memory, network, ipaddress, 
   # macaddress, ip6address, os, os_version, platform, platform_version, 
   # platform_build, platform_family, uptime_seconds, uptime, virtualization, 
   # languages, chef_packages, gce, cloud, command, filesystem2, dmi, hostname, 
@@ -11,6 +11,20 @@ class MachineInfo
 
   def get_info mod
     @system.all_plugins("#{mod}")
-    data = MultiJson.load @system.to_json 
+    data = MultiJson.load @system.to_json
+  end
+
+  def send_base_info
+    conn = Faraday.new(:url => "http://shtzr1984.tunnel.mobi") do |faraday|
+      faraday.request  :url_encoded
+      faraday.response :logger
+      faraday.adapter  Faraday.default_adapter
+    end
+
+    # 提交硬件基础信息
+    # cpu型号,cpu核数,内网ip地址,服务器型号,内存信息
+    response = conn.post "http://shtzr1984.tunnel.mobi/machines", {identifier: 'U5Hjp3iKSYnNodvy', info: {} }
+    result = MultiJson.load response.body
+    p result
   end
 end
