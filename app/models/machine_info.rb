@@ -17,7 +17,7 @@ class MachineInfo
   def send_base_info
     info = {}
     cpu_info = self.get_info("cpu")["cpu"]
-    info["cpu"] = { "module_name" => cpu_info["0"]["module_name"], "total" => cpu_info["total"], "real" => cpu_info["real"]}
+    info["cpu"] = { "module_name" => cpu_info["0"]["model_name"], "mhz" => cpu_info["0"]["mhz"], "total" => cpu_info["total"], "real" => cpu_info["real"]}
     
     net_work_info = self.get_info("network")["network"]["interfaces"]["em1"]["addresses"]
     info["net_work"] = { "network_address" => net_work_info.keys[1], "external_address" => "" }
