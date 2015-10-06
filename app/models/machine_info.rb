@@ -15,6 +15,9 @@ class MachineInfo
   end
 
   def send_base_info
+    info = {}
+    cpu_info = self.get_info("cpu")["cpu"]
+    info[cpu] = { "module_name" => cpu_info[0]["module_name"], "total" => cpu_info["total"]}
     conn = Faraday.new(:url => "http://shtzr1984.tunnel.mobi") do |faraday|
       faraday.request  :url_encoded
       faraday.response :logger
