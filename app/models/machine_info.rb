@@ -24,7 +24,6 @@ class MachineInfo
     # 提交硬件基础信息
     # cpu型号,cpu核数,内网ip地址,服务器型号,内存信息
     response = conn.post "http://shtzr1984.tunnel.mobi/machines", {identifier: 'U5Hjp3iKSYnNodvy', info: {} }
-    result = MultiJson.load response.body
-    p result
+    p response.body
   end
 end
