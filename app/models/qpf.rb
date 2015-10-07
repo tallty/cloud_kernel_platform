@@ -29,7 +29,7 @@ class QPF
       file_lon_count = 0
       arr = []
       FileUtils.makedirs(@dest_folder) unless File.exist?(@dest_folder)
-      dest_file_path = File.join(@dest_folder, File.basename(file_name))
+      dest_file_path = File.join(@dest_folder, File.basename(file))
       dest_file = File.new(dest_file_path, "w")
 
       File.foreach(file) do |line|
