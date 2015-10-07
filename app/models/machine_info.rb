@@ -7,6 +7,10 @@ class MachineInfo
   # fqdn, machinename, keys, ohai_time, etc, current_user, root_group
   def initialize
     @system = Ohai::System.new
+    settings = Settings.__send__ self.class.to_s
+    settings.each do |k, v|
+      instance_variable_set "@#{k}", v
+    end
   end
 
   def get_info mod
@@ -25,15 +29,15 @@ class MachineInfo
     memory_info = self.get_info("memory")["memory"]
     info["memory"] = { "swap_total" => memory_info["swap"]["total"], "total" => memory_info["total"] }
     
-    conn = Faraday.new(:url => "http://shtzr1984.tunnel.mobi") do |faraday|
+    conn = Faraday.new(:url => @monitor_url) do |faraday|
       faraday.request  :url_encoded
-      faraday.response :logger
+      # faraday.response :logger
       faraday.adapter  Faraday.default_adapter
     end
 
     # 提交硬件基础信息
     # cpu型号,cpu核数,内网ip地址,服务器型号,内存信息
-    response = conn.post "http://shtzr1984.tunnel.mobi/machines", {machine: { identifier: 'U5Hjp3iKSYnNodvy', info: info } }
+    response = conn.post "#{@monitor_url}/machines", {machine: { identifier: @identifier, info: info } }
     p response.body
   end
 end
