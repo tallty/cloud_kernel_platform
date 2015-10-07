@@ -28,7 +28,12 @@ class QPF
       lat_count = 0
       file_lon_count = 0
       arr = []
+      FileUtils.makedirs(@dest_folder) unless File.exist?(@dest_folder)
+      dest_file_path = File.join(@dest_folder, File.basename(file_name))
+      dest_file = File.new(dest_file_path, "w")
+
       File.foreach(file) do |line|
+        dest_file.write(line)
         contents = line.split(' ')
         type = line_type contents
         if type == :data_info
@@ -50,6 +55,7 @@ class QPF
           end
         end
       end
+      dest_file.close
     end
 
     private
