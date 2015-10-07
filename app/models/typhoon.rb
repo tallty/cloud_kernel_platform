@@ -47,11 +47,11 @@ class Typhoon < ActiveRecord::Base
 
     def cache_reload
       now_year = Time.zone.now.year
-      typhoon_list = Typhoon.where(year: [now_year-1, now_year]).order('last_reporttime desc')
+      typhoon_list = Typhoon.where(year: [now_year-1, now_year]).order('last_report_time desc')
       typhoon_list.each do |typhoo|
         $redis.hset "#{@redis_key}_#{typhoo.name}", typhoo.location, typhoo.to_s
       end
-      typhoon_list = Typhoon.where(year: [now_year-1, now_year], location: "BCSH").order('last_reporttime desc')
+      typhoon_list = Typhoon.where(year: [now_year-1, now_year], location: "BCSH").order('last_report_time desc')
       $redis.set "typhoon_list", typhoon_list.map { |t| t.to_json_hash }.to_json
     end 
 
@@ -113,15 +113,15 @@ class Typhoon < ActiveRecord::Base
       end
       if @is_process
 
-        typhoo.last_reporttime = last_report_time if typhoo.last_reporttime.blank? || last_report_time > typhoo.last_reporttime
+        typhoo.last_report_time = last_report_time if typhoo.last_report_time.blank? || last_report_time > typhoo.last_report_time
         typhoo.ename = ename
         typhoo.cname = cname
-        typhoo.year = typhoo.last_reporttime.try(:year)
+        typhoo.year = typhoo.last_report_time.try(:year)
         typhoo.save
 
         $redis.hset "#{@redis_key}_#{typhoo.name}", typhoo.location, typhoo.to_s
         now_year = Time.zone.now.year
-        typhoon_list = Typhoon.where(year: [now_year-1, now_year], location: "BCSH").order('last_reporttime desc')
+        typhoon_list = Typhoon.where(year: [now_year-1, now_year], location: "BCSH").order('last_report_time desc')
         $redis.set "typhoon_list", typhoon_list.map { |t| t.to_json_hash }.to_json
       end
     end
