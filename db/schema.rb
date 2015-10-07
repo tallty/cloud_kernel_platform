@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150928122459) do
+ActiveRecord::Schema.define(version: 20151007142952) do
 
   create_table "auto_stations", force: :cascade do |t|
     t.string   "datetime",       limit: 255
@@ -134,6 +134,42 @@ ActiveRecord::Schema.define(version: 20150928122459) do
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
+
+  create_table "typhoon_items", force: :cascade do |t|
+    t.string   "location",     limit: 255
+    t.datetime "report_time"
+    t.integer  "effective",    limit: 4
+    t.float    "lon",          limit: 24
+    t.float    "lat",          limit: 24
+    t.float    "max_wind",     limit: 24
+    t.float    "min_pressure", limit: 24
+    t.float    "seven_radius", limit: 24
+    t.float    "ten_radius",   limit: 24
+    t.float    "direct",       limit: 24
+    t.float    "speed",        limit: 24
+    t.integer  "typhoon_id",   limit: 4
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "typhoon_items", ["effective"], name: "index_typhoon_items_on_effective", using: :btree
+  add_index "typhoon_items", ["location"], name: "index_typhoon_items_on_location", using: :btree
+  add_index "typhoon_items", ["typhoon_id"], name: "index_typhoon_items_on_typhoon_id", using: :btree
+
+  create_table "typhoons", force: :cascade do |t|
+    t.string   "name",             limit: 255
+    t.string   "location",         limit: 255
+    t.string   "cname",            limit: 255
+    t.string   "ename",            limit: 255
+    t.string   "data_info",        limit: 255
+    t.datetime "last_report_time"
+    t.integer  "year",             limit: 4
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "typhoons", ["location"], name: "index_typhoons_on_location", using: :btree
+  add_index "typhoons", ["name"], name: "index_typhoons_on_name", using: :btree
 
   create_table "weather_reports", force: :cascade do |t|
     t.datetime "datetime"
