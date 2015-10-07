@@ -93,19 +93,19 @@ class Typhoon < ActiveRecord::Base
           report_time = Time.zone.local(year, month, day, hour, 0, 0).to_datetime
           last_report_time = report_time
           effective = contents[4]
-          typhoo_item = typhoo.typhoo_items.find_by(report_time: report_time, effective: effective)
-          if typhoo_item.blank?
+          typhoon_item = typhoo.typhoon_items.find_by(report_time: report_time, effective: effective)
+          if typhoon_item.blank?
             @is_process = true
-            typhoo_item = typhoo.typhoo_items.build(report_time: report_time, effective: effective)
-            typhoo_item.lon = contents[5].to_f
-            typhoo_item.lat = contents[6].to_f
-            typhoo_item.max_wind = contents[7].to_f
-            typhoo_item.min_pressure = contents[8].to_f
-            typhoo_item.seven_radius = contents[9].to_f
-            typhoo_item.ten_radius = contents[10].to_f
-            typhoo_item.direct = contents[11].to_f
-            typhoo_item.speed = contents[12].to_f
-            typhoo_item.save
+            typhoon_item = typhoo.typhoon_items.build(report_time: report_time, effective: effective)
+            typhoon_item.lon = contents[5].to_f
+            typhoon_item.lat = contents[6].to_f
+            typhoon_item.max_wind = contents[7].to_f
+            typhoon_item.min_pressure = contents[8].to_f
+            typhoon_item.seven_radius = contents[9].to_f
+            typhoon_item.ten_radius = contents[10].to_f
+            typhoon_item.direct = contents[11].to_f
+            typhoon_item.speed = contents[12].to_f
+            typhoon_item.save
           end
           
         end
