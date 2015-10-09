@@ -45,6 +45,7 @@ class QPF
           file_lon_count = contents[12].to_i
           $redis.hset "qpf_info", "lat_count", contents[13]
         elsif type == :data
+          p contents
           arr << contents
           lon_count += 1
           if lon_count >= 44
