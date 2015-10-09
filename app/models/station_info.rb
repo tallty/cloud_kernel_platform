@@ -47,6 +47,6 @@ class StationInfo < ActiveRecord::Base
         end
       end
     end
-    nearest_city = { min_len_city_code, min_len_city_name, min_len }
+    nearest_city = { :nearest_city_code => min_len_city_code, :nearest_city_name => min_len_city_name, :min_len => min_len }
   end
 end
