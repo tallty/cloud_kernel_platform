@@ -30,7 +30,7 @@ class NationwideStation < ActiveRecord::Base
       ds.each do |obj|
         sitenumber = obj["Station_Id_C"]
         city = StationInfo.find_city_from_redis sitenumber
-        return unless city.present?
+        next unless city.present?
         item = group.nationwide_station_items.find_or_create_by report_date: report_time, sitenumber: sitenumber.to_s
         item.city_name = city["name"]
         item.tempe = obj['TEM'].to_f
