@@ -42,8 +42,8 @@ class StationInfo < ActiveRecord::Base
         len = Math.hypot(jd - city_hash["lon"].to_f, wd - city_hash["lat"].to_f)
         if len < min_len
           min_len = len
-          min_len_city_name = city_hash.name
-          min_len_city_code = city_hash.code
+          min_len_city_name = city_hash["name"]
+          min_len_city_code = city_hash["code"]
         end
       end
     end
