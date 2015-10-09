@@ -37,6 +37,7 @@ class QPF
         contents = line.split(' ')
         type = line_type contents
         if type == :data_info
+          p contents
           $redis.hset "qpf_info", "origin_lon", contents[8]
           $redis.hset "qpf_info", "term_lon", contents[9]
           $redis.hset "qpf_info", "origin_lat", contents[10]
@@ -45,7 +46,6 @@ class QPF
           file_lon_count = contents[12].to_i
           $redis.hset "qpf_info", "lat_count", contents[13]
         elsif type == :data
-          p contents
           arr << contents
           lon_count += 1
           if lon_count >= 44
