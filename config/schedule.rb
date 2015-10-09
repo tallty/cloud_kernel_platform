@@ -48,6 +48,10 @@ every 10.minutes do
   runner "WeatherReport.new.process"
 end
 
+every 20.minutes do
+  runner "NationwideStation.process"
+end
+
 every 1.hours, :at => 30 do
   runner "CountryRealAqi.process"
 end
