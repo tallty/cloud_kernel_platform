@@ -38,6 +38,7 @@ class QPF
         if type == :data_info
           exchange_content = "#{Time.now.strftime('%y')} #{Time.now.strftime('%m')} "
           (1..contents.size).each {|i| exchange_content << "#{contents[i]} " }
+          exchange_content << "\r\n"
           dest_file.write(exchange_content)
           $redis.hset "qpf_info", "origin_lon", contents[8]
           $redis.hset "qpf_info", "term_lon", contents[9]
