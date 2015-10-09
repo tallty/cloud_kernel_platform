@@ -3,7 +3,7 @@ class NationwideStationItem < ActiveRecord::Base
 
   def as_json options=nil
     {
-      datetime: report_date.strftime("%Y-%m-%d %H:%M"),
+      datetime: (report_date + 8.hour).strftime("%Y-%m-%d %H:00"),
       name: city_name,
       tempe: tempe,
       rain: rain,
