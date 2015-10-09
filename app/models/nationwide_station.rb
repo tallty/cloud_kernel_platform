@@ -9,7 +9,7 @@ class NationwideStation < ActiveRecord::Base
   end
 
   def self.process
-
+    NationwideStationProcess.new.process
   end
 
   class NationwideStationProcess
@@ -38,7 +38,7 @@ class NationwideStation < ActiveRecord::Base
                                                                     pwd: 'kjfwzx', interfaceId: 'getAllStationDataBytimes',
                                                                     minStaid: '50134', maxStaid: '59985',
                                                                     elements: 'Datetime,Station_Id_C,PRE,TEM,WIN_D_INST,WIN_S_INST,VIS_HOR_1MI,PRS,RHU',
-                                                                    timeRange: "(#{from_datetime,to_datetime})",
+                                                                    timeRange: "(#{from_datetime},#{to_datetime})",
                                                                     orderby: 'Station_ID_C:ASC',
                                                                     dataCode: 'SURF_CHN_MUL_HOR_N', dataFormat: 'json' }
 
