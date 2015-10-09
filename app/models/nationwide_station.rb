@@ -27,19 +27,19 @@ class NationwideStation < ActiveRecord::Base
       report_time = Time.parse(report_time_string) + 8.hour
       group = NationwideStation.find_or_create_by report_date: report_time
 
-      ds.each do |item|
-        sitenumber = item["Station_Id_C"]
+      ds.each do |obj|
+        sitenumber = obj["Station_Id_C"]
         city = StationInfo.find_city_from_redis sitenumber
         return unless city.present?
         item = group.nationwide_station_items.find_or_create_by report_date: report_time, sitenumber: sitenumber.to_s
         item.city_name = city["name"]
-        item.tempe = line['TEM'].to_f
-        item.rain = line['PRE'].to_f
-        item.wind_direction = line['WIN_D_INST'].to_f
-        item.wind_speed = line['WIN_S_INST'].to_f
-        item.visibility = line['VIS_HOR_1MI'].to_f
-        item.pressure = line['PRS'].to_f
-        item.humi = line['RHU'].to_f
+        item.tempe = obj['TEM'].to_f
+        item.rain = obj['PRE'].to_f
+        item.wind_direction = obj['WIN_D_INST'].to_f
+        item.wind_speed = obj['WIN_S_INST'].to_f
+        item.visibility = obj['VIS_HOR_1MI'].to_f
+        item.pressure = obj['PRS'].to_f
+        item.humi = obj['RHU'].to_f
         $redis.hset "#{@redis_key}", item.name.sub(/市|新区|区|县|乡|镇/, ''), item.to_json
         
         item.save
