@@ -30,4 +30,23 @@ class StationInfo < ActiveRecord::Base
   def self.find_city_from_redis site_number
     MultiJson.load $redis.hget("city_infos", site_number) rescue {}
   end
+
+  def self.find_nearest_city(jd, wd)
+    city_infos = $redis.hvals "city_infos"
+    min_len = 1000
+    min_len_city_name = ""
+    min_len_city_code = ""
+    city_infos.map do |city|
+      city_hash = MultiJson.load city
+      if city["lon"].present? and city["lat"].present?
+        len = Math.hypot(jd - city["lon"], wd - city["lat"])
+        if len < min_len
+          min_len = len
+          min_len_city_name = city.name
+          min_len_city_code = city.code
+        end
+      end
+    end
+    nearest_city = { min_len_city_code, min_len_city_name, min_len }
+  end
 end
