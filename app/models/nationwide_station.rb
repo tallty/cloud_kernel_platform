@@ -32,7 +32,7 @@ class NationwideStation < ActiveRecord::Base
         city = StationInfo.find_city_from_redis sitenumber
         return unless city.present?
         item = group.nationwide_station_items.find_or_create_by report_date: report_time, sitenumber: sitenumber.to_s
-        item.name = city["name"]
+        item.city_name = city["name"]
         item.tempe = line['TEM'].to_f
         item.rain = line['PRE'].to_f
         item.wind_direction = line['WIN_D_INST'].to_f
