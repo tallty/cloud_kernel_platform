@@ -33,11 +33,12 @@ class QPF
       dest_file = File.new(dest_file_path, "w")
 
       File.foreach(file) do |line|
-        dest_file.write(line)
         contents = line.split(' ')
         type = line_type contents
         if type == :data_info
-          p contents
+          exchange_content = "#{Time.now.strftime('%y')} #{Time.now.strftime('%m')} "
+          (1..contents.size).each {|i| exchange_content << "#{contents[i]} " }
+          dest_file.write(exchange_content)
           $redis.hset "qpf_info", "origin_lon", contents[8]
           $redis.hset "qpf_info", "term_lon", contents[9]
           $redis.hset "qpf_info", "origin_lat", contents[10]
@@ -46,6 +47,7 @@ class QPF
           file_lon_count = contents[12].to_i
           $redis.hset "qpf_info", "lat_count", contents[13]
         elsif type == :data
+          dest_file.write(line)
           arr << contents
           lon_count += 1
           if lon_count >= 44
@@ -54,6 +56,8 @@ class QPF
             $redis.hset("grid_qpf", "#{lat_count}_#{file_index}", arr.flatten.to_json)
             arr.clear
           end
+        else
+          dest_file.write(line)
         end
       end
       dest_file.close
