@@ -40,7 +40,7 @@ class NationwideStation < ActiveRecord::Base
         item.visibility = obj['VIS_HOR_1MI'].to_f
         item.pressure = obj['PRS'].to_f
         item.humi = obj['RHU'].to_f
-        $redis.hset "#{@redis_key}", item.name.sub(/市|新区|区|县|乡|镇/, ''), item.to_json
+        $redis.hset "#{@redis_key}", item.city_name.sub(/市|新区|区|县|乡|镇/, ''), item.to_json
         
         item.save
       end
