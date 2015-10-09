@@ -38,12 +38,12 @@ class StationInfo < ActiveRecord::Base
     min_len_city_code = ""
     city_infos.map do |city|
       city_hash = MultiJson.load city
-      if city["lon"].present? and city["lat"].present?
-        len = Math.hypot(jd - city["lon"].to_f, wd - city["lat"].to_f)
+      if city_hash["lon"].present? and city_hash["lat"].present?
+        len = Math.hypot(jd - city_hash["lon"].to_f, wd - city_hash["lat"].to_f)
         if len < min_len
           min_len = len
-          min_len_city_name = city.name
-          min_len_city_code = city.code
+          min_len_city_name = city_hash.name
+          min_len_city_code = city_hash.code
         end
       end
     end
