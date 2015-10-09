@@ -64,7 +64,7 @@ class QPF
       line_type = :file_info
       if line_contents.size == 3 and line_contents[0].eql?('diamond')
         line_type = :file_info
-      elsif line_contents.size == 19
+      elsif line_contents.size == 18
         line_type = :data_info
       else
         line_type = :data
