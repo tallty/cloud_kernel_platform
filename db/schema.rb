@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151007142952) do
+ActiveRecord::Schema.define(version: 20151009144557) do
 
   create_table "auto_stations", force: :cascade do |t|
     t.string   "datetime",       limit: 255
@@ -75,6 +75,33 @@ ActiveRecord::Schema.define(version: 20151007142952) do
 
   add_index "country_real_aqis", ["datetime"], name: "index_country_real_aqis_on_datetime", using: :btree
   add_index "country_real_aqis", ["position_name"], name: "index_country_real_aqis_on_position_name", using: :btree
+
+  create_table "nationwide_station_items", force: :cascade do |t|
+    t.datetime "report_date"
+    t.string   "sitenumber",            limit: 255
+    t.string   "city_name",             limit: 255
+    t.float    "tempe",                 limit: 24
+    t.float    "rain",                  limit: 24
+    t.float    "wind_direction",        limit: 24
+    t.float    "wind_speed",            limit: 24
+    t.float    "visibility",            limit: 24
+    t.float    "pressure",              limit: 24
+    t.float    "humi",                  limit: 24
+    t.integer  "nationwide_station_id", limit: 4
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
+
+  add_index "nationwide_station_items", ["report_date"], name: "index_nationwide_station_items_on_report_date", using: :btree
+  add_index "nationwide_station_items", ["sitenumber"], name: "index_nationwide_station_items_on_sitenumber", using: :btree
+
+  create_table "nationwide_stations", force: :cascade do |t|
+    t.datetime "report_date"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "nationwide_stations", ["report_date"], name: "index_nationwide_stations_on_report_date", using: :btree
 
   create_table "real_time_aqis", force: :cascade do |t|
     t.datetime "datetime"
