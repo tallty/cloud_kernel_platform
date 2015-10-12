@@ -43,6 +43,7 @@ gem 'axlsx'
 gem "faraday"
 
 gem 'ohai'
+gem 'usagewatch_ext'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
