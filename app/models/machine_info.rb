@@ -18,6 +18,21 @@ class MachineInfo
     data = MultiJson.load @system.to_json
   end
 
+  def get_real_time_info
+    usw = Usagewatch
+    puts "uw_diskused is #{usw.uw_diskused}"
+    puts "uw_diskused_perc is #{usw.uw_diskused_perc}"
+    puts "uw_diskavailable is #{usw.uw_diskavailable}"
+    puts "uw_cputop is #{usw.uw_cputop}"
+    puts "uw_memtop is #{usw.uw_memtop}"
+    puts "uw_load is #{usw.uw_load}"
+    puts "uw_cpuused is #{usw.uw_cpuused}"
+    puts "uw_memused is #{usw.uw_memused}"
+    puts "uw_httpconns is #{usw.uw_httpconns}"
+    puts "uw_bandrx is #{usw.uw_bandrx}"
+    puts "uw_bandtx is #{usw.uw_bandtx}"
+  end
+
   def send_base_info
     info = {}
     cpu_info = self.get_info("cpu")["cpu"]
