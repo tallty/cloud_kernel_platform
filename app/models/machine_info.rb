@@ -35,8 +35,8 @@ class MachineInfo
     system = Ohai::System.new
     system.all_plugins("network")
     data = MultiJson.load system.to_json    
-    puts "rx is #{data["counters"]["network"]["interfaces"]["en0"]["rx"]}"
-    puts "tx is #{data["counters"]["network"]["interfaces"]["en0"]["tx"]}"
+    puts "rx is #{data["counters"]["network"]["interfaces"]["em1"]["rx"]}"
+    puts "tx is #{data["counters"]["network"]["interfaces"]["em1"]["tx"]}"
 
 
 
