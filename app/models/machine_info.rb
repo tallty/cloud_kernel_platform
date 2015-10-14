@@ -31,6 +31,15 @@ class MachineInfo
     puts "uw_httpconns is #{usw.uw_httpconns}"
     puts "uw_bandrx is #{usw.uw_bandrx}"
     puts "uw_bandtx is #{usw.uw_bandtx}"
+
+    system = Ohai::System.new
+    system.all_plugins("network")
+    data = MultiJson.load @system.to_json    
+    puts "rx is #{data["counters"]["network"]["interfaces"]["en0"]["rx"]}"
+    puts "tx is #{data["counters"]["network"]["interfaces"]["en0"]["tx"]}"
+
+
+
   end
 
   def send_base_info
