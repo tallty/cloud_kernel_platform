@@ -29,7 +29,6 @@ class MachineInfo
     puts "uw_tcpused is #{usw.uw_tcpused}"
     puts "uw_udpused is #{usw.uw_udpused}"
     puts "uw_memused is #{usw.uw_memused}"
-    puts "uw_httpconns is #{usw.uw_httpconns}"
     puts "uw_bandrx is #{usw.uw_bandrx}"
     puts "uw_bandtx is #{usw.uw_bandtx}"
     puts "uw_diskioreads is #{usw.uw_diskioreads}"
