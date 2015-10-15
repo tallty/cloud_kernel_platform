@@ -65,8 +65,6 @@ class MachineInfo
       info["file_system"][disk] = exist_disks.include? disk unless info["file_system"][disk].present?
     end
 
-    puts "info is #{info}"
-
     conn = Faraday.new(:url => @monitor_url) do |faraday|
       faraday.request  :url_encoded
       faraday.adapter  Faraday.default_adapter
