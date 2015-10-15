@@ -62,11 +62,11 @@ class MachineInfo
     file_system["filesystem"].delete(file_system["filesystem"].first.first)
     exist_disks = file_system["filesystem"].keys
     @disk.each do |disk|
-      info["file_system"][disk] = exist_disks.include? disk
+      info["file_system"][disk] = exist_disks.include? disk unless info["file_system"][disk].present?
     end
 
     puts "info is #{info}"
-    
+
     conn = Faraday.new(:url => @monitor_url) do |faraday|
       faraday.request  :url_encoded
       faraday.adapter  Faraday.default_adapter
