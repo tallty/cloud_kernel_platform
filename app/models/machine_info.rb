@@ -44,19 +44,31 @@ class MachineInfo
   end
 
   def send_base_info
+    usw = Usagewatch
     info = {}
+
     cpu_info = self.get_info("cpu")["cpu"]
-    info["cpu"] = { "name" => cpu_info["0"]["model_name"], "mhz" => cpu_info["0"]["mhz"], "total" => cpu_info["total"], "real" => cpu_info["real"]}
+    info["cpu"] = { "name" => cpu_info["0"]["model_name"], "mhz" => cpu_info["0"]["mhz"], "total" => cpu_info["total"], "real" => cpu_info["real"], "top" => usw.uw_cputop}
     
-    net_work_info = self.get_info("network")["network"]["interfaces"]["em1"]["addresses"]
-    info["net_work"] = { "network_address" => net_work_info.keys[1], "external_address" => "" }
+    net_work_info = self.get_info("network")
+    net_work_interfaces_info = ["network"]["interfaces"]["em1"]["addresses"]
+    info["net_work"] = { "network_address" => net_work_interfaces_info.keys[1], "external_address" => "", "rx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["rx"], "tx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["tx"] }
 
     memory_info = self.get_info("memory")["memory"]
-    info["memory"] = { "swap_total" => memory_info["swap"]["total"], "total" => memory_info["total"] }
+    info["memory"] = { "swap_total" => memory_info["swap"]["total"], "total" => memory_info["total"], "memused" => usw.uw_memused }
+
+    file_system = self.get_info("filesystem")
+    info["file_system"] = { file_system["filesystem"].first.first => file_system["filesystem"].first.last["percent_used"] }
+    file_system["filesystem"].delete(file_system["filesystem"].first.first)
+    exist_disks = file_system["filesystem"].keys
+    @disk.each do |disk|
+      info["file_system"][disk] = exist_disks.include? disk
+    end
+
+    puts "info is #{info}"
     
     conn = Faraday.new(:url => @monitor_url) do |faraday|
       faraday.request  :url_encoded
-      # faraday.response :logger
       faraday.adapter  Faraday.default_adapter
     end
 
