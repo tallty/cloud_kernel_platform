@@ -33,8 +33,6 @@ class MachineInfo
     puts "uw_bandtx is #{usw.uw_bandtx}"
     puts "uw_diskioreads is #{usw.uw_diskioreads}"
     puts "uw_diskiowrites is #{usw.uw_diskiowrites}"
-    puts "uw_cputop is #{usw.uw_cputop}"
-    puts "uw_memtop is #{usw.uw_memtop}"
 
     system = Ohai::System.new
     system.all_plugins("network")
@@ -44,27 +42,22 @@ class MachineInfo
   end
 
   def send_base_info
-    usw = Usagewatch
     info = {}
 
     cpu_info = self.get_info("cpu")["cpu"]
-    info["cpu"] = { "name" => cpu_info["0"]["model_name"], "mhz" => cpu_info["0"]["mhz"], "total" => cpu_info["total"], "real" => cpu_info["real"], "top" => usw.uw_cputop}
+    info["cpu"] = { "name" => cpu_info["0"]["model_name"], "mhz" => cpu_info["0"]["mhz"], "total" => cpu_info["total"], "real" => cpu_info["real"]}
     
     net_work_info = self.get_info("network")
     net_work_interfaces_info = net_work_info["network"]["interfaces"]["em1"]["addresses"]
-    info["net_work"] = { "network_address" => net_work_interfaces_info.keys[1], "external_address" => "", "rx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["rx"], "tx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["tx"] }
+    info["net_work"] = { "network_address" => net_work_interfaces_info.keys[1], "external_address" => "" }
 
     memory_info = self.get_info("memory")["memory"]
-    info["memory"] = { "swap_total" => memory_info["swap"]["total"], "total" => memory_info["total"], "memused" => usw.uw_memused }
+    info["memory"] = { "swap_total" => memory_info["swap"]["total"], "total" => memory_info["total"] }
 
-    file_system = self.get_info("filesystem")
-    info["file_system"] = { file_system["filesystem"].first.first => file_system["filesystem"].first.last["percent_used"] }
-    file_system["filesystem"].delete(file_system["filesystem"].first.first)
-    exist_disks = file_system["filesystem"].keys
-    @disk.each do |disk|
-      info["file_system"][disk] = exist_disks.include? disk unless info["file_system"][disk].present?
-    end
+    send_info info
+  end
 
+  def send_info info
     conn = Faraday.new(:url => @monitor_url) do |faraday|
       faraday.request  :url_encoded
       faraday.adapter  Faraday.default_adapter
@@ -74,5 +67,36 @@ class MachineInfo
     # cpu型号,cpu核数,内网ip地址,服务器型号,内存信息
     response = conn.post "#{@monitor_url}/machines", {machine: { identifier: @identifier, info: info } }
     p response.body
+  end
+
+  def send_real_time_info
+    usw = Usagewatch
+    info = {}
+
+    # CPU: frequence, top
+    cpu_info = self.get_info("cpu")["cpu"]
+    cpu_sum = 0
+    usw.uw_cputop.each do |element|
+      cpu_sum += element.last.to_f
+    end
+    info["cpu"] = { "real" => cpu_info["real"], "top" => cpu_sum }
+
+    # network: rx, tx
+    net_work_info = self.get_info("network")
+    info["net_work"] = { "rx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["rx"], "tx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["tx"] }
+
+    # memory: used, load average
+
+
+    # file_system: local percentage, external exist?
+    file_system = self.get_info("filesystem")
+    info["file_system"] = { file_system["filesystem"].first.first => file_system["filesystem"].first.last["percent_used"] }
+    file_system["filesystem"].delete(file_system["filesystem"].first.first)
+    exist_disks = file_system["filesystem"].keys
+    @disk.each do |disk|
+      info["file_system"][disk] = exist_disks.include? disk unless info["file_system"][disk].present?
+    end
+
+    send_info info
   end
 end
