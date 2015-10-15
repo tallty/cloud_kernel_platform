@@ -51,7 +51,7 @@ class MachineInfo
     info["cpu"] = { "name" => cpu_info["0"]["model_name"], "mhz" => cpu_info["0"]["mhz"], "total" => cpu_info["total"], "real" => cpu_info["real"], "top" => usw.uw_cputop}
     
     net_work_info = self.get_info("network")
-    net_work_interfaces_info = ["network"]["interfaces"]["em1"]["addresses"]
+    net_work_interfaces_info = net_work_info["network"]["interfaces"]["em1"]["addresses"]
     info["net_work"] = { "network_address" => net_work_interfaces_info.keys[1], "external_address" => "", "rx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["rx"], "tx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["tx"] }
 
     memory_info = self.get_info("memory")["memory"]
