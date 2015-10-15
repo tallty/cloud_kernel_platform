@@ -69,6 +69,13 @@ class MachineInfo
     p response.body
   end
 
+  def keep_send_real_time_info
+    while 1
+      send_real_time_info
+      sleep 10
+    end
+  end
+
   def send_real_time_info
     usw = Usagewatch
     info = {}
