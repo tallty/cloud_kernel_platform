@@ -8,6 +8,7 @@ set :job_template, "/usr/bin/timeout 1800 /bin/bash -l -c ':job'"
 
 # Learn more: http://github.com/javan/whenever
 
+
 every 1.minutes do
   runner "StableStation.process"
 end
