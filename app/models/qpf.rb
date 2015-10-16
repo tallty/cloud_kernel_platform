@@ -26,7 +26,6 @@ class QPF
       file_index = file_tag[-1].to_i
       lon_count = 0
       lat_count = 0
-      file_lon_count = 0
       arr = []
       FileUtils.makedirs(@dest_folder) unless File.exist?(@dest_folder)
       dest_file_path = File.join(@dest_folder, File.basename(file))
@@ -40,13 +39,12 @@ class QPF
           (1..contents.size).each {|i| exchange_content << "#{contents[i]} " }
           exchange_content << "\r\n"
           dest_file.write(exchange_content)
-          $redis.hset "qpf_info", "origin_lon", contents[8]
-          $redis.hset "qpf_info", "term_lon", contents[9]
-          $redis.hset "qpf_info", "origin_lat", contents[10]
-          $redis.hset "qpf_info", "term_lat", contents[11]
-          $redis.hset "qpf_info", "lon_count", contents[12]
-          file_lon_count = contents[12].to_i
-          $redis.hset "qpf_info", "lat_count", contents[13]
+          $redis.hset "qpf_info", "origin_lon", contents[7]
+          $redis.hset "qpf_info", "term_lon", contents[8]
+          $redis.hset "qpf_info", "origin_lat", contents[9]
+          $redis.hset "qpf_info", "term_lat", contents[10]
+          $redis.hset "qpf_info", "lon_count", contents[11]
+          $redis.hset "qpf_info", "lat_count", contents[12]
         elsif type == :data
           dest_file.write(line)
           arr << contents
