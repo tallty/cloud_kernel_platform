@@ -44,6 +44,7 @@ gem "faraday"
 
 gem 'ohai'
 gem 'usagewatch'
+gem 'vmstat'
 # gem 'usagewatch_ext'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
