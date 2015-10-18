@@ -87,17 +87,23 @@ class MachineInfo
     usw.uw_cputop.each do |element|
       cpu_sum += element.last.to_f
     end
-    info["cpu"] = { "real" => cpu_info["real"], "top" => cpu_sum }
+    # "real" => cpu_info["real"],
+    info["cpu"] = { "top" => cpu_sum }
 
     # network: rx, tx
     net_work_info = self.get_info("network")
-    info["net_work"] = { "rx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["rx"], "tx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["tx"] }
+    info["net_work"] = { "rx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["rx"]["bytes"], "tx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["tx"]["bytes"] }
 
     # memory: used, load average
     info["memory"] = { "load_one_minute" => vmstat.load_average.one_minute, "load_five_minutes" => vmstat.load_average.five_minutes, "load_fifteen_minutes" => vmstat.load_average.fifteen_minutes, "memory_total_bytes" => vmstat.memory.total_bytes, "memory_free_bytes" => vmstat.memory.free_bytes, "memory_inactive_bytes" => vmstat.memory.inactive_bytes, "memory_wired_bytes" => vmstat.memory.wired_bytes }
 
     # file_system: local percentage, external exist?
+    # @exists_list
+    # @is_full_list
     file_system = self.get_info("filesystem")
+    lost_file_system = @exists_list - filesystem["filesystem"].keys
+    p "丢盘: #{lost_file_system}"
+
     info["file_system"] = { file_system["filesystem"].first.first => file_system["filesystem"].first.last["percent_used"] }
     file_system["filesystem"].delete(file_system["filesystem"].first.first)
     exist_disks = file_system["filesystem"].keys
