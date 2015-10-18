@@ -65,7 +65,7 @@ class MachineInfo
 
     # 提交硬件基础信息
     # cpu型号,cpu核数,内网ip地址,服务器型号,内存信息
-    response = conn.post "#{@monitor_url}/#{target}", {machine: { identifier: @identifier, info: info } }
+    response = conn.post "#{@monitor_url}/machines/#{target}", {machine: { identifier: @identifier, info: info } }
     p response.body
   end
 
