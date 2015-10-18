@@ -102,14 +102,21 @@ class MachineInfo
     # @is_full_list
     file_system = self.get_info("filesystem")
     lost_file_system = @disk - file_system["filesystem"].keys
-    p "丢盘: #{lost_file_system}"
-
-    info["file_system"] = { file_system["filesystem"].first.first => file_system["filesystem"].first.last["percent_used"] }
-    file_system["filesystem"].delete(file_system["filesystem"].first.first)
-    exist_disks = file_system["filesystem"].keys
-    @disk.each do |disk|
-      info["file_system"][disk] = exist_disks.include? disk unless info["file_system"][disk].present?
+    
+    # info["file_system"] = { file_system["filesystem"].first.first => file_system["filesystem"].first.last["percent_used"] }
+    # file_system["filesystem"].delete(file_system["filesystem"].first.first)
+    # exist_disks = file_system["filesystem"].keys
+    tmp_list = []
+    percent_used = ''
+    @is_full_list.each do |disk|
+      percent_used = info["file_system"][disk]["percent_used"]
+      tmp_list << "#{disk}::#{percent_used}"
+      percent_used = ''
     end
+    info["file_system"] = { "lost_file_system" => lost_file_system.join('#'), "percent_used" => tmp_list.join("#")}
+    # @exist_disks.each do |disk|
+    #   info["file_system"][disk] = exist_disks.include? disk unless info["file_system"][disk].present?
+    # end
 
     send_info info, "real_hardware_info"
   end
