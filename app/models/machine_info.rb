@@ -98,10 +98,10 @@ class MachineInfo
     info["memory"] = { "load_one_minute" => vmstat.load_average.one_minute, "load_five_minutes" => vmstat.load_average.five_minutes, "load_fifteen_minutes" => vmstat.load_average.fifteen_minutes, "memory_total_bytes" => vmstat.memory.total_bytes, "memory_free_bytes" => vmstat.memory.free_bytes, "memory_inactive_bytes" => vmstat.memory.inactive_bytes, "memory_wired_bytes" => vmstat.memory.wired_bytes }
 
     # file_system: local percentage, external exist?
-    # @exists_list
+    # @disk
     # @is_full_list
     file_system = self.get_info("filesystem")
-    lost_file_system = @exists_list - filesystem["filesystem"].keys
+    lost_file_system = @disk - filesystem["filesystem"].keys
     p "丢盘: #{lost_file_system}"
 
     info["file_system"] = { file_system["filesystem"].first.first => file_system["filesystem"].first.last["percent_used"] }
