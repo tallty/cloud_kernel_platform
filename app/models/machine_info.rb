@@ -101,7 +101,7 @@ class MachineInfo
     # @disk
     # @is_full_list
     file_system = self.get_info("filesystem")
-    lost_file_system = @disk - filesystem["filesystem"].keys
+    lost_file_system = @disk - file_system["filesystem"].keys
     p "丢盘: #{lost_file_system}"
 
     info["file_system"] = { file_system["filesystem"].first.first => file_system["filesystem"].first.last["percent_used"] }
