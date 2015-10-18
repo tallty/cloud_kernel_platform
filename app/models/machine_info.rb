@@ -54,10 +54,10 @@ class MachineInfo
     memory_info = self.get_info("memory")["memory"]
     info["memory"] = { "swap_total" => memory_info["swap"]["total"], "total" => memory_info["total"] }
 
-    send_info info
+    send_info info, "base_hardware_info"
   end
 
-  def send_info info
+  def send_info info, target
     conn = Faraday.new(:url => @monitor_url) do |faraday|
       faraday.request  :url_encoded
       faraday.adapter  Faraday.default_adapter
@@ -65,7 +65,7 @@ class MachineInfo
 
     # 提交硬件基础信息
     # cpu型号,cpu核数,内网ip地址,服务器型号,内存信息
-    response = conn.post "#{@monitor_url}/machines", {machine: { identifier: @identifier, info: info } }
+    response = conn.post "#{@monitor_url}/#{target}", {machine: { identifier: @identifier, info: info } }
     p response.body
   end
 
@@ -104,6 +104,6 @@ class MachineInfo
       info["file_system"][disk] = exist_disks.include? disk unless info["file_system"][disk].present?
     end
 
-    send_info info
+    send_info info, "real_hardware_info"
   end
 end
