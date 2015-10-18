@@ -109,7 +109,7 @@ class MachineInfo
     tmp_list = []
     percent_used = ''
     @is_full_list.each do |disk|
-      percent_used = info["file_system"][disk]["percent_used"]
+      percent_used = file_system["file_system"][disk]["percent_used"]
       tmp_list << "#{disk}::#{percent_used}"
       percent_used = ''
     end
