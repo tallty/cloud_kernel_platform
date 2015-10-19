@@ -50,6 +50,9 @@ class BaseLocalFile
 
   # 遍历目录
   def process
+    info = {}
+    info["task"] = "本地文件解析"
+    info["start_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
     time_string = $redis.get(@redis_last_report_time_key)
     today = Time.now.to_date
     day_to_fetch = @day_to_fetch || 1
@@ -58,6 +61,7 @@ class BaseLocalFile
     @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string) 
     self.traverse_folder @resource_folder
 
+    exception = {}
     @file_list.each do |report_time_string, file|
       begin
         if @is_backup
@@ -72,9 +76,13 @@ class BaseLocalFile
         $redis.set @redis_last_report_time_key, report_time_string
       rescue Exception => e
         p e.message
+        exception[filename] = e
         next
       end
     end
+    info["exception"] = exception.to_json
+    info["end_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
+    info
     nil
   end
 
