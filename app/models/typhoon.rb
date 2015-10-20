@@ -83,7 +83,7 @@ class Typhoon < ActiveRecord::Base
         elsif index == 1
           name = contents[1]
           location = contents[2]
-          typhoo = Typhoon.find_or_create_by name: name, location: location
+          typhoon = Typhoon.find_or_create_by name: name, location: location
           ename = contents[0].split(/\(|\)/)[0]
         else
           year = 2000 + contents[0].to_i
@@ -93,10 +93,10 @@ class Typhoon < ActiveRecord::Base
           report_time = Time.zone.local(year, month, day, hour, 0, 0).to_datetime
           last_report_time = report_time
           effective = contents[4]
-          typhoon_item = typhoo.typhoon_items.find_by(report_time: report_time, effective: effective)
+          typhoon_item = typhoon.typhoon_items.find_by(report_time: report_time, effective: effective)
           if typhoon_item.blank?
             @is_process = true
-            typhoon_item = typhoo.typhoon_items.build(report_time: report_time, effective: effective)
+            typhoon_item = typhoon.typhoon_items.build(report_time: report_time, effective: effective)
             typhoon_item.lon = contents[5].to_f
             typhoon_item.lat = contents[6].to_f
             typhoon_item.max_wind = contents[7].to_f
@@ -111,19 +111,26 @@ class Typhoon < ActiveRecord::Base
         end
         index += 1
       end
+      
+      FileUtils.mv(local_file, '/home/deploy/ftp/weathers/typhoon/')
+
       if @is_process
 
-        typhoo.last_report_time = last_report_time if typhoo.last_report_time.blank? || last_report_time > typhoo.last_report_time
-        typhoo.ename = ename
-        typhoo.cname = cname
-        typhoo.year = typhoo.last_report_time.try(:year)
-        typhoo.save
+        typhoon.last_report_time = last_report_time if typhoon.last_report_time.blank? || last_report_time > typhoon.last_report_time
+        typhoon.ename = ename
+        typhoon.cname = cname
+        typhoon.year = typhoon.last_report_time.try(:year)
+        typhoon.save
 
-        $redis.hset "#{@redis_key}_#{typhoo.name}", typhoo.location, typhoo.to_s
+        $redis.hset "#{@redis_key}_#{typhoon.name}", typhoon.location, typhoon.to_s
         now_year = Time.zone.now.year
         typhoon_list = Typhoon.where(year: [now_year-1, now_year], location: "BCSH").order('last_report_time desc')
         $redis.set "typhoon_list", typhoon_list.map { |t| t.to_json_hash }.to_json
       end
+    end
+
+    def after_process
+      
     end
   end
 end
