@@ -81,6 +81,7 @@ class MachineInfo
     vmstat = Vmstat.snapshot
     info = {}
 
+    date_time = Time.now.strftime("%Y%m%d%H%M%S")
     # CPU: frequence, top
     cpu_info = self.get_info("cpu")["cpu"]
     cpu_sum = 0
@@ -88,14 +89,15 @@ class MachineInfo
       cpu_sum += element.last.to_f
     end
     # "real" => cpu_info["real"],
-    info["cpu"] = { "top" => cpu_sum }
+    info["cpu"] = { "date_time" => date_time, "top" => cpu_sum }
 
     # network: rx, tx
     net_work_info = self.get_info("network")
-    info["net_work"] = { "rx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["rx"]["bytes"], "tx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["tx"]["bytes"] }
+    info["net_work"] = { "date_time" => date_time, "rx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["rx"]["bytes"], "tx" => net_work_info["counters"]["network"]["interfaces"]["em1"]["tx"]["bytes"] }
 
     # memory: used, load average
-    info["memory"] = { "load_one_minute" => vmstat.load_average.one_minute, "load_five_minutes" => vmstat.load_average.five_minutes, "load_fifteen_minutes" => vmstat.load_average.fifteen_minutes, "memory_total_bytes" => vmstat.memory.total_bytes, "memory_free_bytes" => vmstat.memory.free_bytes, "memory_inactive_bytes" => vmstat.memory.inactive_bytes, "memory_wired_bytes" => vmstat.memory.wired_bytes }
+    info["load_average"] = { "date_time" => date_time, "load_one_minute" => vmstat.load_average.one_minute, "load_five_minutes" => vmstat.load_average.five_minutes, "load_fifteen_minutes" => vmstat.load_average.fifteen_minutes }
+    info["memory"] = { "date_time" => date_time, "memory_total_bytes" => vmstat.memory.total_bytes, "memory_free_bytes" => vmstat.memory.free_bytes, "memory_inactive_bytes" => vmstat.memory.inactive_bytes, "memory_wired_bytes" => vmstat.memory.wired_bytes }
 
     # file_system: local percentage, external exist?
     # @disk
@@ -113,7 +115,7 @@ class MachineInfo
       tmp_list << "#{disk}::#{percent_used}"
       percent_used = ''
     end
-    info["file_system"] = { "lost_file_system" => lost_file_system.join('#'), "percent_used" => tmp_list.join("#")}
+    info["file_system"] = { "date_time" => date_time, "lost_file_system" => lost_file_system.join('#'), "percent_used" => tmp_list.join("#")}
     # @exist_disks.each do |disk|
     #   info["file_system"][disk] = exist_disks.include? disk unless info["file_system"][disk].present?
     # end
