@@ -51,7 +51,7 @@ class BaseLocalFile
   # 遍历目录
   def process
     info = {}
-    info["task"] = "本地文件解析"
+    info["task"] = self.class.to_s
     info["start_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
     time_string = $redis.get(@redis_last_report_time_key)
     today = Time.now.to_date
