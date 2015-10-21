@@ -75,7 +75,6 @@ class BaseLocalFile
         FileUtils.rm(file) if @file_delete
         $redis.set @redis_last_report_time_key, report_time_string
       rescue Exception => e
-        p e.message
         exception[filename] = e
         next
       end
@@ -84,6 +83,17 @@ class BaseLocalFile
     info["end_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
     info
     nil
+  end
+
+  def push_task_log info
+    conn = Faraday.new(:url => 'http://shtzr1984.tunnel.mobi') do |faraday|
+      faraday.request  :url_encoded
+      faraday.adapter  Faraday.default_adapter
+    end
+
+    # 提交硬件基础信息
+    # cpu型号,cpu核数,内网ip地址,服务器型号,内存信息
+    response = conn.post "http://shtzr1984.tunnel.mobi/machines/#{target}", {machine: { identifier: 'c45Qx2rEXZORwk8W', datetime: Time.now.strftime("%Y%m%d%H%M%S"), info: info } }
   end
 
 end
