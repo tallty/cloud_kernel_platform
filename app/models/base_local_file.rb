@@ -81,7 +81,7 @@ class BaseLocalFile
     end
     info["exception"] = exception.to_json
     info["end_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
-    info
+    push_task_log info
     nil
   end
 
