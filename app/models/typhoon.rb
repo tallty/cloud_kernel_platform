@@ -73,7 +73,8 @@ class Typhoon < ActiveRecord::Base
       ename = ""
       last_report_time = nil
       index = 0
-
+      typhoon = nil
+      
       File.foreach(local_file, encoding: @file_encoding) do |line|
         line = line.encode 'utf-8'
         line = line.strip
