@@ -89,7 +89,7 @@ class MachineInfo
       cpu_sum += element.last.to_f
     end
     # "real" => cpu_info["real"],
-    info["cpu"] = { "date_time" => date_time, "top" => cpu_sum, "cpuused" => usw.uw_cpuused }
+    info["cpu"] = { "date_time" => date_time, "top" => cpu_sum, "cpu_used" => usw.uw_cpuused }
 
     # network: rx, tx
     net_work_info = self.get_info("network")
