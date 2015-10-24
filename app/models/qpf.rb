@@ -62,6 +62,11 @@ class QPF
       dest_file.close
     end
 
+    def after_process
+      @process_result_info["end_time"] = DateTime.now.to_f
+      push_task_log @process_result_info.to_json
+    end
+
     private
     def line_type line_contents
       line_type = :file_info
