@@ -5,7 +5,7 @@ class BaseLocalFile
       instance_variable_set "@#{k}", v
     end
     @file_list = []
-    @process_result_info = {}
+    @process_result_info = { :start_time => Time.now.to_f }
   end
 
   ##########################################################
@@ -51,9 +51,6 @@ class BaseLocalFile
 
   # 遍历目录
   def process
-    
-    @process_result_info["start_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
-    
     time_string = $redis.get(@redis_last_report_time_key)
     today = Time.now.to_date
     day_to_fetch = @day_to_fetch || 1
@@ -80,8 +77,7 @@ class BaseLocalFile
       end
     end
     @process_result_info["exception"] = exception.to_json
-    @process_result_info["end_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
-    
+    @process_result_info["file_list"] = @file_list.to_json
     after_process if respond_to?(:after_process, true)
   end
 
