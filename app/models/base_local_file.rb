@@ -78,8 +78,8 @@ class BaseLocalFile
         next
       end
     end
-    process_result_info["exception"] = exception.to_json
-    process_result_info["end_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
+    @process_result_info["exception"] = exception.to_json
+    @process_result_info["end_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
     
     after_process if respond_to?(:after_process, true)
   end
