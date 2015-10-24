@@ -58,5 +58,10 @@ class AqiForecast
       aqi.items = items
       $redis.set "#{@redis_key}", aqi.to_json
     end
+
+    def after_process
+      @process_result_info["end_time"] = DateTime.now.to_f
+      push_task_log @process_result_info.to_json
+    end
   end
 end

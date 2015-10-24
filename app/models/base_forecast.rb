@@ -7,6 +7,8 @@ class BaseForecast
     settings.each do |k, v|
       instance_variable_set "@#{k}", v
     end
+    @file_infos = []
+    @process_result_info = { :start_time => Time.now.to_f }
   end
 
   def connect!
@@ -55,13 +57,12 @@ class BaseForecast
     day_to_fetch = @day_to_fetch || 1
     last_day_string = to_date_string(today - day_to_fetch)
     time_string = $redis.get(@redis_last_report_time_key)
-    p "last_day_string: #{last_day_string}"
-    p "time_string: #{time_string}"
+    
     @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string) 
     connect! unless @connection
     
     @connection.chdir @remote_dir
-    file_infos = []
+    
     file_arr = []
     (0..day_to_fetch).each do |index|
       file_arr.concat @connection.nlst(ftpfile_format(today-index)) rescue []
@@ -69,14 +70,14 @@ class BaseForecast
     file_arr.each do |filename|
       report_time_string = get_report_time_string_from_ftp filename
       filename = filename.encode! 'utf-8', 'gb2312', {:invalid => :replace}
-      file_infos << [report_time_string, filename]
+      @file_infos << [report_time_string, filename]
     end
-    file_infos = file_infos.sort_by { |k, v| k }
+    @file_infos = @file_infos.sort_by { |k, v| k }
     @is_process = false
     close!
 
-    # puts "files is :#{file_infos}"
-    file_infos.each do |report_time_string, filename|
+    exception = {}
+    @file_infos.each do |report_time_string, filename|
       @report_time = Time.parse report_time_string
       @report_time_string = report_time_string
       if @report_time > @last_report_time && @report_time <= Time.now
@@ -95,18 +96,32 @@ class BaseForecast
             @connection.getbinaryfile(filename, local_file)  
             @connection.delete(filename) if @file_delete
           end
-        rescue
+        rescue Exception => e
+          exception[filename] = e
           close!
           next
         end
         close!
         parse local_file
-
+        
         $redis.set @redis_last_report_time_key, report_time_string
       end
     end
+
+    @process_result_info["exception"] = exception.to_json
+    @process_result_info["file_list"] = @file_infos.to_json
+    
     after_process if respond_to?(:after_process, true)
     # close!
   end
 
+  def push_task_log info
+    conn = Faraday.new(:url => 'http://mcu.buoyantec.com') do |faraday|
+      faraday.request  :url_encoded
+      faraday.adapter  Faraday.default_adapter
+    end
+
+    # 提交任务处理情况
+    response = conn.post "http://mcu.buoyantec.com/task_logs/fetch", {task_log: { identifier: @identifier, process_result: @process_result_info } }
+  end
 end
