@@ -37,6 +37,7 @@ class StableStation < ActiveRecord::Base
 
     def parse local_file
       file_content = ""
+      data_count = 0
       File.foreach(local_file, encoding: @file_encoding) do |line|
         line = line.encode('utf-8')
         line_content = line.split(' ')
@@ -53,8 +54,9 @@ class StableStation < ActiveRecord::Base
 
         item.save
         $redis.hset @redis_key, item.site_number, item.to_json
+        data_count += 1
       end
-      
+      @process_result_info["data_count"] = data_count
     end
 
     def after_process
