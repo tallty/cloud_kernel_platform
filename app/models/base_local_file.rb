@@ -50,9 +50,9 @@ class BaseLocalFile
 
   # 遍历目录
   def process
-    info = {}
-    info["task"] = self.class.to_s
-    info["start_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
+    @process_result_info = {}
+    @process_result_info["start_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
+    
     time_string = $redis.get(@redis_last_report_time_key)
     today = Time.now.to_date
     day_to_fetch = @day_to_fetch || 1
@@ -70,7 +70,6 @@ class BaseLocalFile
           FileUtils.makedirs(backup_dir) unless File.exist? backup_dir
           FileUtils.cp("#{file}", backup_dir)
         end
-        p "处理文件: #{file}"
         parse file
         FileUtils.rm(file) if @file_delete
         $redis.set @redis_last_report_time_key, report_time_string
@@ -79,10 +78,10 @@ class BaseLocalFile
         next
       end
     end
-    info["exception"] = exception.to_json
-    info["end_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
-    push_task_log info
-    nil
+    process_result_info["exception"] = exception.to_json
+    process_result_info["end_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
+    
+    after_process if respond_to?(:after_process, true)
   end
 
   def push_task_log info
@@ -91,9 +90,8 @@ class BaseLocalFile
       faraday.adapter  Faraday.default_adapter
     end
 
-    # 提交硬件基础信息
-    # cpu型号,cpu核数,内网ip地址,服务器型号,内存信息
-    response = conn.post "http://shtzr1984.tunnel.mobi/task_logs/fetch", {machine: { identifier: 'c45Qx2rEXZORwk8W', datetime: Time.now.strftime("%Y%m%d%H%M%S"), info: info } }
+    # 提交任务处理情况
+    response = conn.post "http://shtzr1984.tunnel.mobi/task_logs/fetch", {task_log: { identifier: 'c45Qx2rEXZORwk8W', process_result: @process_result_info } }
   end
 
 end

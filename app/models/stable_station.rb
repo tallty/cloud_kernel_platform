@@ -32,12 +32,10 @@ class StableStation < ActiveRecord::Base
     end
 
     def get_report_time_string file_name
-      p file_name
       File.ctime(file_name).strftime("%Y-%m-%d %H:%M:%S")
     end
 
     def parse local_file
-      p "process stable station ---> #{local_file}"
       file_content = ""
       File.foreach(local_file, encoding: @file_encoding) do |line|
         line = line.encode('utf-8')
@@ -57,6 +55,10 @@ class StableStation < ActiveRecord::Base
         $redis.hset @redis_key, item.site_number, item.to_json
       end
       
+    end
+
+    def after_process
+      push_task_log @process_result_info
     end
   end
 end
