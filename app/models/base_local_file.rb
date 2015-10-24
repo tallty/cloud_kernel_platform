@@ -5,6 +5,7 @@ class BaseLocalFile
       instance_variable_set "@#{k}", v
     end
     @file_list = []
+    @process_result_info = {}
   end
 
   ##########################################################
@@ -50,7 +51,7 @@ class BaseLocalFile
 
   # 遍历目录
   def process
-    @process_result_info = {}
+    
     @process_result_info["start_time"] = DateTime.now.strftime('%Y%m%d%H%M%S')
     
     time_string = $redis.get(@redis_last_report_time_key)
