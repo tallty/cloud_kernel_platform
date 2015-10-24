@@ -88,7 +88,7 @@ class BaseLocalFile
     end
 
     # 提交任务处理情况
-    response = conn.post "http://shtzr1984.tunnel.mobi/task_logs/fetch", {task_log: { identifier: 'c45Qx2rEXZORwk8W', process_result: @process_result_info } }
+    response = conn.post "http://shtzr1984.tunnel.mobi/task_logs/fetch", {task_log: { identifier: @identifier, process_result: @process_result_info } }
   end
 
 end
