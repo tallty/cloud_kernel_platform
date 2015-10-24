@@ -82,13 +82,13 @@ class BaseLocalFile
   end
 
   def push_task_log info
-    conn = Faraday.new(:url => 'http://shtzr1984.tunnel.mobi') do |faraday|
+    conn = Faraday.new(:url => 'http://mcu.buoyantec.com') do |faraday|
       faraday.request  :url_encoded
       faraday.adapter  Faraday.default_adapter
     end
 
     # 提交任务处理情况
-    response = conn.post "http://shtzr1984.tunnel.mobi/task_logs/fetch", {task_log: { identifier: @identifier, process_result: @process_result_info } }
+    response = conn.post "http://mcu.buoyantec.com/task_logs/fetch", {task_log: { identifier: @identifier, process_result: @process_result_info } }
   end
 
 end
