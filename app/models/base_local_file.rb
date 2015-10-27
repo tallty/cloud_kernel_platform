@@ -5,7 +5,7 @@ class BaseLocalFile
       instance_variable_set "@#{k}", v
     end
     @file_list = []
-    @process_result_info = { :start_time => Time.now.to_f }
+    @process_result_info = { :start_time => Time.now.to_f, :identifier => @identifier }
   end
 
   ##########################################################
