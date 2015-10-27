@@ -5,7 +5,7 @@ class BaseLocalFile
       instance_variable_set "@#{k}", v
     end
     @file_list = []
-    @process_result_info = { :start_time => Time.now.to_f, :identifier => @identifier }
+    @process_result_info = { :start_time => Time.now.to_f }
   end
 
   ##########################################################
@@ -88,7 +88,7 @@ class BaseLocalFile
     end
 
     # 提交任务处理情况
-    response = conn.post "http://mcu.buoyantec.com/task_logs/fetch", {task_log: { identifier: @identifier, process_result: @process_result_info } }
+    response = conn.post "http://mcu.buoyantec.com/task_logs/fetch", {task_log: { task_identifier: @identifier, process_result: @process_result_info } }
   end
 
 end
