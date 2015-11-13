@@ -83,6 +83,11 @@ class CountryRealAqi < ActiveRecord::Base
       end
     end
 
+    # def after_process
+    #   @process_result_info["end_time"] = DateTime.now.to_f
+    #   push_task_log @process_result_info.to_json
+    # end
+
     def filter_name(name)
       name = name.delete("地区")
       if name.length > 2 and name.include?("州")
