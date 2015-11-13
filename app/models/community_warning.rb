@@ -10,9 +10,9 @@ class CommunityWarning < ActiveRecord::Base
   class CommunityWarningProcess < BaseLocalFile
     def initialize
       super
-
+      p @resource_folder
       @redis_last_report_time_key = "community_warning_last_report_time"
-      # $redis.del @redis_last_report_time_key
+      $redis.del @redis_last_report_time_key
     end
 
     def file_format
@@ -31,8 +31,9 @@ class CommunityWarning < ActiveRecord::Base
         line = line.encode('utf-8')
         file_content << line
       end
+      p file_content
       contents = /上海中心气象台(.*?)(发布|解除|撤销|更新)(.*?)(雷电|暴雨|暴雨内涝|暴雨积涝)(风险)?(I|II|III|IV)级预警信号：(.*)/.match(file_content)
-
+      p contents
       if contents.present?
         units = contents[3].split('、')
         units.each do |unit|
@@ -46,6 +47,11 @@ class CommunityWarning < ActiveRecord::Base
           $redis.hset("warning_communities", "#{warning.unit}_#{warning.warning_type}", warning.to_json)
         end
       end
+    end
+
+    def after_process
+      @process_result_info["end_time"] = DateTime.now.to_f
+      push_task_log @process_result_info.to_json
     end
   end
 

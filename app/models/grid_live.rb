@@ -106,12 +106,13 @@ class GridLive
 
     def after_process
       last_redis_key =$redis.hget @grid_info_redis_key, "last_time"
-      last_redis_key
       keys = $redis.keys "#{@redis_key}*"
       keys.each do |item|
         $redis.del item unless "#{@redis_key}_#{last_redis_key}".eql?(item)
       end
-      nil
+      
+      @process_result_info["end_time"] = DateTime.now.to_f
+      push_task_log @process_result_info.to_json
     end
   end
 end
