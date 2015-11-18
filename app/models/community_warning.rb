@@ -10,7 +10,7 @@ class CommunityWarning < ActiveRecord::Base
   class CommunityWarningProcess < BaseLocalFile
     def initialize
       super
-      p @resource_folder
+      # p @resource_folder
       @redis_last_report_time_key = "community_warning_last_report_time"
       $redis.del @redis_last_report_time_key
     end
@@ -25,7 +25,7 @@ class CommunityWarning < ActiveRecord::Base
     end
 
     def parse local_file
-      p "process community warning ---> #{local_file}"
+      # p "process community warning ---> #{local_file}"
       file_content = ""
       File.foreach(local_file, encoding: 'gbk') do |line|
         line = line.encode('utf-8')
@@ -67,7 +67,7 @@ class CommunityWarning < ActiveRecord::Base
   end
 
   def clear_cache
-    warnings = $redis.hgetall "warning_communities"
+    warnings = $redis.hgetall "warning_community"
     clear_time = Time.now - 3.hours
     warnings.map do |e, item|
       item = MultiJson.load item
