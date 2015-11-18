@@ -48,7 +48,7 @@ class HealthWeather < ActiveRecord::Base
       content = res.body
       xmldoc = REXML::Document.new(content)
       root = xmldoc.root.elements[2].elements[1]
-      root.elements.each(){ |e|
+      root.elements.each do |e|
         title = e.text('Crow')
         datetime = e.text('Date').to_date
         item = HealthWeather.find_or_create_by title: title, datetime: datetime
@@ -58,7 +58,8 @@ class HealthWeather < ActiveRecord::Base
         item.guide = e.text('Wat_guide')
         item.save
         $redis.hset "#{@redis_key}/#{datetime}", title, item.to_json
-      }
+      end
+      root = nil
     end
   end
 end
