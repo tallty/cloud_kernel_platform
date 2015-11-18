@@ -28,8 +28,9 @@ class AutoStation < ActiveRecord::Base
       if now_date - 1.month > time
         $redis.del key
       end
-
     end
+    items.clear
+    time = nil
   end
 
   class DataProcess
