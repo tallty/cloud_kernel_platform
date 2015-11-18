@@ -31,7 +31,7 @@ class CommunityWarning < ActiveRecord::Base
         line = line.encode('utf-8')
         file_content << line
       end
-      p file_content
+      # p file_content
       contents = /上海中心气象台(.*?)(发布|解除|撤销|更新)(.*?)(雷电|暴雨|暴雨内涝|暴雨积涝)(风险)?(I|II|III|IV)级预警信号：(.*)/.match(file_content)
       p contents
       if contents.present?
@@ -71,7 +71,7 @@ class CommunityWarning < ActiveRecord::Base
     clear_time = Time.now - 3.hours
     warnings.map do |e, item|
       item = MultiJson.load item
-      if item["status"].eql?("解除") or item["status"].eql?("撤销")
+      if item["level"].eql?("解除") or item["level"].eql?("撤销")
         if Time.strptime(item["publish_time"],"%Y年%m月%d日%H时%M分").to_time < clear_time
           $redis.hdel("warning_communities", e)
         end
