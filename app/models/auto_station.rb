@@ -18,6 +18,20 @@ class AutoStation < ActiveRecord::Base
   #
   #
 
+  def clear_redis
+    # auto_stations/201503130720
+    items = $redis.keys("auto_stations/*")  
+    time = nil
+    now_date = Time.now.to_date
+    items.each do |key|
+      time = Time.parse(key.split('/')[-1]) rescue next
+      if now_date - 1.month > time
+        $redis.del key
+      end
+
+    end
+  end
+
   class DataProcess
 
     def day_process
