@@ -1,7 +1,7 @@
 class WorldForecast
   attr_accessor :publish_time, :site_name, :city, :weather, :ltemp, :htemp
 
-  def self.process
+  def process
     puts "#{DateTime.now}: do World Forcast process ..."
 
     WorldForecastProcess.new.process
@@ -36,11 +36,10 @@ class WorldForecast
 
     def parse local_file
       file = File.open(local_file, 'r')
-      date_time = (Time.now.to_date).strftime("%Y-%m-%d")
-      # date_time = (Time.now.to_date + 1.day).strftime("%Y-%m-%d")
+      # date_time = (Time.now.to_date).strftime("%Y-%m-%d")
+      date_time = (Time.now.to_date + 1.day).strftime("%Y-%m-%d")
       file.each do |line|
         line = line.encode! 'utf-8', 'gb2312', {:invalid => :replace}
-        p line
         if line =~ /\d{5,6}/
           contents = line.split(" ")
           item = WorldForecast.new

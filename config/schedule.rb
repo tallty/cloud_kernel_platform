@@ -37,7 +37,7 @@ every 5.minutes do
 end
 
 every 5.minutes do
-  runner "WorldForecast.process"
+  runner "WorldForecast.new.process"
 end
 
 every 5.minutes do
