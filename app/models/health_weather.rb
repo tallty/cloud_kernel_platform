@@ -29,9 +29,10 @@ class HealthWeather < ActiveRecord::Base
     keys.each do |key|
       key_time = Time.parse(key.split('/')[-1])
       if now_date - 3.day > key_time
-        p key
+        $redis.del key
       end
     end
+    keys.clear
   end
 
   def as_json(options=nil)
