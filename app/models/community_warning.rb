@@ -72,8 +72,8 @@ class CommunityWarning < ActiveRecord::Base
     warnings.map do |e, item|
       item = MultiJson.load item
       if item["level"].eql?("解除") or item["level"].eql?("撤销")
-        if Time.strptime(item["publish_time"],"%Y年%m月%d日%H时%M分").to_time < clear_time
-          $redis.hdel("warning_communities", e)
+        if Time.strptime(item["publishtime"],"%Y年%m月%d日%H时%M分").to_time < clear_time
+          $redis.hdel("warning_community", e)
         end
       end
       
