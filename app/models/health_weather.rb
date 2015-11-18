@@ -23,7 +23,7 @@ class HealthWeather < ActiveRecord::Base
   end
 
   def clear_redis
-    keys = $reids.keys("health_weather_report*")
+    keys = $redis.keys("health_weather_report*")
     now_date = Time.now.to_date
     key_time = nil
     keys.each do |key|
