@@ -17,7 +17,7 @@ require 'rexml/document'
 
 class HealthWeather < ActiveRecord::Base
 
-  def self.process
+  def process
     puts "#{DateTime.now}: process Health Weather data..."
     HealthWeatherProcess.new.fetch
   end

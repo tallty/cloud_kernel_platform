@@ -57,7 +57,7 @@ every 20.minutes do
 end
 
 every 1.hours do
-  runner "HealthWeather.process"
+  runner "HealthWeather.new.process"
 end
 
 every 1.hours, :at => 30 do
