@@ -22,6 +22,18 @@ class HealthWeather < ActiveRecord::Base
     HealthWeatherProcess.new.fetch
   end
 
+  def clear_redis
+    keys = $reids.keys("health_weather_report*")
+    now_date = Time.now.to_date
+    key_time = nil
+    keys.each do |key|
+      key_time = Time.parse(key.split('/')[-1])
+      if now_date - 3.day > key_time
+        p key
+      end
+    end
+  end
+
   def as_json(options=nil)
     {
       title: title.to_s,
