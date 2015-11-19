@@ -111,7 +111,7 @@ class BaseForecast
     @process_result_info["exception"] = exception.to_json
     @process_result_info["file_list"] = @file_infos.to_json
     
-    after_process if respond_to?(:after_process, true)
+    # after_process if respond_to?(:after_process, true)
     # close!
   end
 
