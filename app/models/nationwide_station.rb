@@ -69,16 +69,17 @@ class NationwideStation < ActiveRecord::Base
       now_time = Time.now
       from_datetime = (now_time - 9.hour).strftime("%Y%m%d%H0000")
       to_datetime = (now_time - 7.hour).strftime("%Y%m%d%H0000")
-      response = conn.get "#{@data_source}/cimiss-web/api", { userId: 'BCSH_SMSSC_kjfwzx',
-                                                              pwd: 'kjfwzx', 
-                                                              interfaceId: 'getAllStationDataBytimes',
-                                                              minStaid: '50134', 
-                                                              maxStaid: '59985',
-                                                              elements: 'Datetime,Station_Id_C,PRE,TEM,WIN_D_INST,WIN_S_INST,VIS_HOR_1MI,PRS,RHU',
-                                                              timeRange: "(#{from_datetime},#{to_datetime})",
-                                                              orderby: 'Station_ID_C:ASC',
-                                                              dataCode: 'SURF_CHN_MUL_HOR_N', 
-                                                              dataFormat: 'json' }
+      response = conn.get "#{@data_source}/cimiss-web/api", 
+                            { userId: 'BCSH_SMSSC_kjfwzx',
+                            pwd: 'kjfwzx', 
+                            interfaceId: 'getAllStationDataBytimes',
+                            minStaid: '50134', 
+                            maxStaid: '59985',
+                            elements: 'Datetime,Station_Id_C,PRE,TEM,WIN_D_INST,WIN_S_INST,VIS_HOR_1MI,PRS,RHU',
+                            timeRange: "(#{from_datetime},#{to_datetime})",
+                            orderby: 'Station_ID_C:ASC',
+                            dataCode: 'SURF_CHN_MUL_HOR_N', 
+                            dataFormat: 'json' }
 
       content = MultiJson.load response.body
     end

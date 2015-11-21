@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: nationwide_station_items
+#
+#  id                    :integer          not null, primary key
+#  report_date           :datetime
+#  sitenumber            :string(255)
+#  city_name             :string(255)
+#  tempe                 :float(24)
+#  rain                  :float(24)
+#  wind_direction        :float(24)
+#  wind_speed            :float(24)
+#  visibility            :float(24)
+#  pressure              :float(24)
+#  humi                  :float(24)
+#  nationwide_station_id :integer
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#
+
 class NationwideStationItem < ActiveRecord::Base
   belongs_to :nationwide_station
 

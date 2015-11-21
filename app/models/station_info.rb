@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: station_infos
+#
+#  id          :integer          not null, primary key
+#  name        :string(255)
+#  alias_name  :string(255)
+#  site_number :string(255)
+#  district    :string(255)
+#  address     :string(255)
+#  lon         :float(24)
+#  lat         :float(24)
+#  high        :float(24)
+#  province    :string(255)
+#  site_type   :string(255)
+#  subjection  :string(255)
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 class StationInfo < ActiveRecord::Base
 
   def as_json(options=nil)
@@ -9,7 +29,6 @@ class StationInfo < ActiveRecord::Base
       lon: lon,
       lat: lat,
       province: province,
-      site_type: site_type,
       subjection: subjection
     }
   end

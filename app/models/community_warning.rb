@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: community_warnings
+#
+#  id           :integer          not null, primary key
+#  publish_time :datetime
+#  warning_type :string(255)
+#  level        :string(255)
+#  content      :text(65535)
+#  unit         :string(255)
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  status       :string(255)
+#
+
 class CommunityWarning < ActiveRecord::Base
   validates :publish_time, :warning_type, :level, :unit, presence: true
 
@@ -33,7 +48,7 @@ class CommunityWarning < ActiveRecord::Base
       end
       # p file_content
       contents = /上海中心气象台(.*?)(发布|解除|撤销|更新)(.*?)(雷电|暴雨|暴雨内涝|暴雨积涝)(风险)?(I|II|III|IV)级预警信号：(.*)/.match(file_content)
-      p contents
+      # p contents
       if contents.present?
         units = contents[3].split('、')
         units.each do |unit|

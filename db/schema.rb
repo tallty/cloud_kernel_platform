@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151009144557) do
+ActiveRecord::Schema.define(version: 20151118173239) do
 
   create_table "auto_stations", force: :cascade do |t|
     t.string   "datetime",       limit: 255
@@ -75,6 +75,20 @@ ActiveRecord::Schema.define(version: 20151009144557) do
 
   add_index "country_real_aqis", ["datetime"], name: "index_country_real_aqis_on_datetime", using: :btree
   add_index "country_real_aqis", ["position_name"], name: "index_country_real_aqis_on_position_name", using: :btree
+
+  create_table "health_weathers", force: :cascade do |t|
+    t.string   "title",      limit: 255
+    t.datetime "datetime"
+    t.integer  "level",      limit: 4
+    t.string   "desc",       limit: 255
+    t.string   "info",       limit: 255
+    t.string   "guide",      limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "health_weathers", ["datetime"], name: "index_health_weathers_on_datetime", using: :btree
+  add_index "health_weathers", ["title"], name: "index_health_weathers_on_title", using: :btree
 
   create_table "nationwide_station_items", force: :cascade do |t|
     t.datetime "report_date"

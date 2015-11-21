@@ -1,3 +1,33 @@
+# == Schema Information
+#
+# Table name: country_real_aqis
+#
+#  id                :integer          not null, primary key
+#  datetime          :datetime
+#  area              :string(255)
+#  position_name     :string(255)
+#  station_code      :string(255)
+#  primary_pollutant :string(255)
+#  quality           :string(255)
+#  aqi               :float(24)
+#  co                :float(24)
+#  co_24h            :float(24)
+#  no2               :float(24)
+#  no2_24h           :float(24)
+#  o3                :float(24)
+#  o3_24h            :float(24)
+#  o3_8h             :float(24)
+#  o3_8h_24h         :float(24)
+#  pm10              :float(24)
+#  pm10_24h          :float(24)
+#  pm2_5             :float(24)
+#  pm2_5_24h         :float(24)
+#  so2               :float(24)
+#  so2_24h           :float(24)
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
+
 class CountryRealAqi < ActiveRecord::Base
 
   def as_json(options=nil)

@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: stable_stations
+#
+#  id             :integer          not null, primary key
+#  datetime       :datetime
+#  site_number    :string(255)
+#  site_name      :string(255)
+#  tempe          :float(24)
+#  rain           :float(24)
+#  humi           :float(24)
+#  air_press      :float(24)
+#  wind_direction :float(24)
+#  wind_speed     :float(24)
+#  vis            :float(24)
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#
+
 class StableStation < ActiveRecord::Base
 
   def as_json(options=nil)

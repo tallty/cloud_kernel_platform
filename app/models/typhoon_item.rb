@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: typhoon_items
+#
+#  id           :integer          not null, primary key
+#  location     :string(255)
+#  report_time  :datetime
+#  effective    :integer
+#  lon          :float(24)
+#  lat          :float(24)
+#  max_wind     :float(24)
+#  min_pressure :float(24)
+#  seven_radius :float(24)
+#  ten_radius   :float(24)
+#  direct       :float(24)
+#  speed        :float(24)
+#  typhoon_id   :integer
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
+
 class TyphoonItem < ActiveRecord::Base
   belongs_to :typhoon
 

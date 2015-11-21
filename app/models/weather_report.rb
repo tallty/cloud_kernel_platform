@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: weather_reports
+#
+#  id          :integer          not null, primary key
+#  datetime    :datetime
+#  promulgator :string(255)
+#  report_type :string(255)
+#  content     :text(65535)
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 class WeatherReport < ActiveRecord::Base
 
   def process

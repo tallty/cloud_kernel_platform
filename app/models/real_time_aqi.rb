@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: real_time_aqis
+#
+#  id         :integer          not null, primary key
+#  datetime   :datetime
+#  aqi        :integer
+#  level      :string(255)
+#  pripoll    :string(255)
+#  content    :string(255)
+#  measure    :string(255)
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class RealTimeAqi < ActiveRecord::Base
   # 上海空气质量实况
   
