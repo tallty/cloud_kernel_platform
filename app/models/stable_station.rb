@@ -56,11 +56,14 @@ class StableStation < ActiveRecord::Base
     def parse local_file
       file_content = ""
       data_count = 0
+      datetime = nil
+      now_month = nil
       File.foreach(local_file, encoding: @file_encoding) do |line|
         line = line.encode('utf-8')
         line_content = line.split(' ')
-        datetime = Time.parse(line_content[0])
-        item = StableStation.find_or_create_by datetime: datetime, site_number: line_content[1]
+        datetime = Time.parse(line_content[0]) if datetime.blank?
+        now_month = datetime.strftime("%Y%m") if now_month.blank?
+        item = StableStation.proxy({:month => now_month}).find_or_create_by datetime: datetime, site_number: line_content[1]
         item.site_name = line_content[2]
         item.tempe = line_content[3].eql?('////') ? 99999 : line_content[3].to_f
         item.rain = line_content[4].eql?('////') ? 99999 : line_content[4].to_f
@@ -81,5 +84,46 @@ class StableStation < ActiveRecord::Base
       @process_result_info["end_time"] = DateTime.now.to_f
       push_task_log @process_result_info.to_json
     end
+  end
+
+  def self.proxy(params={})
+    month = params[:month] || params['month']
+    if month.present?
+      sign = "stable_stations_#{month}"
+    else
+      sign = "stable_stations"
+    end
+    result = create_table(sign)
+    self.table_name = sign
+    return self
+  end
+
+  def self.create_table(my_table_name)
+    if table_exists?(my_table_name)
+      ActiveRecord::Migration.class_eval do
+        create_table my_table_name.to_sym do |t|
+          t.datetime :datetime
+          t.string :site_number
+          t.string :site_name
+          t.float :tempe
+          t.float :rain
+          t.float :humi
+          t.float :air_press
+          t.float :wind_direction
+          t.float :wind_speed
+          t.float :vis
+
+          t.timestamps null: false
+        end
+        add_index my_table_name.to_sym, :datetime
+        add_index my_table_name.to_sym, :site_number
+      end
+    end
+    self
+  end
+
+  def self.table_exists?(sign=nil)
+    flag = ActiveRecord::Base.connection.tables.include? sign
+    return !flag
   end
 end
