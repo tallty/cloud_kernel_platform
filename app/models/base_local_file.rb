@@ -61,7 +61,7 @@ class BaseLocalFile
 
     exception = {}
     @file_list.each do |report_time_string, file|
-      # begin
+      begin
         if @is_backup
           backup_file = file.gsub(@resource_folder, @backup_folder)
           backup_dir = File.dirname(backup_file)
@@ -71,10 +71,10 @@ class BaseLocalFile
         parse file
         FileUtils.rm(file) if @file_delete
         $redis.set @redis_last_report_time_key, report_time_string
-      # rescue Exception => e
-      #   exception[file] = e
-      #   next
-      # end
+      rescue Exception => e
+        exception[file] = e
+        next
+      end
     end
     @process_result_info["exception"] = exception.to_json
     @process_result_info["file_list"] = @file_list.to_json
