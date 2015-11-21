@@ -61,7 +61,7 @@ class StableStation < ActiveRecord::Base
         line = line.encode('utf-8')
         line_content = line.split(' ')
         datetime = Time.parse(line_content[0]) if datetime.blank?
-        p datetime
+        
         item = StableStation.proxy({:month => datetime}).find_or_create_by datetime: datetime, site_number: line_content[1]
         item.site_name = line_content[2]
         item.tempe = line_content[3].eql?('////') ? 99999 : line_content[3].to_f
@@ -88,12 +88,13 @@ class StableStation < ActiveRecord::Base
   def self.proxy(params={})
     month = params[:month] || params['month']
     data_time = Time.parse(month)
-    if month.present?
-      month_sign = data_time.month < 7 ? 1 : 2
+    if data_time.present?
+      month_sign = (data_time.month < 7) ? 1 : 2
       sign = "stable_stations_#{data_time.year}_#{month_sign}"
     else
       sign = "stable_stations"
     end
+    p sign
     result = create_table(sign)
     self.table_name = sign
     return self
