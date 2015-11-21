@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: typhoons
+#
+#  id               :integer          not null, primary key
+#  name             :string(255)
+#  location         :string(255)
+#  cname            :string(255)
+#  ename            :string(255)
+#  data_info        :string(255)
+#  last_report_time :datetime
+#  year             :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+
 class Typhoon < ActiveRecord::Base
   has_many :typhoon_items
 
@@ -28,6 +44,15 @@ class Typhoon < ActiveRecord::Base
   def self.process
     puts "#{DateTime.now}: do Typhoon process..."
     TyphoonProcess.new.process
+  end
+
+  def write_typhoon_to_cache
+    typhoons_name = Typhoon.all.distinct(:name).pluck(:name)
+    typhoons_name.each do |name|
+      typhoon = Typhoon.where(name: name).first
+      $redis.hset "typhoon_list_json", typhoon.name, typhoon.to_json_hash
+    end
+    typhoons_name.clear
   end
 
   def relate_typhoon_items
@@ -66,46 +91,46 @@ class Typhoon < ActiveRecord::Base
     end
 
     def parse local_file
-      filename = File.basename local_file
-      @is_process = false
-      typhoo = nil
-      cname = ""
-      ename = ""
-      last_report_time = nil
-      index = 0
-      typhoon = nil
+      filename         = File.basename local_file
+      @is_process      = false
       
+      cname            = ""
+      ename            = ""
+      last_report_time = nil
+      index            = 0
+      typhoon          = nil
+
       File.foreach(local_file, encoding: @file_encoding) do |line|
-        line = line.encode 'utf-8'
-        line = line.strip
+        line     = line.encode 'utf-8'
+        line     = line.strip
         contents = line.split(" ")
         if index == 0
           cname = contents[2].split(/\(|\)/)[1]
         elsif index == 1
-          name = contents[1]
+          name     = contents[1]
           location = contents[2]
-          typhoon = Typhoon.find_or_create_by name: name, location: location
-          ename = contents[0].split(/\(|\)/)[0]
+          typhoon  = Typhoon.find_or_create_by name: name, location: location
+          ename    = contents[0].split(/\(|\)/)[0]
         else
-          year = 2000 + contents[0].to_i
-          month =  contents[1].to_i
-          day = contents[2].to_i
-          hour = contents[3].to_i
-          report_time = Time.zone.local(year, month, day, hour, 0, 0).to_datetime
+          year             = 2000 + contents[0].to_i
+          month            =  contents[1].to_i
+          day              = contents[2].to_i
+          hour             = contents[3].to_i
+          report_time      = Time.zone.local(year, month, day, hour, 0, 0).to_datetime
           last_report_time = report_time
-          effective = contents[4]
-          typhoon_item = typhoon.typhoon_items.find_by(report_time: report_time, effective: effective)
+          effective        = contents[4]
+          typhoon_item     = typhoon.typhoon_items.find_by(report_time: report_time, effective: effective)
           if typhoon_item.blank?
             @is_process = true
             typhoon_item = typhoon.typhoon_items.build(report_time: report_time, effective: effective)
-            typhoon_item.lon = contents[5].to_f
-            typhoon_item.lat = contents[6].to_f
-            typhoon_item.max_wind = contents[7].to_f
+            typhoon_item.lon          = contents[5].to_f
+            typhoon_item.lat          = contents[6].to_f
+            typhoon_item.max_wind     = contents[7].to_f
             typhoon_item.min_pressure = contents[8].to_f
             typhoon_item.seven_radius = contents[9].to_f
-            typhoon_item.ten_radius = contents[10].to_f
-            typhoon_item.direct = contents[11].to_f
-            typhoon_item.speed = contents[12].to_f
+            typhoon_item.ten_radius   = contents[10].to_f
+            typhoon_item.direct       = contents[11].to_f
+            typhoon_item.speed        = contents[12].to_f
             typhoon_item.save
           end
           
@@ -120,11 +145,11 @@ class Typhoon < ActiveRecord::Base
         typhoon.last_report_time = last_report_time if typhoon.last_report_time.blank? || last_report_time > typhoon.last_report_time
         typhoon.ename = ename
         typhoon.cname = cname
-        typhoon.year = typhoon.last_report_time.try(:year)
+        typhoon.year  = typhoon.last_report_time.try(:year)
         typhoon.save
 
         $redis.hset "#{@redis_key}_#{typhoon.name}", typhoon.location, typhoon.to_s
-        now_year = Time.zone.now.year
+        now_year     = Time.zone.now.year
         typhoon_list = Typhoon.where(year: [now_year-1, now_year], location: "BCSH").order('last_report_time desc')
         $redis.set "typhoon_list", typhoon_list.map { |t| t.to_json_hash }.to_json
       end
