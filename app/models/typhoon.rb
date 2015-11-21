@@ -50,7 +50,7 @@ class Typhoon < ActiveRecord::Base
     typhoons_name = Typhoon.all.distinct(:name).pluck(:name)
     typhoons_name.each do |name|
       typhoon = Typhoon.where(name: name).first
-      $redis.hset "typhoon_list_json", typhoon.name, typhoon.to_json_hash
+      $redis.hset "typhoon_list_json", typhoon.name, typhoon.to_json_hash.to_json
     end
     typhoons_name.clear
   end
