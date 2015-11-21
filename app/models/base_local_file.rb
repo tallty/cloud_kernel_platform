@@ -72,13 +72,13 @@ class BaseLocalFile
         FileUtils.rm(file) if @file_delete
         $redis.set @redis_last_report_time_key, report_time_string
       rescue Exception => e
-        exception[filename] = e
+        exception[file] = e
         next
       end
     end
     @process_result_info["exception"] = exception.to_json
     @process_result_info["file_list"] = @file_list.to_json
-    # after_process if respond_to?(:after_process, true)
+    after_process if respond_to?(:after_process, true)
   end
 
   def push_task_log info
