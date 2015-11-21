@@ -88,8 +88,10 @@ class StableStation < ActiveRecord::Base
 
   def self.proxy(params={})
     month = params[:month] || params['month']
+    data_time = Time.parse(month)
     if month.present?
-      sign = "stable_stations_#{month}"
+      month_sign = data_time.month < 7 ? 1 : 2
+      sign = "stable_stations_#{data_time.year}_#{month_sign}"
     else
       sign = "stable_stations"
     end
