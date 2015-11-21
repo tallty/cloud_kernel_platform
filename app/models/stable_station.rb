@@ -57,6 +57,7 @@ class StableStation < ActiveRecord::Base
       file_content = ""
       data_count = 0
       datetime = nil
+      
       File.foreach(local_file, encoding: @file_encoding) do |line|
         line = line.encode('utf-8')
         line_content = line.split(' ')
@@ -88,6 +89,7 @@ class StableStation < ActiveRecord::Base
   def self.proxy(params={})
     month = params[:month] || params['month']
     data_time = Time.parse(month)
+    p data_time
     if data_time.present?
       month_sign = (data_time.month < 7) ? 1 : 2
       sign = "stable_stations_#{data_time.year}_#{month_sign}"
