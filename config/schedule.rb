@@ -57,7 +57,7 @@ every 10.minutes do
 end
 
 every 20.minutes do
-  runner "NationwideStation.process"
+  runner "NationwideStation.new.process"
 end
 
 every 1.hours do

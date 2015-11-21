@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: nationwide_stations
+#
+#  id          :integer          not null, primary key
+#  report_date :datetime
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 class NationwideStation < ActiveRecord::Base
   has_many :nationwide_station_items
 
@@ -8,14 +18,14 @@ class NationwideStation < ActiveRecord::Base
     }
   end
 
-  def self.process
+  def process
     NationwideStationProcess.new.process
   end
 
   class NationwideStationProcess
     def initialize
-      @data_source = Settings.NationwideStation.source
-      @redis_key = "nationwide_stations"
+      @data_source                = Settings.NationwideStation.source
+      @redis_key                  = "nationwide_stations"
       @redis_last_report_time_key = "nationwide_station_last_report_time"
 
     end
@@ -32,22 +42,22 @@ class NationwideStation < ActiveRecord::Base
         city = StationInfo.find_city_from_redis sitenumber
         if city.present?
           item = group.nationwide_station_items.find_or_create_by report_date: report_time, sitenumber: sitenumber.to_s
-          item.city_name = city["name"]
-          item.tempe = obj['TEM'].to_f
-          item.rain = obj['PRE'].to_f
+          item.city_name      = city["name"]
+          item.tempe          = obj['TEM'].to_f
+          item.rain           = obj['PRE'].to_f
           item.wind_direction = obj['WIN_D_INST'].to_f
-          item.wind_speed = obj['WIN_S_INST'].to_f
-          item.visibility = obj['VIS_HOR_1MI'].to_f
-          item.pressure = obj['PRS'].to_f
-          item.humi = obj['RHU'].to_f
+          item.wind_speed     = obj['WIN_S_INST'].to_f
+          item.visibility     = obj['VIS_HOR_1MI'].to_f
+          item.pressure       = obj['PRS'].to_f
+          item.humi           = obj['RHU'].to_f
           $redis.hset "#{@redis_key}", item.city_name.sub(/市|新区|区|县|乡|镇/, ''), item.to_json
           
           item.save
         else
-          p obj
         end
       end
-      nil
+      @process_result_info["end_time"] = DateTime.now.to_f
+      push_task_log @process_result_info.to_json
     end
 
     def get_data
@@ -60,12 +70,15 @@ class NationwideStation < ActiveRecord::Base
       from_datetime = (now_time - 9.hour).strftime("%Y%m%d%H0000")
       to_datetime = (now_time - 7.hour).strftime("%Y%m%d%H0000")
       response = conn.get "#{@data_source}/cimiss-web/api", { userId: 'BCSH_SMSSC_kjfwzx',
-                                                                    pwd: 'kjfwzx', interfaceId: 'getAllStationDataBytimes',
-                                                                    minStaid: '50134', maxStaid: '59985',
-                                                                    elements: 'Datetime,Station_Id_C,PRE,TEM,WIN_D_INST,WIN_S_INST,VIS_HOR_1MI,PRS,RHU',
-                                                                    timeRange: "(#{from_datetime},#{to_datetime})",
-                                                                    orderby: 'Station_ID_C:ASC',
-                                                                    dataCode: 'SURF_CHN_MUL_HOR_N', dataFormat: 'json' }
+                                                              pwd: 'kjfwzx', 
+                                                              interfaceId: 'getAllStationDataBytimes',
+                                                              minStaid: '50134', 
+                                                              maxStaid: '59985',
+                                                              elements: 'Datetime,Station_Id_C,PRE,TEM,WIN_D_INST,WIN_S_INST,VIS_HOR_1MI,PRS,RHU',
+                                                              timeRange: "(#{from_datetime},#{to_datetime})",
+                                                              orderby: 'Station_ID_C:ASC',
+                                                              dataCode: 'SURF_CHN_MUL_HOR_N', 
+                                                              dataFormat: 'json' }
 
       content = MultiJson.load response.body
     end
