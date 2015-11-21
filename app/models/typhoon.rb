@@ -47,7 +47,8 @@ class Typhoon < ActiveRecord::Base
   end
 
   def write_typhoon_to_cache
-    typhoons_name = Typhoon.all.distinct(:name).pluck(:name)
+    show_year = Time.now.year - 2
+    typhoons_name = Typhoon.where('year > ?', show_year).distinct(:name).pluck(:name)
     typhoons_name.each do |name|
       typhoon = Typhoon.where(name: name).first
       $redis.hset "typhoon_list_json", typhoon.name, typhoon.to_json_hash.to_json
