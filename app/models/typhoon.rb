@@ -52,7 +52,7 @@ class Typhoon < ActiveRecord::Base
     typhoons_name.each do |name|
       typhoon = Typhoon.where(name: name).first
       $redis.zadd "typhoon_list_json", typhoon.name.to_i, typhoon.to_json_hash.to_json
-      $redis.hset "typhoon_json_cache", typhoon.name, typhoon.typhoon_items.to_json
+      $redis.hset "typhoon_json_cache", typhoon.name, typhoon.relate_typhoon_items.to_json
     end
     typhoons_name.clear
   end
@@ -150,6 +150,7 @@ class Typhoon < ActiveRecord::Base
         typhoon.year  = typhoon.last_report_time.try(:year)
         typhoon.save
 
+        $redis.hset "typhoon_json_cache", typhoon.name, typhoon.relate_typhoon_items.to_json
         $redis.hset "#{@redis_key}_#{typhoon.name}", typhoon.location, typhoon.to_s
         now_year     = Time.zone.now.year
         typhoon_list = Typhoon.where(year: [now_year-1, now_year], location: "BCSH").order('last_report_time desc')
