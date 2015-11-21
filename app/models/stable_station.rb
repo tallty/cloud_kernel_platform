@@ -88,6 +88,7 @@ class StableStation < ActiveRecord::Base
 
   def self.proxy(params={})
     month = params[:month] || params['month']
+    p month
     data_time = Time.parse(month)
     p data_time
     if data_time.present?
