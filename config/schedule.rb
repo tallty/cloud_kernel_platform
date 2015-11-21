@@ -8,10 +8,6 @@ set :job_template, "/usr/bin/timeout 1800 /bin/bash -l -c ':job'"
 
 # Learn more: http://github.com/javan/whenever
 
-every 5.minutes do
-  runner "TestTimeOut.new.process"
-end
-
 every 1.minutes do
   runner 'MachineInfo.new.keep_send_real_time_info'
 end
