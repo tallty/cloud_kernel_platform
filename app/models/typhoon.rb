@@ -51,7 +51,7 @@ class Typhoon < ActiveRecord::Base
     typhoons_name = Typhoon.where('year > ?', show_year).distinct(:name).pluck(:name)
     typhoons_name.each do |name|
       typhoon = Typhoon.where(name: name).first
-      $redis.hset "typhoon_list_json", typhoon.name, typhoon.to_json_hash.to_json
+      $redis.zadd "typhoon_list_json", typhoon.name, typhoon.to_json_hash.to_json
     end
     typhoons_name.clear
   end
