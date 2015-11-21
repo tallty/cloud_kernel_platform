@@ -1,6 +1,7 @@
 class QPF
 
   def process
+    p "#{Time.now.strftime('%Y-%m-%d %H:%M')}: process qpf task..."
     QpfProcess.new.process
   end
 
