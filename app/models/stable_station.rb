@@ -63,7 +63,7 @@ class StableStation < ActiveRecord::Base
         line_content = line.split(' ')
         datetime = Time.parse(line_content[0]) if datetime.blank?
         
-        item = StableStation.proxy({:month => line_content[0]}).find_or_create_by datetime: datetime, site_number: line_content[1]
+        item = StableStation.proxy({:data_time => line_content[0]}).find_or_create_by datetime: datetime, site_number: line_content[1]
         item.site_name = line_content[2]
         item.tempe = line_content[3].eql?('////') ? 99999 : line_content[3].to_f
         item.rain = line_content[4].eql?('////') ? 99999 : line_content[4].to_f
@@ -87,8 +87,8 @@ class StableStation < ActiveRecord::Base
   end
 
   def self.proxy(params={})
-    month = params[:month] || params['month']
-    month = DateTime.parse(month)
+    data_time = params[:data_time] || params['data_time']
+    data_time = DateTime.parse(data_time)
     if data_time.present?
       month_sign = (data_time.month < 7) ? 1 : 2
       sign = "stable_stations_#{data_time.year}_#{month_sign}"
