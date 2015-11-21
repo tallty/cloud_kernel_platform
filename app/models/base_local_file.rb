@@ -68,6 +68,7 @@ class BaseLocalFile
           FileUtils.makedirs(backup_dir) unless File.exist? backup_dir
           FileUtils.cp("#{file}", backup_dir)
         end
+        p file
         parse file
         FileUtils.rm(file) if @file_delete
         $redis.set @redis_last_report_time_key, report_time_string
