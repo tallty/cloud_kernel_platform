@@ -57,13 +57,11 @@ class StableStation < ActiveRecord::Base
       file_content = ""
       data_count = 0
       datetime = nil
-      now_month = nil
       File.foreach(local_file, encoding: @file_encoding) do |line|
         line = line.encode('utf-8')
         line_content = line.split(' ')
         datetime = Time.parse(line_content[0]) if datetime.blank?
-        now_month = datetime.strftime("%Y%m") if now_month.blank?
-        item = StableStation.proxy({:month => now_month}).find_or_create_by datetime: datetime, site_number: line_content[1]
+        item = StableStation.proxy({:month => datetime}).find_or_create_by datetime: datetime, site_number: line_content[1]
         item.site_name = line_content[2]
         item.tempe = line_content[3].eql?('////') ? 99999 : line_content[3].to_f
         item.rain = line_content[4].eql?('////') ? 99999 : line_content[4].to_f
