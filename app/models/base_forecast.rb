@@ -7,7 +7,7 @@ class BaseForecast
     settings.each do |k, v|
       instance_variable_set "@#{k}", v
     end
-    @file_infos = []
+    @process_file_infos = []
     @process_result_info = { :start_time => Time.now.to_f }
   end
 
@@ -103,16 +103,17 @@ class BaseForecast
         end
         close!
         parse local_file
-        
+        @process_file_infos << filename
         $redis.set @redis_last_report_time_key, report_time_string
       end
     end
 
     @process_result_info["exception"] = exception.to_json
-    @process_result_info["file_list"] = @file_infos.to_json
-    
-    after_process if respond_to?(:after_process, true)
+    @process_result_info["file_list"] = @process_file_infos.to_json
     close!
+
+    after_process if respond_to?(:after_process, true)
+    @file_infos.clear
   end
 
   def push_task_log info
