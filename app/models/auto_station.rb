@@ -49,6 +49,7 @@ class AutoStation < ActiveRecord::Base
         station_info = StationInfo.find_by_redis station[0]
         unless station_info.nil?
           if station_info.lon.present? and station_info.lat.present?
+            p station_info
             file.puts "#{station_info.lon},#{station_info.lat},#{station[1].to_f.round(1)}\r\n"
           end
         end
