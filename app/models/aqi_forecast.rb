@@ -57,6 +57,7 @@ class AqiForecast
       end
       aqi.items = items
       $redis.set "#{@redis_key}", aqi.to_json
+      items.clear
     end
 
     def after_process
