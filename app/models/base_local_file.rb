@@ -40,6 +40,7 @@ class BaseLocalFile
       if matcher.present?
         report_time_string = Time.parse(get_report_time_string file)
         if report_time_string > @last_report_time
+          p "#{report_time_string}"
           @file_list << [report_time_string, file]
         end
       end
