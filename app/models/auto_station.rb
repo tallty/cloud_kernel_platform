@@ -42,8 +42,8 @@ class AutoStation < ActiveRecord::Base
     def process(day=nil)
       date = day.present? ? day : DateTime.now.strftime('%Y%m%d')
       stations = AutoStation.average_tempe(date)
+      FileUtils.makedirs(@local_dir) unless File.exist?(@local_dir)
       filename = "#{@local_dir}/#{date}.txt"
-      Dir.mkdir(@local_dir) unless File.exist?(@local_dir)
       file = File.new(filename, "w+")
       stations.each do |station|
         stationInfo = ShStationInfo.find_by_redis station[0]
