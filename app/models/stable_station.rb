@@ -82,6 +82,7 @@ class StableStation < ActiveRecord::Base
 
     def after_process
       @process_result_info["end_time"] = DateTime.now.to_f
+      p @process_result_info.to_json
       push_task_log @process_result_info.to_json
     end
   end
