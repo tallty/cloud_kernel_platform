@@ -43,20 +43,20 @@ class AutoStation < ActiveRecord::Base
       date = day.present? ? day : DateTime.now.strftime('%Y%m%d')
       stations = AutoStation.average_tempe(date)
       FileUtils.makedirs(@local_dir) unless File.exist?(@local_dir)
-      filename = "#{@local_dir}/#{date}.txt"
-      file = File.new(filename, "w+")
+      file_name = "#{@local_dir}/#{date}.txt"
+      file = File.new(file_name, "w+")
       stations.each do |station|
-        p station[0]
         station_info = StationInfo.find_by_redis station[0]
         unless station_info.nil?
           if station_info.lon.present? and station_info.lat.present?
-            p station_info
             file.puts "#{station_info.lon},#{station_info.lat},#{station[1].to_f.round(1)}\r\n"
           end
         end
       end
       file.close
       stations.clear
+      
+      send_file_by_ftp file_name
     end
   end
 
