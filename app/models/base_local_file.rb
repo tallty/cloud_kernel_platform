@@ -82,7 +82,9 @@ class BaseLocalFile
     p "-----------------------------------------------------"
     p @process_file_infos
     @process_result_info["exception"] = exception.to_json
-    @process_result_info["file_list"] = @file_list.to_json
+    @process_result_info["file_list"] = @process_file_infos.to_json
+    @file_list.clear
+    @process_file_infos.clear
     after_process if respond_to?(:after_process, true)
   end
 
