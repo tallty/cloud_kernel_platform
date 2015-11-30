@@ -16,7 +16,7 @@ class AutoStation < ActiveRecord::Base
   scope :hour_min_visibility, -> { where("datetime like ? and visibility <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).minimum(:visibility) }
   scope :hour_max_win_speed, ->  { where("datetime like ? and max_speed <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).maximum(:max_speed) }
   
-  scope :ave_tempe, -> (day) { where("datetime in ('#{day}0200', '#{day}0800', '#{day}1400', #{day}2000)").group(:sitenumber).average(:tempe) }
+  scope :average_tempe, -> (day) { where("datetime in ('#{day}0200', '#{day}0800', '#{day}1400', #{day}2000)").group(:sitenumber).average(:tempe) }
   #
 
   def clear_redis
@@ -39,24 +39,21 @@ class AutoStation < ActiveRecord::Base
       super
     end
 
-    def process
-      date = DateTime.now.strftime('%Y%m%d')
-      query_sql = "SELECT sitenumber, Avg(tempe) as tempe FROM auto_stations where datetime in ('#{date}0200', '#{date}0800', '#{date}1400', '#{date}2000') group by sitenumber";
-      stations = AutoStation.find_by_sql(query_sql);
-      settings = Settings.__send__ "AvgTempe"
-      filename = "#{settings.local_dir}/#{date}.txt"
-      Dir.mkdir(settings.local_dir) unless File.exist?(settings.local_dir)
+    def process(day=nil)
+      date = day.present? ? day : DateTime.now.strftime('%Y%m%d')
+      stations = AutoStation.average_tempe(date)
+      filename = "#{@local_dir}/#{date}.txt"
+      Dir.mkdir(@local_dir) unless File.exist?(@local_dir)
       file = File.new(filename, "w+")
       stations.each do |station|
-        stationInfo = ShStationInfo.find_by_redis station.sitenumber
+        stationInfo = ShStationInfo.find_by_redis station[0]
         unless stationInfo.nil?
           unless stationInfo.lon.nil?
-            f.puts "#{stationInfo.lon},#{stationInfo.lat},#{station.tempe.round(1)}\r\n"
+            file.puts "#{stationInfo.lon},#{stationInfo.lat},#{station[1].to_f.round(1)}\r\n"
           end
         end
       end
       file.close
-
     end
   end
 
