@@ -67,17 +67,18 @@ class BaseForecast
     (0..day_to_fetch).each do |index|
       file_arr.concat @connection.nlst(ftpfile_format(today-index)) rescue []
     end
+    file_infos = []
     file_arr.each do |filename|
       report_time_string = get_report_time_string_from_ftp filename
       filename = filename.encode! 'utf-8', 'gb2312', {:invalid => :replace}
-      @file_infos << [report_time_string, filename]
+      file_infos << [report_time_string, filename]
     end
-    @file_infos = @file_infos.sort_by { |k, v| k }
+    file_infos = file_infos.sort_by { |k, v| k }
     @is_process = false
     close!
 
     exception = {}
-    @file_infos.each do |report_time_string, filename|
+    file_infos.each do |report_time_string, filename|
       @report_time = Time.parse report_time_string
       @report_time_string = report_time_string
       if @report_time > @last_report_time && @report_time <= Time.now
@@ -113,7 +114,7 @@ class BaseForecast
     close!
 
     after_process if respond_to?(:after_process, true)
-    @file_infos.clear
+    file_infos.clear
   end
 
   def push_task_log info
