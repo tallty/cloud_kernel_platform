@@ -82,11 +82,12 @@ class BaseLocalFile
     @process_result_info["exception"] = exception.to_json
     @process_result_info["file_list"] = @process_file_infos.to_json
     @file_list.clear
-    @process_file_infos.clear
+    
     after_process if respond_to?(:after_process, true)
   end
 
   def push_task_log info
+    @process_file_infos.clear
     conn = Faraday.new(:url => 'http://mcu.buoyantec.com') do |faraday|
       faraday.request  :url_encoded
       faraday.adapter  Faraday.default_adapter
