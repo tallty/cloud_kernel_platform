@@ -81,7 +81,7 @@ class StableStation < ActiveRecord::Base
     end
 
     def after_process
-      p @process_result_info['file_list']
+      p @process_file_infos
 
       if @process_result_info['file_list'].present?
         @process_result_info["end_time"] = DateTime.now.to_f
