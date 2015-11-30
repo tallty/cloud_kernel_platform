@@ -52,7 +52,6 @@ class BaseLocalFile
 
   # 遍历目录
   def process
-    p "-----------------------------------------------"
     time_string = $redis.get(@redis_last_report_time_key)
     today = Time.now.to_date
     day_to_fetch = @day_to_fetch || 1
@@ -74,13 +73,14 @@ class BaseLocalFile
         FileUtils.rm(file) if @file_delete
 
         @process_file_infos << file
-        p @process_file_infos
         $redis.set @redis_last_report_time_key, report_time_string
       rescue Exception => e
         exception[file] = e
         next
       end
     end
+    p "-----------------------------------------------------"
+    p @process_file_infos
     @process_result_info["exception"] = exception.to_json
     @process_result_info["file_list"] = @file_list.to_json
     after_process if respond_to?(:after_process, true)
