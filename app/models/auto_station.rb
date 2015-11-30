@@ -46,14 +46,15 @@ class AutoStation < ActiveRecord::Base
       filename = "#{@local_dir}/#{date}.txt"
       file = File.new(filename, "w+")
       stations.each do |station|
-        stationInfo = ShStationInfo.find_by_redis station[0]
-        unless stationInfo.nil?
-          unless stationInfo.lon.nil?
-            file.puts "#{stationInfo.lon},#{stationInfo.lat},#{station[1].to_f.round(1)}\r\n"
+        station_info = StationInfo.find_by_redis station[0]
+        unless station_info.nil?
+          if station_info.lon.present? and station_info.lat.present?
+            file.puts "#{station_info.lon},#{station_info.lat},#{station[1].to_f.round(1)}\r\n"
           end
         end
       end
       file.close
+      stations.clear
     end
   end
 
