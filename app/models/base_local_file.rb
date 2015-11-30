@@ -72,7 +72,7 @@ class BaseLocalFile
         parse file
         FileUtils.rm(file) if @file_delete
 
-        @process_file_infos << file
+        @process_file_infos << File.basename(file)
         $redis.set @redis_last_report_time_key, report_time_string
       rescue Exception => e
         exception[file] = e
