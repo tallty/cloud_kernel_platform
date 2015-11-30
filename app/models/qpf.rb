@@ -64,8 +64,10 @@ class QPF
     end
 
     def after_process
-      @process_result_info["end_time"] = DateTime.now.to_f
-      push_task_log @process_result_info.to_json
+      if @process_file_infos.present?
+        @process_result_info["end_time"] = DateTime.now.to_f
+        push_task_log @process_result_info.to_json
+      end
     end
 
     private
