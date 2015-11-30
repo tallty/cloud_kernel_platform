@@ -79,8 +79,6 @@ class BaseLocalFile
         next
       end
     end
-    p "-----------------------------------------------------"
-    p @process_file_infos
     @process_result_info["exception"] = exception.to_json
     @process_result_info["file_list"] = @process_file_infos.to_json
     @file_list.clear
