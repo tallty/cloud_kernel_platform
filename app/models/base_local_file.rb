@@ -52,6 +52,7 @@ class BaseLocalFile
 
   # 遍历目录
   def process
+    p "-----------------------------------------------"
     time_string = $redis.get(@redis_last_report_time_key)
     today = Time.now.to_date
     day_to_fetch = @day_to_fetch || 1
