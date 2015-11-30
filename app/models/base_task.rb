@@ -26,6 +26,6 @@ class BaseTask
     connect! unless @connection
     @connection.chdir @remote_dir
     @connection.putbinaryfile(file_name)
-    @connection.close!
+    close!
   end
 end
