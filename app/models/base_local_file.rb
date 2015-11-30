@@ -5,6 +5,7 @@ class BaseLocalFile
       instance_variable_set "@#{k}", v
     end
     @file_list = []
+    @process_file_infos = []
     @process_result_info = { :start_time => Time.now.to_f }
   end
 
@@ -70,6 +71,9 @@ class BaseLocalFile
         end
         parse file
         FileUtils.rm(file) if @file_delete
+
+        @process_file_infos << file
+        p @process_file_infos
         $redis.set @redis_last_report_time_key, report_time_string
       rescue Exception => e
         exception[file] = e
