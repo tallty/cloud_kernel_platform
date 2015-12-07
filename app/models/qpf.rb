@@ -3,7 +3,6 @@ class QPF
   def process
     p "#{Time.now.strftime('%Y-%m-%d %H:%M')}: process qpf task..."
     QpfProcess.new.process
-    
     QpfJsonProcess.new.process
   end
 
@@ -55,7 +54,7 @@ class QPF
           end
         end
       end
-      file_index = file.scan(/\.[^\.]+$/)[0]
+      file_index = file.scan(/[^\.]+$/)[0]
       $redis.hset "qpf_all_json", file_index, datas.to_json
       datas.clear
     end

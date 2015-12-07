@@ -18,7 +18,7 @@ class BaseLocalFile
   end
 
   def get_report_time_string filename
-    puts "get_report_time_string method should be implement correctly"  
+    puts "get_report_time_string method should be implement correctly"
   end
 
   def parse local_file
@@ -40,7 +40,6 @@ class BaseLocalFile
       if matcher.present?
         report_time_string = Time.parse(get_report_time_string file)
         if report_time_string > @last_report_time
-          p "#{report_time_string}"
           @file_list << [report_time_string, file]
         end
       end
@@ -58,7 +57,7 @@ class BaseLocalFile
     day_to_fetch = @day_to_fetch || 1
     last_day_string = to_date_string(today - day_to_fetch)
 
-    @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string) 
+    @last_report_time = time_string.blank? ? Time.parse(last_day_string) : Time.parse(time_string)
     self.traverse_folder @resource_folder
 
     exception = {}
@@ -83,7 +82,7 @@ class BaseLocalFile
     @process_result_info["exception"] = exception.to_json
     @process_result_info["file_list"] = @process_file_infos.to_json
     @file_list.clear
-    
+
     after_process if respond_to?(:after_process, true)
   end
 
