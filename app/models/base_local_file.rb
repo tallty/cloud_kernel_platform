@@ -70,8 +70,6 @@ class BaseLocalFile
           FileUtils.makedirs(backup_dir) unless File.exist? backup_dir
           FileUtils.cp("#{file}", backup_dir)
         end
-        p "------------------------process file-------------------------"
-        p "#{file}"
         parse file
         FileUtils.rm(file) if @file_delete
 

@@ -3,8 +3,63 @@ class QPF
   def process
     p "#{Time.now.strftime('%Y-%m-%d %H:%M')}: process qpf task..."
     QpfProcess.new.process
+    
+    QpfJsonProcess.new.process
   end
 
+  class QpfJsonProcess < BaseLocalFile
+    def initialize
+      super
+      @redis_last_report_time_key = "qpf_json_last_report_time"
+    end
+
+    def file_format
+      ".*.(000|006|012|018|024|030|036|042|048|054|060|066|072|078|084|090)"
+    end
+
+    def get_report_time_string file_name
+      "20#{file_name.split(/\.|\//)[-2]}"
+    end
+
+    def parse file
+      line_count = 0
+      origin_lon = 0
+      origin_lat = 0
+      base_origin_lon = 0
+      base_origin_lat = 0
+      datas = []
+      File.foreach(file) do |line|
+        line_count += 1
+        contents = line.split(' ')
+        if line_count < 3
+          if line_count == 2
+            origin_lon = contents[7].to_f
+            origin_lat = contents[9].to_f
+            base_origin_lon = origin_lon
+            base_origin_lat = origin_lat
+          end
+        else
+          contents.each do |content|
+            if (origin_lon < 122 and origin_lon > 121) and (origin_lat < 32 and origin_lat > 30)
+              datas << {
+                jd: origin_lon.round(2),
+                wd: origin_lat.round(2),
+                data: content.to_f.round(1)
+              }
+            end
+            origin_lon += 0.01
+          end
+          if (line_count - 2) % 44 == 0
+            origin_lat += 0.01
+            origin_lon = base_origin_lon
+          end
+        end
+      end
+      file_index = file.scan(/\.[^\.]+$/)[0]
+      $redis.hset "qpf_all_json", file_index, datas.to_json
+      datas.clear
+    end
+  end
 
   class QpfProcess < BaseLocalFile
     def initialize
@@ -40,12 +95,14 @@ class QPF
           (1..contents.size).each {|i| exchange_content << "#{contents[i]} " }
           exchange_content << "\r\n"
           dest_file.write(exchange_content)
-          $redis.hset "qpf_info", "origin_lon", contents[7]
-          $redis.hset "qpf_info", "term_lon", contents[8]
-          $redis.hset "qpf_info", "origin_lat", contents[9]
-          $redis.hset "qpf_info", "term_lat", contents[10]
-          $redis.hset "qpf_info", "lon_count", contents[11]
-          $redis.hset "qpf_info", "lat_count", contents[12]
+          $redis.multi do
+            $redis.hset "qpf_info", "origin_lon", contents[7]
+            $redis.hset "qpf_info", "term_lon", contents[8]
+            $redis.hset "qpf_info", "origin_lat", contents[9]
+            $redis.hset "qpf_info", "term_lat", contents[10]
+            $redis.hset "qpf_info", "lon_count", contents[11]
+            $redis.hset "qpf_info", "lat_count", contents[12]
+          end
         elsif type == :data
           dest_file.write(line)
           arr << contents
