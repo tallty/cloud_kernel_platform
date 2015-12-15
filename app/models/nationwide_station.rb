@@ -111,7 +111,7 @@ class NationwideStation < ActiveRecord::Base
         faraday.request  :url_encoded
         faraday.adapter  Faraday.default_adapter
       end
-
+      log.warn info
       # 提交任务处理情况
       response = conn.post "http://mcu.buoyantec.com/task_logs/fetch", {task_log: { task_identifier: "vysJxTkG", process_result: @process_result_info } }
     end
