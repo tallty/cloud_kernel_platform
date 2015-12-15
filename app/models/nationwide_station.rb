@@ -102,7 +102,7 @@ class NationwideStation < ActiveRecord::Base
       begin
         push_task_log @process_result_info.to_json
       rescue Exception => e
-        logger.warn e.to_json
+        Rails.logger.warn e.to_json
       end
     end
 
@@ -111,7 +111,7 @@ class NationwideStation < ActiveRecord::Base
         faraday.request  :url_encoded
         faraday.adapter  Faraday.default_adapter
       end
-      log.warn info
+      Rails.logger.warn info
       # 提交任务处理情况
       response = conn.post "http://mcu.buoyantec.com/task_logs/fetch", {task_log: { task_identifier: "vysJxTkG", process_result: @process_result_info } }
     end
