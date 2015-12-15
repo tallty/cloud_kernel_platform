@@ -66,7 +66,7 @@ class NationwideStation < ActiveRecord::Base
       format_date = report_time.strftime("%Y年%m月%d日 %H时")
 
       write_data_to_excel(datas, "#{format_date} 全国自动站逐小时温度", "hour_tmepe", "#{report_time.strftime('%Y%m%d%H%M')}.xlsx")
-
+      @process_result_info["exception"] = ""
       @process_result_info["file_list"] = {:data => ds.size, :success => count}.to_json
 
       @process_result_info["end_time"] = DateTime.now.to_f
