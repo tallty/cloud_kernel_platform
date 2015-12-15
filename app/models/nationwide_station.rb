@@ -102,6 +102,7 @@ class NationwideStation < ActiveRecord::Base
       begin
         push_task_log @process_result_info.to_json
       rescue Exception => e
+        logger.warn e.to_json
       end
     end
 
