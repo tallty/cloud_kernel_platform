@@ -70,7 +70,8 @@ class NationwideStation < ActiveRecord::Base
       @process_result_info["file_list"] = {:data => ds.size, :success => count}.to_json
 
       @process_result_info["end_time"] = DateTime.now.to_f
-
+      ds.clear
+      datas.clear
       after_process
     end
 
@@ -113,7 +114,7 @@ class NationwideStation < ActiveRecord::Base
       end
       Rails.logger.warn info
       # 提交任务处理情况
-      response = conn.post "http://mcu.buoyantec.com/task_logs/fetch", {task_log: { task_identifier: "vysJxTkG", process_result: @process_result_info } }
+      response = conn.post "http://mcu.buoyantec.com/task_logs/fetch", {task_log: { task_identifier: "vysJxTkG", process_result: info } }
     end
 
     # 数据写入excel
