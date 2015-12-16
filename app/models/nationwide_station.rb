@@ -63,9 +63,7 @@ class NationwideStation < ActiveRecord::Base
         end
       end
 
-      format_date = report_time.strftime("%Y年%m月%d日 %H时")
-
-      write_data_to_excel(datas, "#{format_date} 全国自动站逐小时温度", "hour_tmepe", "#{report_time.strftime('%Y%m%d%H%M')}.xlsx")
+      write_data_to_excel(datas, report_time, "hour_tmepe", "#{report_time.strftime('%y%m%d%H')}.xlsx")
       @process_result_info["exception"] = ""
       @process_result_info["file_list"] = {:data => ds.size, :success => count}.to_json
 
@@ -118,11 +116,12 @@ class NationwideStation < ActiveRecord::Base
     end
 
     # 数据写入excel
-    def write_data_to_excel(datas, type, dir, filename)
-      datetime = Time.now.strftime('%y%m%d%')
+    def write_data_to_excel(datas, time, dir, filename)
+      format_date = time.strftime("%Y年%m月%d日 %H时")
+      datetime = time.strftime('%y%m%d%%H')
       Axlsx::Package.new do |p|
         p.workbook.add_worksheet(:name => "#{datetime}") do |sheet|
-          sheet.add_row ["#{type}"]
+          sheet.add_row ["#{format_date} 全国自动站逐小时温度"]
           sheet.merge_cells("A1:D1")
 
           datas.map do |e, v|
