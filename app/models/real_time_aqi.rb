@@ -15,7 +15,7 @@
 
 class RealTimeAqi < ActiveRecord::Base
   # 上海空气质量实况
-  
+
   def self.process
     RealTimeAqiProcess.new.process
   end
@@ -33,17 +33,17 @@ class RealTimeAqi < ActiveRecord::Base
 
   class RealTimeAqiProcess
     WEB_SITE = "http://www.semc.com.cn/home/index.aspx"
-    
+
     def process
       @redis_key = "real_time_aqi_report"
       content = get_resource_html
-      
+
       result = analysis content
-      
+
       time_str = result[1].gsub(/[[:blank:]]/, '')
-      
+
       date_time = Time.strptime(time_str, "%Y年%m月%d日%H时").to_time
-      item = RealTimeAqi.find_or_create_by datetime: date_time + 8.hour
+      item = RealTimeAqi.find_or_create_by datetime: date_time
       item.aqi = result[3].to_i
       item.level = result[4]
       item.pripoll = result[5]
