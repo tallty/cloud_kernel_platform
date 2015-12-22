@@ -118,7 +118,7 @@ class NationwideStation < ActiveRecord::Base
     # 数据写入excel
     def write_data_to_excel(datas, time, dir, filename)
       format_date = time.strftime("%Y年%m月%d日 %H时")
-      datetime = time.strftime('%y%m%d%%H')
+      datetime = time.strftime('%y%m%d%H')
       Axlsx::Package.new do |p|
         p.workbook.add_worksheet(:name => "#{datetime}") do |sheet|
           sheet.add_row ["#{format_date} 全国自动站逐小时温度"]
