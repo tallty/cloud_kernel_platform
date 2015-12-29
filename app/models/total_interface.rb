@@ -24,12 +24,12 @@ class TotalInterface
     keys.each do |key|
       begin
         interface_time = Time.parse(key.split('_')[-1])
-        if interface_time < Time.now - 1.hour
+        # if interface_time < Time.now - 1.hour
           pattern = /total_(.{20})_(.{8})_\d{10}/.match(key)
           @push_message_data << {"datetime" => interface_time, "appid" => pattern[1], "interface_name" => pattern[2], "interface_count" => $redis.get(key)}
           # $redis.del key
           del_key key
-        end
+        # end
       rescue
         next
       end
