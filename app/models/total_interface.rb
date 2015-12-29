@@ -8,10 +8,14 @@ class TotalInterface
     keys = $redis.keys("total_*")
     now_date = Date.today
     keys.each do |key|
-      key_time_str = key.split('_')[-1]
-      time = Time.parse(key_time_str)
-      $redis.del(key) if time.to_date < now_date
+      del_key key
     end
+  end
+
+  def del_key(key)
+    key_time_str = key.split('_')[-1]
+    time = Time.parse(key_time_str)
+    $redis.del(key) if time.to_date < now_date
   end
 
   def process
@@ -24,6 +28,7 @@ class TotalInterface
           pattern = /total_(.{20})_(.{8})_\d{10}/.match(key)
           @push_message_data << {"datetime" => interface_time, "appid" => pattern[1], "interface_name" => pattern[2], "interface_count" => $redis.get(key)}
           # $redis.del key
+          del_key key
         end
       rescue
         next
