@@ -34,6 +34,7 @@ class TotalInterface
         next
       end
     end
+    push_message
   end
 
   def push_message
