@@ -32,7 +32,7 @@ class CountryRealAqi < ActiveRecord::Base
 
   def as_json(options=nil)
     {
-      datetime: datetime.strftime("%Y-%m-%d %H"),
+      datetime: (datetime - 8.hour).strftime("%Y-%m-%d %H"),
       area: area,
       position_name: position_name,
       primary_pollutant: primary_pollutant,
@@ -68,9 +68,9 @@ class CountryRealAqi < ActiveRecord::Base
       response = conn.get DATA_URL, { token: Settings.CountryRealAqi.token }
 
       content = MultiJson.load response.body
-      
+
       return if content.class.to_s.eql?("Hash")
-        
+
       @redis_time = Time.now.strftime('%Y%m%d%H')
       last_report_time = $redis.get("country_real_aqis_last_time")
       content.each do |station_hash|
