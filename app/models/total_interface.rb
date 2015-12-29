@@ -2,11 +2,11 @@ class TotalInterface
 
   def initialize
     @push_message_data = []
+    @now_date = Date.today
   end
 
   def clear
     keys = $redis.keys("total_*")
-    now_date = Date.today
     keys.each do |key|
       del_key key
     end
@@ -15,7 +15,7 @@ class TotalInterface
   def del_key(key)
     key_time_str = key.split('_')[-1]
     time = Time.parse(key_time_str)
-    $redis.del(key) if time.to_date < now_date
+    $redis.del(key) if time.to_date < @now_date
   end
 
   def process
