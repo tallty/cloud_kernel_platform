@@ -60,7 +60,7 @@ every 1.hours do
   runner "HealthWeather.new.process"
 end
 
-every 1.hours, :at => 5 do
+every 15.minutes do
   runner "TotalInterface.new.process"
 end
 
