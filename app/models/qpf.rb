@@ -21,7 +21,7 @@ class QPF
     end
 
     def parse file
-      p "process file: #{file}"
+      # p "process file: #{file}"
       line_count = 0
       origin_lon = 0
       origin_lat = 0
@@ -33,14 +33,15 @@ class QPF
         contents = line.split(' ')
         if line_count < 3
           if line_count == 2
+            p "contents: #{contents}"
             origin_lon = contents[7].to_f
             origin_lat = contents[9].to_f
             base_origin_lon = origin_lon
             base_origin_lat = origin_lat
           end
         else
-          p "origin_lat: #{origin_lat}"
-          p "origin_lon: #{origin_lon}"
+          # p "origin_lat: #{origin_lat}"
+          # p "origin_lon: #{origin_lon}"
           contents.each do |content|
             if (origin_lon < 122 and origin_lon > 121) and (origin_lat < 32 and origin_lat > 30)
               datas << {
@@ -58,9 +59,9 @@ class QPF
         end
       end
       file_index = file.scan(/[^\.]+$/)[0]
-      p "datas size is: #{datas.size}"
+      # p "datas size is: #{datas.size}"
       $redis_qpf.hset "qpf_all_json", file_index, datas.to_json
-      # datas.clear
+      datas.clear
     end
   end
 
