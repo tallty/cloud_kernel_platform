@@ -55,6 +55,7 @@ class QPF
         end
       end
       file_index = file.scan(/[^\.]+$/)[0]
+      p "datas size is: datas.size"
       $redis_qpf.hset "qpf_all_json", file_index, datas.to_json
       # datas.clear
     end
