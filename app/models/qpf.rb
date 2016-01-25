@@ -39,6 +39,8 @@ class QPF
             base_origin_lat = origin_lat
           end
         else
+          p "origin_lat: #{origin_lat}"
+          p "origin_lon: #{origin_lon}"
           contents.each do |content|
             if (origin_lon < 122 and origin_lon > 121) and (origin_lat < 32 and origin_lat > 30)
               datas << {
