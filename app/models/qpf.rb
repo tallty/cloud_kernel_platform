@@ -21,6 +21,7 @@ class QPF
     end
 
     def parse file
+      p "process file: #{file}"
       line_count = 0
       origin_lon = 0
       origin_lat = 0
@@ -55,7 +56,7 @@ class QPF
         end
       end
       file_index = file.scan(/[^\.]+$/)[0]
-      p "datas size is: datas.size"
+      p "datas size is: #{datas.size}"
       $redis_qpf.hset "qpf_all_json", file_index, datas.to_json
       # datas.clear
     end
