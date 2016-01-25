@@ -56,7 +56,7 @@ class QPF
       end
       file_index = file.scan(/[^\.]+$/)[0]
       $redis_qpf.hset "qpf_all_json", file_index, datas.to_json
-      datas.clear
+      # datas.clear
     end
   end
 
