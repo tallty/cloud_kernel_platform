@@ -33,15 +33,13 @@ class QPF
         contents = line.split(' ')
         if line_count < 3
           if line_count == 2
-            p "contents: #{contents}"
-            origin_lon = contents[7].to_f
-            origin_lat = contents[9].to_f
+            # p "contents: #{contents}"
+            origin_lon = contents[8].to_f
+            origin_lat = contents[10].to_f
             base_origin_lon = origin_lon
             base_origin_lat = origin_lat
           end
         else
-          # p "origin_lat: #{origin_lat}"
-          # p "origin_lon: #{origin_lon}"
           contents.each do |content|
             if (origin_lon < 122 and origin_lon > 121) and (origin_lat < 32 and origin_lat > 30)
               datas << {
