@@ -1,5 +1,5 @@
 class GridLive
-  
+
   def self.process
     Grid500Process.new.process
   end
@@ -25,6 +25,7 @@ class GridLive
     end
 
     def parse file_name
+      p "analy grid live 500M data: #{file_name}"
       file_info = file_name.split(/\/|\_|\./)
       file_type = file_info[-3].gsub("10m", "")
       file_date_time = file_info[-2]
@@ -37,7 +38,7 @@ class GridLive
 
     def parse_station_file(file_name, file_type, time)
       line_count = 0
-      File.foreach(file_name, encoding: @file_encoding) do |line| 
+      File.foreach(file_name, encoding: @file_encoding) do |line|
         line = line.encode "utf-8"
         line_contents = line.chomp.split(',')
         if station_line_type(line_contents) == :file_data
@@ -110,7 +111,7 @@ class GridLive
       keys.each do |item|
         $redis.del item unless "#{@redis_key}_#{last_redis_key}".eql?(item)
       end
-      
+
       @process_result_info["end_time"] = DateTime.now.to_f
       push_task_log @process_result_info.to_json
     end
