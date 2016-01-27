@@ -24,7 +24,7 @@ every 1.minutes do
   runner "GridLive.process"
 end
 
-every 2.minutes do
+every 3.minutes do
   runner "QPF.new.process"
 end
 

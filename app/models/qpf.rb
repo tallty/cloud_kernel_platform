@@ -79,6 +79,7 @@ class QPF
     end
 
     def parse file
+      p "process qpf file: #{file}"
       file_tag = file.split(/\.|\//)
       $redis.hset "qpf_info", "origin_time", Time.parse("20#{file_tag[-2]}") + 8.hour
       file_index = file_tag[-1].to_i
