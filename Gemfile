@@ -29,7 +29,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'whenever', :require => false
 
 # Use Unicorn as the app server
-gem 'unicorn'
+# gem 'unicorn'
 
 gem 'settingslogic'
 gem 'multi_json'
@@ -59,4 +59,3 @@ group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end
-
