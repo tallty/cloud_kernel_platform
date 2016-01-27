@@ -25,7 +25,9 @@ every 1.minutes do
 end
 
 every 3.minutes do
-  runner "QPF.new.process"
+  # runner "QPF.new.process"
+  runner "QPF::QpfProcess.new.process"
+  runner "QPF::QpfJsonProcess.new.process"
 end
 
 every 5.minutes do
