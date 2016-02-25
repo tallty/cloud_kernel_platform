@@ -25,9 +25,6 @@ class CommunityWarning < ActiveRecord::Base
   class CommunityWarningProcess < BaseLocalFile
     def initialize
       super
-      # p @resource_folder
-      @redis_last_report_time_key = "community_warning_last_report_time"
-      $redis.del @redis_last_report_time_key
     end
 
     def file_format
@@ -35,32 +32,52 @@ class CommunityWarning < ActiveRecord::Base
     end
 
     def get_report_time_string file_name
-      # report_time_string = filename.split(/\/|\./)[-2]
       File.ctime(file_name).strftime("%Y-%m-%d %H:%M:%S")
     end
 
     def parse local_file
-      # p "process community warning ---> #{local_file}"
-      file_content = ""
-      File.foreach(local_file, encoding: 'gbk') do |line|
+      File.foreach(local_file, encoding: 'gb2312') do |line|
         line = line.encode('utf-8')
-        file_content << line
-      end
-      # p file_content
-      contents = /上海中心气象台(.*?)(发布|解除|撤销|更新)(.*?)(雷电|暴雨|暴雨内涝|暴雨积涝)(风险)?(I|II|III|IV)级预警信号：(.*)/.match(file_content)
-      # p contents
-      if contents.present?
-        units = contents[3].split('、')
-        units.each do |unit|
-          datetime = Time.strptime(contents[1],"%Y年%m月%d日%H时%M分").to_time + 8.hour
-          warning = CommunityWarning.find_or_create_by(publish_time: datetime, unit: unit, warning_type: contents[4])
-          warning.status = contents[2]
-          warning.level = contents[6]
-          warning.content = contents[7]
-          warning.save
-
-          $redis.hset("warning_communities", "#{warning.unit}_#{warning.warning_type}", warning.to_json)
+        contents = line.split(':')
+        date_time_string = line[3, 12]
+        date_time = Time.parse(date_time_string).strftime("%Y-%m-%d %H:%M")
+        status = warning_status line[15, 1]
+        target = line[16, 5]
+        type = line[21, 4]
+        _t = warning_types type
+        if contents[0].include?('>')
+          level = line[27, 1]
+          content = line[29, line.size - 28]
+        else
+          level = line[25, 1]
+          content = line[26, line.size - 26]
         end
+        warning = CommunityWarning.find_or_create_by(publish_time: date_time, unit: target, warning_type: _t, level: level)
+        warning.status = status
+        warning.content = content
+        warning.save
+
+        $redis.hset("warning_communities", "#{warning.unit}_#{warning.warning_type}", warning.to_json)
+      end
+    end
+
+    def warning_types code
+      case code
+      when 'aaaa'
+        '雷电'
+      when 'bbbb'
+        '暴雨内涝'
+      end
+    end
+
+    def warning_status code
+      case code
+      when 'g'
+        '更新'
+      when 'f'
+        '发布'
+      when 'j'
+        '解除'
       end
     end
 
@@ -91,7 +108,7 @@ class CommunityWarning < ActiveRecord::Base
           $redis.hdel("warning_community", e)
         end
       end
-      
+
     end
   end
 end
