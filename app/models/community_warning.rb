@@ -99,7 +99,7 @@ class CommunityWarning < ActiveRecord::Base
   end
 
   def clear_cache
-    warnings = $redis.hgetall "warning_community"
+    warnings = $redis.hgetall "warning_communities"
     clear_time = Time.now - 3.hours
     warnings.map do |e, item|
       item = MultiJson.load item
