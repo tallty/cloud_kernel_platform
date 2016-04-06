@@ -62,7 +62,7 @@ every 1.hours do
   runner "HealthWeather.new.process"
 end
 
-every 15.minutes do
+every 1.minutes do
   runner "TotalInterface.new.process"
 end
 
