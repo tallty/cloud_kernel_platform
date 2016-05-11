@@ -18,11 +18,13 @@
 #
 
 class StableStation < ActiveRecord::Base
+  attr_accessor :site_code
 
   def as_json(options=nil)
     {
       datetime: datetime.strftime("%Y-%m-%d %H:%M"),
       site_name: site_name,
+      site_code: site_code,
       tempe: tempe,
       rain: rain,
       humi: humi,
@@ -65,6 +67,7 @@ class StableStation < ActiveRecord::Base
         
         item = StableStation.proxy({:data_time => line_content[0]}).find_or_create_by datetime: datetime, site_number: line_content[1]
         item.site_name = line_content[2]
+        item.site_code = line_content[1]
         item.tempe = line_content[3].eql?('////') ? 99999 : line_content[3].to_f
         item.rain = line_content[4].eql?('////') ? 99999 : line_content[4].to_f
         item.humi = line_content[5].eql?('////') ? 99999 : line_content[5].to_f
