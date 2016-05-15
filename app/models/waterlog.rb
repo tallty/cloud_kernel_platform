@@ -19,7 +19,7 @@ class Waterlog < ActiveRecord::Base
   
   def as_json(options=nil)
     {
-      datetime: datetime.strftime("%F %H:%M:%S"),
+      datetime: datetime.utc.strftime("%F %H:%M:%S"),
       site_name: site_name,
       out_water: out_water,
       starsky: starsky
