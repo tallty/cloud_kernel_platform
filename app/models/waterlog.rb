@@ -58,8 +58,8 @@ class Waterlog < ActiveRecord::Base
           next
         end
         value_hash = MultiJson.load(value)
-        p value_hash
-        if item.datetime > DateTime.parse(value_hash['datetime'])
+        
+        if (item.datetime > DateTime.parse(value_hash['datetime'])) and item.datetime.minute == 0
           $redis.lpush "#{@redis_list_key}/#{item.site_name}", item.to_json
         end
         $redis.ltrim "#{@redis_list_key}/#{item.site_name}", 0, 75
