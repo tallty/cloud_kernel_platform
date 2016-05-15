@@ -30,6 +30,10 @@ every 3.minutes do
   runner "QPF::QpfJsonProcess.new.process"
 end
 
+every 5.minutes do 
+  runner "Waterlog.new.process"
+end
+
 every 5.minutes do
   runner "RealTimeAqi.process"
 end

@@ -79,7 +79,7 @@ class Waterlog < ActiveRecord::Base
 
   def self.proxy(params={})
     year = params[:year] || params['year']
-    sign = year ? "watherlogs_#{year}" : "watherlogs"
+    sign = year ? "waterlogs_#{year}" : "waterlogs"
     create_table(sign)
     self.table_name = sign
     self.primary_keys = :datetime, :site_name
