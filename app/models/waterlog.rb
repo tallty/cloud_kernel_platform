@@ -2,8 +2,8 @@
 #
 # Table name: waterlogs
 #
-#  datetime   :datetime
-#  site_name  :string(255)
+#  datetime   :datetime         primary key
+#  site_name  :string(255)      primary key
 #  area       :string(255)
 #  out_water  :float(24)
 #  starsky    :float(24)
