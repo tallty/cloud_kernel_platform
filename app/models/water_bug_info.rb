@@ -40,6 +40,7 @@ class WaterBugInfo < ActiveRecord::Base
       result = baidu_api info.lon, info.lat
       baidu_location = result['result'][0]
       info.update_attributes(baidu_lon: baidu_location['x'], baidu_lat: baidu_location['y'])
+      $redis.hset "water_bug_infos", item.name, item.to_json
     end
   end
 
@@ -48,7 +49,7 @@ class WaterBugInfo < ActiveRecord::Base
   def baidu_api lon, lat
     conn = Faraday.new(:url => 'http://api.map.baidu.com') do |faraday|
       faraday.request  :url_encoded
-      # faraday.response :logger
+      faraday.response :logger
       faraday.adapter  Faraday.default_adapter
     end
 
