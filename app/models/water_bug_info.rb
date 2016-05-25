@@ -31,7 +31,8 @@ class WaterBugInfo < ActiveRecord::Base
       item.lon = contents[-2].to_f
       item.lat = contents[-1].to_f
       item.save
-      $redis.hset "water_bug_infos", item.name, item.to_json
+      $location_redis.hset "water_bug_infos", item.name, item.to_json
+      $location_redis.geoadd("water_bug_location", item.lon, item.lat, item.to_json)
     end
   end
 
@@ -40,7 +41,7 @@ class WaterBugInfo < ActiveRecord::Base
       result = baidu_api info.lon, info.lat
       baidu_location = result['result'][0]
       info.update_attributes(baidu_lon: baidu_location['x'], baidu_lat: baidu_location['y'])
-      $redis.hset "water_bug_infos", info.name, info.to_json
+      $location_redis.hset "water_bug_infos", info.name, info.to_json
     end
   end
 
