@@ -42,11 +42,11 @@ class Typhoon < ActiveRecord::Base
 
   def self.process(folder=nil)
     puts "#{DateTime.now}: do Typhoon process..."
-    TyphoonProcess.new.process
+    # TyphoonProcess.new.process
     
-    # folder = "../typhoon"
+    folder = "../typhoon"
     
-    # get_file_list folder
+    get_file_list folder
     nil
   end
   
