@@ -43,7 +43,83 @@ class Typhoon < ActiveRecord::Base
 
   def self.process
     puts "#{DateTime.now}: do Typhoon process..."
-    TyphoonProcess.new.process
+    # TyphoonProcess.new.process
+    
+    folder = "../../typhoon"
+    
+    get_file_list folder
+    nil
+  end
+  
+
+  def self.analyzed_file typhoon_file
+    
+    file_name = File.basename typhoon_file
+    file_name_contents = file_name.split('_')
+    
+    location = file_name_contents[0]
+    typhoon_id = file_name_contents[-1]
+    return if file_name_contents.size != 2 or typhoon_id.size != 4 or typhoon_id.to_i.to_s != typhoon_id
+    typhoon = Typhoon.find_or_create_by name: typhoon_id, location: location
+    File.foreach(typhoon_file, encoding: 'gbk') do |line|
+      line = line.encode 'utf-8'
+      line = line.strip
+      line_contents = line.split(' ')
+      _type = line_type line_contents.size
+      
+      if _type == :typhoon_title
+        _matcher = /(\(+)(.*?)(\)+)/.match(line_contents[-1])
+        return if _matcher.blank?
+        typhoon.cname = _matcher[2]
+      elsif _type == :typhoon_info
+        _matcher = /(.*?)\(+/.match(line_contents[0])
+        typhoon.ename = _matcher[1]
+        typhoon.year = "20#{line_contents[1][0,2]}"
+        typhoon.save
+      elsif _type == :typhoon_content
+        report_time = "20#{line_contents[0, 3].join('-')}"
+        typhoon_item = typhoon.typhoon_items.find_or_create_by report_time: report_time, effective: line_contents[4], location: typhoon.location
+        typhoon_item.lon          = line_contents[5].to_f
+        typhoon_item.lat          = line_contents[6].to_f
+        typhoon_item.max_wind     = line_contents[7].to_f
+        typhoon_item.min_pressure = line_contents[8].to_f
+        typhoon_item.seven_radius = line_contents[9].to_f
+        typhoon_item.ten_radius   = line_contents[10].to_f
+        typhoon_item.direct       = line_contents[11].to_f
+        typhoon_item.speed        = line_contents[12].to_f
+        typhoon_item.save
+      else
+        return
+      end
+          
+    end
+    nil
+  end
+
+  def self.line_type line_contents
+    _type = :unuse
+    if line_contents == 3
+      _type = :typhoon_title
+    elsif line_contents == 4
+      _type = :typhoon_info
+    elsif line_contents == 13
+      _type = :typhoon_content
+    else
+      _type = :unuse
+    end
+    _type
+  end
+
+  def self.get_file_list f
+    Dir.entries(f).each do |sub|         
+      if sub != '.' && sub != '..'  
+        if File.directory?("#{f}/#{sub}")  
+          get_file_list("#{f}/#{sub}")  
+        else
+          analyzed_file "#{f}/#{sub}"
+        end  
+      end  
+    end
   end
 
   def write_typhoon_to_cache
@@ -93,51 +169,47 @@ class Typhoon < ActiveRecord::Base
     end
 
     def parse local_file
-      filename         = File.basename local_file
-      @is_process      = false
+      file_name = File.basename typhoon_file
+      file_name_contents = file_name.split('_')
       
-      cname            = ""
-      ename            = ""
-      last_report_time = nil
-      index            = 0
-      typhoon          = nil
-
+      location = file_name_contents[0]
+      typhoon_id = file_name_contents[-1]
+      return if file_name_contents.size != 2 or typhoon_id.size != 4 or typhoon_id.to_i.to_s != typhoon_id
+      typhoon = Typhoon.find_or_create_by name: typhoon_id, location: location
       File.foreach(local_file, encoding: @file_encoding) do |line|
-        line     = line.encode 'utf-8'
-        line     = line.strip
-        contents = line.split(" ")
-        if index == 0
-          cname = contents[2].split(/\(|\)/)[1]
-        elsif index == 1
-          name     = contents[1]
-          location = contents[2]
-          typhoon  = Typhoon.find_or_create_by name: name, location: location
-          ename    = contents[0].split(/\(|\)/)[0]
-        else
-          year             = 2000 + contents[0].to_i
-          month            =  contents[1].to_i
-          day              = contents[2].to_i
-          hour             = contents[3].to_i
-          report_time      = Time.zone.local(year, month, day, hour, 0, 0).to_datetime
-          last_report_time = report_time
-          effective        = contents[4]
-          typhoon_item     = typhoon.typhoon_items.find_by(report_time: report_time, effective: effective)
-          if typhoon_item.blank?
-            @is_process = true
-            typhoon_item = typhoon.typhoon_items.build(report_time: report_time, effective: effective)
-            typhoon_item.lon          = contents[5].to_f
-            typhoon_item.lat          = contents[6].to_f
-            typhoon_item.max_wind     = contents[7].to_f
-            typhoon_item.min_pressure = contents[8].to_f
-            typhoon_item.seven_radius = contents[9].to_f
-            typhoon_item.ten_radius   = contents[10].to_f
-            typhoon_item.direct       = contents[11].to_f
-            typhoon_item.speed        = contents[12].to_f
-            typhoon_item.save
+        line = line.encode 'utf-8'
+        line = line.strip
+        line_contents = line.split(' ')
+        _type = line_type line_contents.size
+        
+        if _type == :typhoon_title
+          _matcher = /(\(+)(.*?)(\)+)/.match(line_contents[-1])
+          return if _matcher.blank?
+          typhoon.cname = _matcher[2]
+        elsif _type == :typhoon_info
+          _matcher = /(.*?)\(+/.match(line_contents[0])
+          typhoon.ename = _matcher[1]
+          typhoon.year = "20#{line_contents[1][0,2]}"
+          typhoon.save
+        elsif _type == :typhoon_content
+          report_time = "20#{line_contents[0, 3].join('-')}"
+          if line_contents[4].to_i == 0
+            typhoon.lastreporttime = report_time.to_datetime
           end
-          
+          typhoon_item = typhoon.typhoon_items.find_or_create_by report_time: report_time, effective: line_contents[4], location: typhoon.location
+          typhoon_item.lon          = line_contents[5].to_f
+          typhoon_item.lat          = line_contents[6].to_f
+          typhoon_item.max_wind     = line_contents[7].to_f
+          typhoon_item.min_pressure = line_contents[8].to_f
+          typhoon_item.seven_radius = line_contents[9].to_f
+          typhoon_item.ten_radius   = line_contents[10].to_f
+          typhoon_item.direct       = line_contents[11].to_f
+          typhoon_item.speed        = line_contents[12].to_f
+          typhoon_item.save
+        else
+          return
         end
-        index += 1
+            
       end
       
       FileUtils.mv(local_file, '/home/deploy/ftp/weathers/typhoon/')
@@ -156,6 +228,20 @@ class Typhoon < ActiveRecord::Base
         typhoon_list = Typhoon.where(year: [now_year-1, now_year], location: "BCSH").order('last_report_time desc')
         $redis.set "typhoon_list", typhoon_list.map { |t| t.to_json_hash }.to_json
       end
+    end
+
+    def line_type line_contents
+      _type = :unuse
+      if line_contents == 3
+        _type = :typhoon_title
+      elsif line_contents == 4
+        _type = :typhoon_info
+      elsif line_contents == 13
+        _type = :typhoon_content
+      else
+        _type = :unuse
+      end
+      _type
     end
 
     def after_process
