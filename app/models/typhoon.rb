@@ -45,7 +45,7 @@ class Typhoon < ActiveRecord::Base
     puts "#{DateTime.now}: do Typhoon process..."
     # TyphoonProcess.new.process
     
-    folder = "../../typhoon"
+    folder = "../typhoon"
     
     get_file_list folder
     nil
