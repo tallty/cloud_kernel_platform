@@ -54,13 +54,12 @@ class Typhoon < ActiveRecord::Base
 
   def self.analyzed_file typhoon_file
     p "file: #{typhoon_file}"
-    file_name = File.basename typhoon_file
+    file_name = File.basename typhoon_file, '.dat'
     file_name_contents = file_name.split('_')
     
     location = file_name_contents[0]
     typhoon_id = file_name_contents[-1]
-    p "1: #{typhoon_id}"
-    p "2: #{typhoon_id.to_i.to_s}"
+    
     return if file_name_contents.size != 2 or typhoon_id.size != 4 or typhoon_id.to_i.to_s != typhoon_id
     typhoon = Typhoon.find_or_create_by name: typhoon_id, location: location
     p typhoon
@@ -176,7 +175,7 @@ class Typhoon < ActiveRecord::Base
     end
 
     def parse local_file
-      file_name = File.basename typhoon_file
+      file_name = File.basename typhoon_file, '.dat'
       file_name_contents = file_name.split('_')
       
       location = file_name_contents[0]
