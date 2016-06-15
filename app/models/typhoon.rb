@@ -53,7 +53,7 @@ class Typhoon < ActiveRecord::Base
   
 
   def self.analyzed_file typhoon_file
-    
+    p "file: #{typhoon_file}"
     file_name = File.basename typhoon_file
     file_name_contents = file_name.split('_')
     
