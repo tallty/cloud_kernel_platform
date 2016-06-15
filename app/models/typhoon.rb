@@ -81,7 +81,7 @@ class Typhoon < ActiveRecord::Base
       elsif _type == :typhoon_content
         report_time = "20#{line_contents[0, 3].join('-')}"
         if line_contents[4].to_i == 0
-          typhoon.lastreporttime = report_time.to_datetime
+          typhoon.last_report_time = report_time.to_datetime
           typhoon.save
         end
         typhoon_item = typhoon.typhoon_items.find_or_create_by report_time: report_time, effective: line_contents[4], location: typhoon.location
@@ -200,7 +200,7 @@ class Typhoon < ActiveRecord::Base
         elsif _type == :typhoon_content
           report_time = "20#{line_contents[0, 3].join('-')}"
           if line_contents[4].to_i == 0
-            typhoon.lastreporttime = report_time.to_datetime
+            typhoon.last_report_time = report_time.to_datetime
           end
           typhoon_item = typhoon.typhoon_items.find_or_create_by report_time: report_time, effective: line_contents[4], location: typhoon.location
           typhoon_item.lon          = line_contents[5].to_f
