@@ -61,6 +61,7 @@ class Typhoon < ActiveRecord::Base
     typhoon_id = file_name_contents[-1]
     return if file_name_contents.size != 2 or typhoon_id.size != 4 or typhoon_id.to_i.to_s != typhoon_id
     typhoon = Typhoon.find_or_create_by name: typhoon_id, location: location
+    p typhoon
     File.foreach(typhoon_file, encoding: 'gbk') do |line|
       line = line.encode 'utf-8'
       line = line.strip
@@ -78,6 +79,10 @@ class Typhoon < ActiveRecord::Base
         typhoon.save
       elsif _type == :typhoon_content
         report_time = "20#{line_contents[0, 3].join('-')}"
+        if line_contents[4].to_i == 0
+          typhoon.lastreporttime = report_time.to_datetime
+          typhoon.save
+        end
         typhoon_item = typhoon.typhoon_items.find_or_create_by report_time: report_time, effective: line_contents[4], location: typhoon.location
         typhoon_item.lon          = line_contents[5].to_f
         typhoon_item.lat          = line_contents[6].to_f
