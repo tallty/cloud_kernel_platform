@@ -34,26 +34,24 @@ class Typhoon < ActiveRecord::Base
       typhoonid: name,
       enname: ename,
       cnname: cname,
-      datainfo: "",
       reportcenter: location,
       tyear: year.to_s,
-      lastreporttime: last_report_time.strftime('%Y/%m/%d %H:%M:%S')
+      lastreporttime: last_report_time.strftime('%Y-%m-%d %H:%M:%S')
     }
   end
 
-  def self.process
+  def self.process(folder=nil)
     puts "#{DateTime.now}: do Typhoon process..."
-    # TyphoonProcess.new.process
+    TyphoonProcess.new.process
     
-    folder = "../typhoon"
+    # folder = "../typhoon"
     
-    get_file_list folder
+    # get_file_list folder
     nil
   end
   
 
   def self.analyzed_file typhoon_file
-    p "file: #{typhoon_file}"
     file_name = File.basename typhoon_file, '.dat'
     file_name_contents = file_name.split('_')
     
@@ -133,7 +131,7 @@ class Typhoon < ActiveRecord::Base
     typhoons_name = Typhoon.where('year > ?', show_year).distinct(:name).pluck(:name)
     typhoons_name.each do |name|
       typhoon = Typhoon.where(name: name).first
-      $redis.zadd "typhoon_list_json", typhoon.name.to_i, typhoon.to_json_hash.to_json
+      $redis.hset "typhoon_list_json", typhoon.name, typhoon.to_json_hash.to_json
       $redis.hset "typhoon_json_cache", typhoon.name, typhoon.relate_typhoon_items.to_json
     end
     typhoons_name.clear
