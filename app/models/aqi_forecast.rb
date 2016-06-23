@@ -33,9 +33,9 @@ class AqiForecast
     end
 
     def parse local_file
-      report_time_string = local_file.split(/_|\./)[-2]
+      report_time = Time.parse(get_report_time_string local_file)
       aqi = AqiForecast.new
-      aqi.datetime = Time.parse(report_time_string).strftime("%Y年%m月%d日 17时")
+      aqi.datetime = report_time.strftime("%Y年%m月%d日 17时")
       aqi.prompt = ""
 
       items = []
@@ -45,7 +45,7 @@ class AqiForecast
         contents = line.split(" ")
         next if contents.blank?
 
-        if line =~ /今天夜间/ || line =~ /明天上午/ || line =~ /明天下午/
+        if line =~ /^今天夜间/ || line =~ /^明天上午/ || line =~ /^明天下午/ || line =~ /^明天夜间/ || line =~ /^后天白天/
           item = AqiItem.new
           item.period = contents[0]
           item.aqi_value = contents[1]
