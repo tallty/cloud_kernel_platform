@@ -60,7 +60,7 @@ class Typhoon < ActiveRecord::Base
     
     return if file_name_contents.size != 2 or typhoon_id.size != 4 or typhoon_id.to_i.to_s.rjust(4, '0') != typhoon_id
     typhoon = Typhoon.find_or_create_by name: typhoon_id, location: location
-    p typhoon
+    
     File.foreach(typhoon_file, encoding: 'gbk') do |line|
       line = line.encode 'utf-8'
       line = line.strip
@@ -128,7 +128,7 @@ class Typhoon < ActiveRecord::Base
 
   def write_typhoon_to_cache
     show_year = Time.now.year - 2
-    typhoons_name = Typhoon.where('year > ?', show_year).distinct(:name).pluck(:name)
+    typhoons_name = Typhoon.where('year > ?', show_year).order(name: :desc).distinct(:name).pluck(:name)
     typhoons_name.each do |name|
       typhoon = Typhoon.where(name: name).first
       $redis.hset "typhoon_list_json", typhoon.name, typhoon.to_json_hash.to_json
