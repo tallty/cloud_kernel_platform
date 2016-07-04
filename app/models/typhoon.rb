@@ -220,11 +220,11 @@ class Typhoon < ActiveRecord::Base
 
       if @is_process
 
-        typhoon.last_report_time = last_report_time if typhoon.last_report_time.blank? || last_report_time > typhoon.last_report_time
-        typhoon.ename = ename
-        typhoon.cname = cname
-        typhoon.year  = typhoon.last_report_time.try(:year)
-        typhoon.save
+        # typhoon.last_report_time = last_report_time if typhoon.last_report_time.blank? || last_report_time > typhoon.last_report_time
+        # typhoon.ename = ename
+        # typhoon.cname = cname
+        # typhoon.year  = typhoon.last_report_time.try(:year)
+        # typhoon.save
 
         $redis.hset "typhoon_json_cache", typhoon.name, typhoon.relate_typhoon_items.to_json
         $redis.hset "#{@redis_key}_#{typhoon.name}", typhoon.location, typhoon.to_s
