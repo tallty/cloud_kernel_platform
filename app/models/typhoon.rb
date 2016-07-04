@@ -173,6 +173,7 @@ class Typhoon < ActiveRecord::Base
     end
 
     def parse local_file
+      p "typhoon file: #{local_file}"
       file_name = File.basename local_file, '.dat'
       file_name_contents = file_name.split('_')
       
