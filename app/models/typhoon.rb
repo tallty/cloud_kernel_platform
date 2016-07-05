@@ -36,7 +36,7 @@ class Typhoon < ActiveRecord::Base
       cnname: cname,
       reportcenter: location,
       tyear: year.to_s,
-      lastreporttime: last_report_time.strftime('%Y-%m-%d %H:%M:%S')
+      lastreporttime: (last_report_time - 8.hour).strftime('%Y-%m-%d %H:%M:%S')
     }
   end
 
