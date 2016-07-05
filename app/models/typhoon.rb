@@ -63,6 +63,7 @@ class Typhoon < ActiveRecord::Base
     location = file_name_contents[0]
     typhoon_id = file_name_contents[-1]
     
+    p file_name_contents
     return if file_name_contents.size != 2 or typhoon_id.size != 4 or typhoon_id.to_i.to_s.rjust(4, '0') != typhoon_id
     typhoon = Typhoon.find_or_create_by name: typhoon_id, location: location
     
