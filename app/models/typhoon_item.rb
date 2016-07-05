@@ -24,7 +24,7 @@ class TyphoonItem < ActiveRecord::Base
 
   def as_json options=nil
     {
-      report_time: report_time.strftime('%Y%m%d%H'),
+      report_time: (report_time - 8.hour).strftime('%Y%m%d%H'),
       effective: effective,
       lon: lon,
       lat: lat,
