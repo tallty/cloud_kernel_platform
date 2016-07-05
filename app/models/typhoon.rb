@@ -49,6 +49,11 @@ class Typhoon < ActiveRecord::Base
     # get_file_list folder
     nil
   end
+
+  def redo folder
+    
+    get_file_list folder
+  end
   
 
   def self.analyzed_file typhoon_file
@@ -82,7 +87,9 @@ class Typhoon < ActiveRecord::Base
           typhoon.last_report_time = report_time.to_datetime
           typhoon.save
         end
-        typhoon_item = typhoon.typhoon_items.find_or_create_by report_time: report_time, effective: line_contents[4], location: typhoon.location
+        now_item_time = report_time + line_contents[4].to_i.hour
+
+        typhoon_item = typhoon.typhoon_items.find_or_create_by report_time: now_item_time, effective: line_contents[4], location: typhoon.location
         typhoon_item.lon          = line_contents[5].to_f
         typhoon_item.lat          = line_contents[6].to_f
         typhoon_item.max_wind     = line_contents[7].to_f
@@ -200,9 +207,10 @@ class Typhoon < ActiveRecord::Base
           report_time = ("20#{line_contents[0, 3].join('-')}").to_datetime
           if line_contents[4].to_i == 0
             typhoon.last_report_time = report_time
+            typhoon.save
           end
           now_item_time = report_time + line_contents[4].to_i.hour
-          typhoon_item = typhoon.typhoon_items.find_or_create_by report_time: report_time, effective: line_contents[4], location: typhoon.location
+          typhoon_item = typhoon.typhoon_items.find_or_create_by report_time: now_item_time, effective: line_contents[4], location: typhoon.location
           typhoon_item.lon          = line_contents[5].to_f
           typhoon_item.lat          = line_contents[6].to_f
           typhoon_item.max_wind     = line_contents[7].to_f
