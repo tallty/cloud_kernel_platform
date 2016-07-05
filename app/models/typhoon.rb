@@ -82,9 +82,9 @@ class Typhoon < ActiveRecord::Base
         typhoon.year = "20#{line_contents[1][0,2]}"
         typhoon.save
       elsif _type == :typhoon_content
-        report_time = "20#{line_contents[0, 3].join('-')}"
+        report_time = ("20#{line_contents[0, 3].join('-')}").to_datetime
         if line_contents[4].to_i == 0
-          typhoon.last_report_time = report_time.to_datetime
+          typhoon.last_report_time = report_time
           typhoon.save
         end
         now_item_time = report_time + line_contents[4].to_i.hour
