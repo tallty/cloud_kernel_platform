@@ -42,7 +42,7 @@ class TyphoonItem < ActiveRecord::Base
   # id,typhoonid,pathtime,longitude,latitude,hours,centerairpressure,maxwindspeed,moveheading,movespeeding,centersevenradius,centertenradius
   # 30458,1211,2012/8/4 20:00:00,120.9,28.8,72,968,35,0,0,0,0
   def to_s
-    report_time_string = (report_time - 8.hour).strftime('%Y/%m/%d %H:%M:%S')
+    report_time_string = report_time.strftime('%Y/%m/%d %H:%M:%S')
     effective_str = effective == 0 ? "00" : effective.to_s
     "#{id},#{typhoon.name},#{report_time_string},#{lon},#{lat},#{effective_str},#{min_pressure},#{max_wind},#{direct},#{speed},#{seven_radius},#{ten_radius},#{typhoon.location.downcase}"
   end
