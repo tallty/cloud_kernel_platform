@@ -50,7 +50,7 @@ class Typhoon < ActiveRecord::Base
     nil
   end
 
-  def redo folder
+  def self.redo folder
     
     get_file_list folder
   end
