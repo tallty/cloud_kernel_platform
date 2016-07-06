@@ -230,18 +230,19 @@ class Typhoon < ActiveRecord::Base
       FileUtils.mv(local_file, '/home/deploy/ftp/weathers/typhoon/')
 
       if @is_process
-
+        
+        cache_reload
         # typhoon.last_report_time = last_report_time if typhoon.last_report_time.blank? || last_report_time > typhoon.last_report_time
         # typhoon.ename = ename
         # typhoon.cname = cname
         # typhoon.year  = typhoon.last_report_time.try(:year)
         # typhoon.save
 
-        $redis.hset "typhoon_json_cache", typhoon.name, typhoon.relate_typhoon_items.to_json
-        $redis.hset "#{@redis_key}_#{typhoon.name}", typhoon.location, typhoon.to_s
-        now_year     = Time.zone.now.year
-        typhoon_list = Typhoon.where(year: [now_year-1, now_year], location: "BCSH").order('last_report_time desc')
-        $redis.set "typhoon_list", typhoon_list.map { |t| t.to_json_hash }.to_json
+        # $redis.hset "typhoon_json_cache", typhoon.name, typhoon.relate_typhoon_items.to_json
+        # $redis.hset "#{@redis_key}_#{typhoon.name}", typhoon.location, typhoon.to_s
+        # now_year     = Time.zone.now.year
+        # typhoon_list = Typhoon.where(year: [now_year-1, now_year], location: "BCSH").order('last_report_time desc')
+        # $redis.set "typhoon_list", typhoon_list.map { |t| t.to_json_hash }.to_json
       end
     end
 
