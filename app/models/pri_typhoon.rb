@@ -74,7 +74,7 @@ class PriTyphoon < ActiveRecord::Base
       json_result = {
         name: typhoon.serial_number,
         cname: typhoon.cname,
-        ename: typhoo.ename,
+        ename: typhoon.ename,
         last_report_time: last_report_time,
         level: last_real_max_wind,
         real_location: typhoon.pri_typhoon_items.where(info: 0).to_json,
