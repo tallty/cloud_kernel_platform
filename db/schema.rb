@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151118173239) do
+ActiveRecord::Schema.define(version: 20160707164204) do
 
   create_table "auto_stations", force: :cascade do |t|
     t.string   "datetime",       limit: 255
@@ -117,6 +117,38 @@ ActiveRecord::Schema.define(version: 20151118173239) do
 
   add_index "nationwide_stations", ["report_date"], name: "index_nationwide_stations_on_report_date", using: :btree
 
+  create_table "pri_typhoon_items", force: :cascade do |t|
+    t.datetime "report_time"
+    t.datetime "cur_time"
+    t.float    "lon",            limit: 24
+    t.float    "lat",            limit: 24
+    t.float    "min_pressure",   limit: 24
+    t.float    "max_wind",       limit: 24
+    t.float    "move_speed",     limit: 24
+    t.float    "move_direction", limit: 24
+    t.float    "seven_radius",   limit: 24
+    t.float    "ten_radius",     limit: 24
+    t.string   "unit",           limit: 255
+    t.integer  "info",           limit: 4
+    t.integer  "pri_typhoon_id", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "pri_typhoon_items", ["pri_typhoon_id"], name: "index_pri_typhoon_items_on_pri_typhoon_id", using: :btree
+
+  create_table "pri_typhoons", force: :cascade do |t|
+    t.string   "serial_number",    limit: 255
+    t.datetime "last_report_time"
+    t.string   "cname",            limit: 255
+    t.string   "ename",            limit: 255
+    t.integer  "year",             limit: 4
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "pri_typhoons", ["serial_number"], name: "index_pri_typhoons_on_serial_number", unique: true, using: :btree
+
   create_table "real_time_aqis", force: :cascade do |t|
     t.datetime "datetime"
     t.integer  "aqi",        limit: 4
@@ -129,18 +161,6 @@ ActiveRecord::Schema.define(version: 20151118173239) do
   end
 
   add_index "real_time_aqis", ["datetime"], name: "index_real_time_aqis_on_datetime", using: :btree
-
-  create_table "short_time_reports", force: :cascade do |t|
-    t.datetime "datetime"
-    t.string   "promulgator",    limit: 255
-    t.string   "report_type",    limit: 255
-    t.text     "report_content", limit: 65535
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-  end
-
-  add_index "short_time_reports", ["datetime"], name: "index_short_time_reports_on_datetime", using: :btree
-  add_index "short_time_reports", ["promulgator"], name: "index_short_time_reports_on_promulgator", using: :btree
 
   create_table "stable_stations", force: :cascade do |t|
     t.datetime "datetime"
@@ -211,6 +231,42 @@ ActiveRecord::Schema.define(version: 20151118173239) do
 
   add_index "typhoons", ["location"], name: "index_typhoons_on_location", using: :btree
   add_index "typhoons", ["name"], name: "index_typhoons_on_name", using: :btree
+
+  create_table "water_bug_infos", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.float    "lon",        limit: 24
+    t.float    "lat",        limit: 24
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.float    "baidu_lon",  limit: 24
+    t.float    "baidu_lat",  limit: 24
+  end
+
+  create_table "waterlogs", id: false, force: :cascade do |t|
+    t.datetime "datetime"
+    t.string   "site_name",  limit: 255
+    t.string   "area",       limit: 255
+    t.float    "out_water",  limit: 24
+    t.float    "starsky",    limit: 24
+    t.float    "max",        limit: 24
+    t.date     "max_day"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "waterlogs", ["datetime", "site_name"], name: "index_waterlogs_on_datetime_and_site_name", unique: true, using: :btree
+
+  create_table "watherlogs_2016", id: false, force: :cascade do |t|
+    t.datetime "datetime"
+    t.string   "site_name",  limit: 255
+    t.string   "area",       limit: 255
+    t.float    "out_water",  limit: 24
+    t.float    "starsky",    limit: 24
+    t.float    "max",        limit: 24
+    t.date     "max_day"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
 
   create_table "weather_reports", force: :cascade do |t|
     t.datetime "datetime"
