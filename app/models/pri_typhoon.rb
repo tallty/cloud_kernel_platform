@@ -78,7 +78,7 @@ class PriTyphoon < ActiveRecord::Base
         last_report_time: typhoon.last_report_time.strftime("%F %H:%M"),
         level: last_real_max_wind,
         real_location: typhoon.pri_typhoon_items.where(info: 0),
-        forecast_location: typhoon.pri_typhoon_items.where(info: 1).order(asc: :cur_time).group_by {|item| item.unit}
+        forecast_location: typhoon.pri_typhoon_items.where(info: 1).order(current: :asc).group_by {|item| item.unit}
       }
       $redis.hset "pri_typhoon_cache", typhoon.serial_number, json_result.to_json
       nil
