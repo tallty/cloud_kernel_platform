@@ -25,7 +25,7 @@ class PriTyphoonItem < ActiveRecord::Base
 
   def as_json(options=nil)
     {
-      report_time: cur_time,
+      report_time: cur_time.strftime("%F %H:%M"),
       time: cur_time.strftime("%Y年%m月%d日 %H时"),
       lon: lon,
       lat: lat,
