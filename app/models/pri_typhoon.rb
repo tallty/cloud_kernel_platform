@@ -42,6 +42,7 @@ class PriTyphoon < ActiveRecord::Base
       
       real_location = result['tflslj']
       last_real_max_wind = 0
+      last_forecast_time = nil
       real_location.each do |item|
         _item = typhoon.pri_typhoon_items.find_or_create_by info: 0, cur_time: Time.zone.parse(item['RQSJ'])
         _item.lon = item['JD']
@@ -68,6 +69,7 @@ class PriTyphoon < ActiveRecord::Base
         _item.move_direction = item['YDFX']
         _item.seven_radius = item['RADIUS7']
         _item.ten_radius = item['RADIUS10']
+        last_forecast_time = _item.report_time
         _item.save
       end
 
@@ -78,7 +80,7 @@ class PriTyphoon < ActiveRecord::Base
         last_report_time: typhoon.last_report_time.strftime("%F %H:%M"),
         level: last_real_max_wind,
         real_location: typhoon.pri_typhoon_items.where(info: 0),
-        forecast_location: typhoon.pri_typhoon_items.where(info: 1).order(cur_time: :asc).group_by {|item| item.unit}
+        forecast_location: typhoon.pri_typhoon_items.where(info: 1, report_time: last_report_time).order(cur_time: :asc).group_by {|item| item.unit}
       }
       $redis.hset "pri_typhoon_cache", typhoon.serial_number, json_result.to_json
       nil
