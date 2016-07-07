@@ -84,12 +84,14 @@ class Typhoon < ActiveRecord::Base
         typhoon.save
       elsif _type == :typhoon_content
         report_time = Time.zone.parse("20#{line_contents[0, 3].join('-')} #{line_contents[3]}")
+        p line_contents
         if line_contents[4].to_i == 0
+          p "最新预报时间: #{report_time.strftime("%F %H:%M")}"
           typhoon.last_report_time = report_time
           typhoon.save
         end
         now_item_time = report_time + line_contents[4].to_i.hour
-
+        p "点位时间: #{now_item_time}"
         typhoon_item = typhoon.typhoon_items.find_or_create_by report_time: now_item_time, effective: line_contents[4], location: typhoon.location
         typhoon_item.lon          = line_contents[5].to_f
         typhoon_item.lat          = line_contents[6].to_f
@@ -205,7 +207,8 @@ class Typhoon < ActiveRecord::Base
           typhoon.year = "20#{line_contents[1][0,2]}"
           typhoon.save
         elsif _type == :typhoon_content
-          report_time = ("20#{line_contents[0, 3].join('-')} #{line_contents[3]}").to_datetime
+          report_time = Time.zone.parse("20#{line_contents[0, 3].join('-')} #{line_contents[3]}")
+          # report_time = ("20#{line_contents[0, 3].join('-')} #{line_contents[3]}").to_datetime
           if line_contents[4].to_i == 0
             typhoon.last_report_time = report_time
             typhoon.save
