@@ -27,6 +27,7 @@ class PriTyphoonItem < ActiveRecord::Base
     {
       report_time: cur_time.strftime("%F %H:%M"),
       time: cur_time.strftime("%Y年%m月%d日 %H时"),
+      unit: unit,
       lon: lon,
       lat: lat,
       max_wind: max_wind,
