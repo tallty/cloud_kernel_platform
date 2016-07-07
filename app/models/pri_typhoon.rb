@@ -75,7 +75,7 @@ class PriTyphoon < ActiveRecord::Base
         name: typhoon.serial_number,
         cname: typhoon.cname,
         ename: typhoon.ename,
-        last_report_time: last_report_time,
+        last_report_time: typhoon.last_report_time,
         level: last_real_max_wind,
         real_location: typhoon.pri_typhoon_items.where(info: 0).to_json,
         forecast_location: typhoon.pri_typhoon_items.where(info: 1).group_by {|item| item.unit}
