@@ -31,6 +31,10 @@ every 3.minutes do
 end
 
 every 5.minutes do 
+  runner "PriTyphoon.process"
+end
+
+every 5.minutes do 
   runner "Waterlog.new.process"
 end
 

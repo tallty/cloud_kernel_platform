@@ -75,9 +75,9 @@ class PriTyphoon < ActiveRecord::Base
         name: typhoon.serial_number,
         cname: typhoon.cname,
         ename: typhoon.ename,
-        last_report_time: typhoon.last_report_time,
+        last_report_time: typhoon.last_report_time.strftime("%F %H:%M"),
         level: last_real_max_wind,
-        real_location: typhoon.pri_typhoon_items.where(info: 0).to_json,
+        real_location: typhoon.pri_typhoon_items.where(info: 0),
         forecast_location: typhoon.pri_typhoon_items.where(info: 1).group_by {|item| item.unit}
       }
       $redis.hset "pri_typhoon_cache", typhoon.serial_number, json_result.to_json
