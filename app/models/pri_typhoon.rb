@@ -88,7 +88,7 @@ class PriTyphoon < ActiveRecord::Base
       sh_typhoon_forecast.each do |item|
         forecast_location['上海'] << {
           report_time: item.report_time,
-          tiem: item.report_time.strftime("%Y年%m月%d日 %H时"),
+          time: item.report_time.strftime("%Y年%m月%d日 %H时"),
           unit: '上海',
           lon: item.lon,
           lat: item.lat,
