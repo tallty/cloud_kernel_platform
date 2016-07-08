@@ -84,7 +84,22 @@ class PriTyphoon < ActiveRecord::Base
         end
       end
       sh_typhoon_forecast = Typhoon.where(name: typhoon.serial_number, location: 'bcsh').first.typhoon_items.where.not(effective: 0).last(3)
-      forecast_location['上海'] = sh_typhoon_forecast
+      forecast_location['上海'] = []
+      sh_typhoon_forecast.each do |item|
+        forecast_location['上海'] << {
+          report_time: item.report_time,
+          tiem: item.report_time.strftime("%Y年%m月%d日 %H时"),
+          unit: '上海',
+          lon: item.lon,
+          lat: item.lat,
+          max_wind: item.max_wind,
+          min_pressure: item.min_pressure,
+          seven_radius: item.seven_radius,
+          ten_radius: item.ten_radius,
+          direct: item.direct,
+          speed: item.speed
+        }
+      end
       json_result = {
         name: typhoon.serial_number,
         cname: typhoon.cname,
