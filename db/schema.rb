@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160707164204) do
+ActiveRecord::Schema.define(version: 20160711160231) do
 
   create_table "auto_stations", force: :cascade do |t|
     t.string   "datetime",       limit: 255
@@ -145,6 +145,7 @@ ActiveRecord::Schema.define(version: 20160707164204) do
     t.integer  "year",             limit: 4
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
+    t.integer  "status",           limit: 4
   end
 
   add_index "pri_typhoons", ["serial_number"], name: "index_pri_typhoons_on_serial_number", unique: true, using: :btree
