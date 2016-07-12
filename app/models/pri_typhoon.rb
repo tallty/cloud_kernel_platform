@@ -19,6 +19,57 @@ class PriTyphoon < ActiveRecord::Base
     PriTyphoon::PriTyphoonProcess.new.fetch('201601')
   end
 
+  def shutdown
+    self.update_attributes(status: 1)
+    self.build_content
+  end
+
+  def build_content
+    json_result = {
+      name: typhoon.serial_number,
+      cname: typhoon.cname,
+      ename: typhoon.ename,
+      last_report_time: typhoon.last_report_time.strftime("%F %H:%M"),
+      level: last_real_max_wind,
+      real_location: typhoon.pri_typhoon_items.where(info: 0)
+    }
+    if status == 1
+      json_result['status'] = 'stop'
+    else
+      _forecast_location = pri_typhoon_items.where(info: 1).order(cur_time: :asc).group_by {|item| item.unit}
+      forecast_location = {}
+      _forecast_location.each do |key, items|
+        items.each do |item|
+          if item.report_time == last_forecast_time[key]
+            forecast_location[key] ||= []
+            forecast_location[key] << item
+          end
+        end
+      end
+      sh_typhoon_forecast = Typhoon.where(name: typhoon.serial_number, location: 'bcsh').first.typhoon_items.where.not(effective: 0).last(2)
+      forecast_location['上海'] = []
+      sh_typhoon_forecast.each do |item|
+        if item.effective != 72
+          forecast_location['上海'] << {
+            report_time: item.report_time,
+            time: item.report_time.strftime("%Y年%m月%d日 %H时"),
+            unit: '上海',
+            lon: item.lon,
+            lat: item.lat,
+            max_wind: item.max_wind,
+            min_pressure: item.min_pressure,
+            seven_radius: item.seven_radius,
+            ten_radius: item.ten_radius,
+            direct: item.direct,
+            speed: item.speed
+          }
+        end
+      end
+      json_result['forecast_location'] = forecast_location
+    end
+    $redis.hset "pri_typhoon_cache", typhoon.serial_number, json_result.to_json
+  end
+
   class PriTyphoonProcess
     include NetworkMiddleware
 
@@ -36,6 +87,7 @@ class PriTyphoon < ActiveRecord::Base
       result = get_data(params_hash, {})
       typhoon_info = result['tfbh']
       typhoon = PriTyphoon.find_or_create_by serial_number: typhoon_info['TFBH'][-4, 4]
+      reutrn if typhoon.try(:status) == 1
       typhoon.cname = typhoon_info['TFM']
       typhoon.ename = typhoon_info['TFME']
       typhoon.year = typhoon_info['TFBH'][0, 4]
@@ -73,45 +125,8 @@ class PriTyphoon < ActiveRecord::Base
         _item.save
       end
       
-      _forecast_location = typhoon.pri_typhoon_items.where(info: 1).order(cur_time: :asc).group_by {|item| item.unit}
-      forecast_location = {}
-      _forecast_location.each do |key, items|
-        items.each do |item|
-          if item.report_time == last_forecast_time[key]
-            forecast_location[key] ||= []
-            forecast_location[key] << item
-          end
-        end
-      end
-      sh_typhoon_forecast = Typhoon.where(name: typhoon.serial_number, location: 'bcsh').first.typhoon_items.where.not(effective: 0).last(2)
-      forecast_location['上海'] = []
-      sh_typhoon_forecast.each do |item|
-        if item.effective != 72
-          forecast_location['上海'] << {
-            report_time: item.report_time,
-            time: item.report_time.strftime("%Y年%m月%d日 %H时"),
-            unit: '上海',
-            lon: item.lon,
-            lat: item.lat,
-            max_wind: item.max_wind,
-            min_pressure: item.min_pressure,
-            seven_radius: item.seven_radius,
-            ten_radius: item.ten_radius,
-            direct: item.direct,
-            speed: item.speed
-          }
-        end
-      end
-      json_result = {
-        name: typhoon.serial_number,
-        cname: typhoon.cname,
-        ename: typhoon.ename,
-        last_report_time: typhoon.last_report_time.strftime("%F %H:%M"),
-        level: last_real_max_wind,
-        real_location: typhoon.pri_typhoon_items.where(info: 0),
-        forecast_location: forecast_location
-      }
-      $redis.hset "pri_typhoon_cache", typhoon.serial_number, json_result.to_json
+      typhoon.build_content
+      
       nil
     end
   end
