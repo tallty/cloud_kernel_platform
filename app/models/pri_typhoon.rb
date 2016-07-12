@@ -68,7 +68,7 @@ class PriTyphoon < ActiveRecord::Base
       end
       json_result['forecast_location'] = forecast_location
     end
-    $redis.hset "pri_typhoon_cache", typhoon.serial_number, json_result.to_json
+    $redis.hset "pri_typhoon_cache", serial_number, json_result.to_json
   end
 
   class PriTyphoonProcess
