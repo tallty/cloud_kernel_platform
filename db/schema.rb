@@ -143,9 +143,9 @@ ActiveRecord::Schema.define(version: 20160711160231) do
     t.string   "cname",            limit: 255
     t.string   "ename",            limit: 255
     t.integer  "year",             limit: 4
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.integer  "status",           limit: 4
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "status",           limit: 4,   default: 0
   end
 
   add_index "pri_typhoons", ["serial_number"], name: "index_pri_typhoons_on_serial_number", unique: true, using: :btree
