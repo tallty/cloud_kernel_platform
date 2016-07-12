@@ -25,13 +25,14 @@ class PriTyphoon < ActiveRecord::Base
   end
 
   def build_content
+    real_path = pri_typhoon_items.where(info: 0)
     json_result = {
-      name: typhoon.serial_number,
-      cname: typhoon.cname,
-      ename: typhoon.ename,
-      last_report_time: typhoon.last_report_time.strftime("%F %H:%M"),
-      level: last_real_max_wind,
-      real_location: typhoon.pri_typhoon_items.where(info: 0)
+      name: serial_number,
+      cname: cname,
+      ename: ename,
+      last_report_time: last_report_time.strftime("%F %H:%M"),
+      level: real_path.last.max_wind,
+      real_location: real_path
     }
     if status == 1
       json_result['status'] = 'stop'
@@ -93,7 +94,7 @@ class PriTyphoon < ActiveRecord::Base
       typhoon.year = typhoon_info['TFBH'][0, 4]
       
       real_location = result['tflslj']
-      last_real_max_wind = 0
+      
       last_forecast_time = {}
       real_location.each do |item|
         _item = typhoon.pri_typhoon_items.find_or_create_by info: 0, cur_time: Time.zone.parse(item['RQSJ'])
@@ -106,7 +107,6 @@ class PriTyphoon < ActiveRecord::Base
         _item.seven_radius = item['RADIUS7']
         _item.ten_radius = item['RADIUS10']
         typhoon.last_report_time = _item.cur_time
-        last_real_max_wind = _item.max_wind
         _item.save
       end
       typhoon.save
