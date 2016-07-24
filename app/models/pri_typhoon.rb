@@ -24,7 +24,7 @@ class PriTyphoon < ActiveRecord::Base
     self.build_content
   end
 
-  def build_content
+  def build_content last_forecast_time
     real_path = pri_typhoon_items.where(info: 0)
     json_result = {
       name: serial_number,
@@ -125,7 +125,7 @@ class PriTyphoon < ActiveRecord::Base
         _item.save
       end
       
-      typhoon.build_content
+      typhoon.build_content last_forecast_time
       
       nil
     end
