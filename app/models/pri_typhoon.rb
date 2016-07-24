@@ -89,8 +89,8 @@ class PriTyphoon < ActiveRecord::Base
       typhoon_info = result['tfbh']
       typhoon = PriTyphoon.find_or_create_by serial_number: typhoon_info['TFBH'][-4, 4]
       reutrn if typhoon.try(:status) == 1
-      typhoon.cname = typhoon_info['TFM']
-      typhoon.ename = typhoon_info['TFME']
+      typhoon.cname = typhoon_info['TFM'] if typhoon.cname.blank?
+      typhoon.ename = typhoon_info['TFME'] if typhoon.ename.blank?
       typhoon.year = typhoon_info['TFBH'][0, 4]
       
       real_location = result['tflslj']
