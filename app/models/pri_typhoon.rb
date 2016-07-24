@@ -16,7 +16,7 @@ class PriTyphoon < ActiveRecord::Base
   has_many :pri_typhoon_items
   
   def self.process
-    PriTyphoon::PriTyphoonProcess.new.fetch('201601')
+    PriTyphoon::PriTyphoonProcess.new.fetch('201602')
   end
 
   def shutdown
