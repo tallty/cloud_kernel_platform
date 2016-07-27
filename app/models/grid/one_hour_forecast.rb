@@ -2,7 +2,7 @@ module Grid
   class OneHourForecast
 
     def self.process
-
+      Grid::OneHourForecast::DataProcessor.new.process
     end
 
     def analyze
@@ -42,7 +42,7 @@ module Grid
       end
     end
 
-    class DataProcessor < BaseForcast
+    class DataProcessor < BaseForecast
       def initialize
         super
 
