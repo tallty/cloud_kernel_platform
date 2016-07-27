@@ -67,7 +67,18 @@ module Grid
         type = infos[2].downcase
         @update_time = infos[-2]
         File.open(local_file, "r:binary") do |f|
+          s = f.read(48)
           head = s.unpack 'f*'
+          $redis.hset "one_hour_grid_info", "orgin_time", @update_time
+          $redis.hset "one_hour_grid_info", "orgin_lon", head[0].to_f
+          $redis.hset "one_hour_grid_info", "delta_lon", head[1].to_f
+          $redis.hset "one_hour_grid_info", "lon_count", head[2].to_i
+          $redis.hset "one_hour_grid_info", "orgin_lat", head[3].to_f
+          $redis.hset "one_hour_grid_info", "delta_lat", head[4].to_f
+          $redis.hset "one_hour_grid_info", "lat_count", head[5].to_i
+          $redis.hset "one_hour_grid_info", "delta_hour", head[8].to_i
+          $redis.hset "one_hour_grid_info", "time_count", (head[7] / head[6]).to_i
+
           lon_count = head[2].to_i
           lat_count = head[5].to_i
           time_count = (head[7] / head[6]).to_i
