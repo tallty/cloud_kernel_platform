@@ -44,6 +44,7 @@ class PriTyphoon < ActiveRecord::Base
 
   def self.get_now_typhoon
     typhoons = PriTyphoon::PriTyphoonProcess.new.fetch({action: 'nowtyphoon'})
+    now_typhoons = []
     typhoons.each do |item|
       serial_number = item['TFBH'][-4, 4]
       typhoon = PriTyphoon.find_by(serial_number: serial_number)
@@ -52,7 +53,9 @@ class PriTyphoon < ActiveRecord::Base
       end
       typhoon.update_attributes(status: 1)
       typhoon.refresh_typhoon_detail item
+      now_typhoons << serial_number
     end
+    $redis.set "now_typhoons_cache", now_typhoons.join(',')
   end
 
   def refresh_typhoon_detail params
