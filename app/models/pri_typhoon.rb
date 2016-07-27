@@ -35,9 +35,7 @@ class PriTyphoon < ActiveRecord::Base
       typhoon.ename = item['TFME'] if typhoon.ename.blank?
       typhoon.year = _year
       typhoon.save
-      p "------------#{typhoon.serial_number}----------------#{serial_number}-------------------------------------------------"
       if typhoon.serial_number.eql?(serial_number)
-        p item
         now_typhoon = typhoon 
       end
     end
@@ -51,8 +49,8 @@ class PriTyphoon < ActiveRecord::Base
       typhoon = PriTyphoon.find_by(serial_number: serial_number)
       if typhoon.blank?
         typhoon = get_typhoon_list serial_number
-        p typhoon
       end
+      typhoon.update_attributes(status: 1)
       typhoon.refresh_typhoon_detail item
     end
   end
