@@ -20,7 +20,7 @@ class PriTyphoon < ActiveRecord::Base
   end
 
   def shutdown
-    self.update_attributes(status: 1)
+    self.update_attributes(status: 0)
     self.build_content
   end
 
@@ -117,7 +117,7 @@ class PriTyphoon < ActiveRecord::Base
       level: real_path.last.max_wind,
       real_location: real_path
     }
-    if status == 1
+    if status == 0
       json_result['status'] = 'stop'
     else
       _forecast_location = pri_typhoon_items.where(info: 1).order(cur_time: :asc).group_by {|item| item.unit}
