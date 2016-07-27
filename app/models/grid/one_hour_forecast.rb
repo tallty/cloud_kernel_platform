@@ -48,6 +48,7 @@ module Grid
 
         @redis_key = "one_hour_grid_forecast_cache"
         @redis_last_report_time_key = "one_hour_grid_forecast_last_report_time"
+        @remote_dir << "/#{DateTime.now.strftime('%Y%m')}"
         @grid_data_hash = {}
       end
 
