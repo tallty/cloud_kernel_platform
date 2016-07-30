@@ -14,14 +14,18 @@
 
 class PriTyphoon < ActiveRecord::Base
   has_many :pri_typhoon_items
-  
+
   def self.process
     get_now_typhoon
   end
 
   def shutdown
     self.update_attributes(status: 0)
-    self.build_content
+    # self.build_content
+    typhoon = $redis.hget("pri_typhoon_cache", self.serial_number)
+    typhoon_hash = MultiJson.load(typhoon)
+    typhoon_hash["status"] = "stop"
+    $redis.hset("pri_typhoon_cache", self.serial_number, typhoon_hash.to_json)
   end
 
   def self.get_typhoon_list serial_number
@@ -36,7 +40,7 @@ class PriTyphoon < ActiveRecord::Base
       typhoon.year = _year
       typhoon.save
       if typhoon.serial_number.eql?(serial_number)
-        now_typhoon = typhoon 
+        now_typhoon = typhoon
       end
     end
     now_typhoon
@@ -60,16 +64,16 @@ class PriTyphoon < ActiveRecord::Base
 
   def refresh_typhoon_detail params
     result = PriTyphoon::PriTyphoonProcess.new.fetch params
-    
+
     # typhoon_info = result['tfbh']
     # typhoon = PriTyphoon.find_or_create_by serial_number: typhoon_info['TFBH'][-4, 4]
     # reutrn if typhoon.try(:status) == 1
     # typhoon.cname = typhoon_info['TFM'] if typhoon.cname.blank?
     # typhoon.ename = typhoon_info['TFME'] if typhoon.ename.blank?
     # typhoon.year = typhoon_info['TFBH'][0, 4]
-    
+
     real_location = result['tflslj']
-    
+
     last_forecast_time = {}
     last_report_time = nil
     real_location.each do |item|
@@ -101,9 +105,9 @@ class PriTyphoon < ActiveRecord::Base
       last_forecast_time[_item.unit] = _item.report_time
       _item.save
     end
-    
+
     build_content last_forecast_time
-    
+
     nil
   end
 
@@ -130,7 +134,7 @@ class PriTyphoon < ActiveRecord::Base
           end
         end
       end
-      
+
       sh_typhoon = Typhoon.where(name: serial_number, location: 'bcsh').first
       if sh_typhoon.present?
         sh_typhoon_forecast = sh_typhoon.typhoon_items.where.not(effective: 0).last(2)
@@ -155,7 +159,7 @@ class PriTyphoon < ActiveRecord::Base
         end
         json_result['forecast_location'] = forecast_location
       end
-      
+
     end
     $redis.hset "pri_typhoon_cache", serial_number, json_result.to_json
   end
@@ -173,7 +177,7 @@ class PriTyphoon < ActiveRecord::Base
         method: 'post',
         data: params
       }
-      
+
       result = get_data(params_hash, {})
     end
   end
