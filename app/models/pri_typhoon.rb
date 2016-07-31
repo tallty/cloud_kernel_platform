@@ -15,8 +15,22 @@
 class PriTyphoon < ActiveRecord::Base
   has_many :pri_typhoon_items
 
+  def as_json(options=nil)
+    {
+      serial_number: serial_number,
+      ename: ename,
+      cname: cname,
+      last_report_time: last_report_time
+    }
+  end
   def self.process
     get_now_typhoon
+    refresh_typhoon_list
+  end
+
+  def self.refresh_typhoon_list
+    list = PriTyphoon.where("year > ?", DateTime.now.year - 2).order(serial_number: :desc)
+    $redis.set("pri_typhoon_list_cache", list.to_json)
   end
 
   def shutdown
