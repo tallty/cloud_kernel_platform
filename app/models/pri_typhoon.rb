@@ -20,7 +20,7 @@ class PriTyphoon < ActiveRecord::Base
       serial_number: serial_number,
       ename: ename,
       cname: cname,
-      last_report_time: last_report_time
+      last_report_time: last_report_time.strftime("%F %H:%M:%S")
     }
   end
   def self.process
