@@ -56,7 +56,7 @@ class PriTyphoon < ActiveRecord::Base
       typhoon.ename = item['TFME'] if typhoon.ename.blank?
       typhoon.year = year
       typhoon.save
-      typhoon.refresh_typhoon_detail({"TFBH": "20#{typhoon.serial_number}"})
+      typhoon.refresh_typhoon_detail({"TFBH" => "20#{typhoon.serial_number}"})
     end
   end
 
