@@ -36,6 +36,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    amq-protocol (2.0.1)
     arel (6.0.3)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -49,6 +50,8 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
+    bunny (2.2.2)
+      amq-protocol (>= 2.0.1)
     byebug (9.0.1)
     chef-config (12.9.41)
       fuzzyurl (~> 0.8.0)
@@ -180,6 +183,8 @@ GEM
     rdoc (4.2.2)
       json (~> 1.4)
     redis (3.3.0)
+    redis-namespace (1.5.2)
+      redis (~> 3.0, >= 3.0.4)
     responders (2.2.0)
       railties (>= 4.2.0, < 5.1)
     rubyzip (1.0.0)
@@ -193,7 +198,15 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    serverengine (1.5.11)
+      sigdump (~> 0.2.2)
     settingslogic (2.0.9)
+    sigdump (0.2.4)
+    sneakers (2.3.5)
+      bunny (~> 2.2.0)
+      serverengine (~> 1.5.11)
+      thor
+      thread (~> 0.1.7)
     spring (1.7.1)
     sprockets (3.6.0)
       concurrent-ruby (~> 1.0)
@@ -204,6 +217,7 @@ GEM
       sprockets (>= 3.0.0)
     systemu (2.6.5)
     thor (0.19.1)
+    thread (0.1.7)
     thread_safe (0.3.5)
     tilt (2.0.3)
     turbolinks (2.5.3)
@@ -248,9 +262,11 @@ DEPENDENCIES
   ohai
   rails (= 4.2.1)
   redis
+  redis-namespace
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   settingslogic
+  sneakers
   spring
   turbolinks
   uglifier (>= 1.3.0)
@@ -260,4 +276,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   1.12.0.pre.2
+   1.12.5

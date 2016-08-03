@@ -36,7 +36,11 @@ gem 'multi_json'
 gem 'grape'
 
 gem 'redis'
-# gem 'activeadmin'
+# This gem adds a Redis::Namespace class which can be used to namespace Redis keys.
+gem 'redis-namespace'
+# A fast background processing framework for Ruby and RabbitMQ
+gem 'sneakers'
+
 gem 'devise'
 gem 'axlsx'
 
