@@ -1,9 +1,68 @@
+require 'find'
 class QPF
 
   def process
     p "#{Time.now.strftime('%Y-%m-%d %H:%M')}: process qpf task..."
     QpfProcess.new.process
-    QpfJsonProcess.new.process
+    # QpfJsonProcess.new.process
+  end
+
+  def self.analyzed
+    folder = './data2/'
+    Find.find(folder) do |file_name|
+      unless File.directory? file_name
+        parse file_name
+      end
+    end
+    # parse './data2/1608040444.024'
+  end
+
+  def self.parse file_name
+    p "process qpf file: #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}#{file_name}"
+    file_tag = file_name.split(/\.|\//)
+    $redis.hset "qpf_info", "origin_time", Time.parse("20#{file_tag[-2]}") + 8.hour
+    file_index = file_tag[-1].to_i
+    lon_count = 0
+    lat_count = 0
+    arr = []
+    
+    File.foreach(file_name) do |line|
+      contents = line.split(' ')
+      type = line_type contents
+      if type == :data_info
+        $redis.multi do
+          $redis.hset "qpf_info", "origin_lon", contents[8]
+          $redis.hset "qpf_info", "term_lon", contents[9]
+          $redis.hset "qpf_info", "origin_lat", contents[10]
+          $redis.hset "qpf_info", "term_lat", contents[11]
+          $redis.hset "qpf_info", "lon_count", contents[12]
+          $redis.hset "qpf_info", "lat_count", contents[13]
+        end
+      elsif type == :data
+        arr << contents
+        lon_count += 1
+        if lon_count >= 44
+          lon_count = 0
+          lat_count += 1
+          $redis.hset("grid_qpf", "#{lat_count}_#{file_index}", arr.flatten.to_json)
+          arr.clear
+        end
+      else
+       
+      end
+    end
+  end
+
+  def self.line_type line_contents
+    line_type = :file_info
+    if line_contents.size == 3 and line_contents[0].eql?('diamond')
+      line_type = :file_info
+    elsif line_contents.size == 19
+      line_type = :data_info
+    else
+      line_type = :data
+    end
+    line_type
   end
 
   class QpfJsonProcess < BaseLocalFile
@@ -99,12 +158,12 @@ class QPF
           exchange_content << "\r\n"
           dest_file.write(exchange_content)
           $redis.multi do
-            $redis.hset "qpf_info", "origin_lon", contents[7]
-            $redis.hset "qpf_info", "term_lon", contents[8]
-            $redis.hset "qpf_info", "origin_lat", contents[9]
-            $redis.hset "qpf_info", "term_lat", contents[10]
-            $redis.hset "qpf_info", "lon_count", contents[11]
-            $redis.hset "qpf_info", "lat_count", contents[12]
+            $redis.hset "qpf_info", "origin_lon", contents[8]
+            $redis.hset "qpf_info", "term_lon", contents[9]
+            $redis.hset "qpf_info", "origin_lat", contents[10]
+            $redis.hset "qpf_info", "term_lat", contents[11]
+            $redis.hset "qpf_info", "lon_count", contents[12]
+            $redis.hset "qpf_info", "lat_count", contents[13]
           end
         elsif type == :data
           dest_file.write(line)
@@ -135,7 +194,7 @@ class QPF
       line_type = :file_info
       if line_contents.size == 3 and line_contents[0].eql?('diamond')
         line_type = :file_info
-      elsif line_contents.size == 18
+      elsif line_contents.size == 19
         line_type = :data_info
       else
         line_type = :data
