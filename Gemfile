@@ -28,10 +28,13 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'whenever', :require => false
 
+# Annotate Rails classes with schema and routes info
+gem 'annotate'
 # Use Unicorn as the app server
 # gem 'unicorn'
 
 gem 'settingslogic'
+# A generic swappable back-end for JSON handling.
 gem 'multi_json'
 gem 'grape'
 
@@ -45,6 +48,9 @@ gem 'devise'
 gem 'axlsx'
 
 gem "faraday"
+
+# A ruby web server built for concurrency
+gem 'puma'
 
 gem 'ohai'
 gem 'usagewatch'
