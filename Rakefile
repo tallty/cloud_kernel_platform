@@ -11,7 +11,7 @@ namespace :rabbitmq do
   desc 'Setup routing'
   task :setup do
     require 'bunny'
-    conn = Bunny.new("amqp://guest:guest@localhost:5672", :automatically_recover => false)
+    conn = Bunny.new("amqp://guest:123456@10.228.96.102:5672", :automatically_recover => false)
     conn.start
 
     # publish/subscribe
