@@ -50,7 +50,7 @@ gem 'axlsx'
 gem "faraday"
 
 # A ruby web server built for concurrency
-gem 'puma'
+gem 'puma', '~> 2.15.3'
 
 # Version Cake is an unobtrusive way to version APIs in your Rails or Rack apps
 gem 'versioncake'
