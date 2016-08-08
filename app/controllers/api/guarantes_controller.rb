@@ -3,7 +3,8 @@ module Api
 
     def index
       if request_version == 1
-        @guarantes = Guarante.unprocess(DateTime.parse("2016-09-11 12:30:00").to_date)
+        datetime = params[:date]
+        @guarantes = Guarante.unprocess(DateTime.parse(datetime).to_date)
       end
     end
 
