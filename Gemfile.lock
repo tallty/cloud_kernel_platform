@@ -270,7 +270,7 @@ DEPENDENCIES
   multi_json
   mysql2 (~> 0.3.13)
   ohai
-  puma (~> 2.15.3)
+  puma
   rails (= 4.2.1)
   redis
   redis-namespace
