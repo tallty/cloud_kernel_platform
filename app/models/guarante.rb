@@ -18,9 +18,12 @@
 #
 
 class Guarante < ActiveRecord::Base
-  has_many :guarante_items, dependent: :destroy
   validates_uniqueness_of :trans_id, :message => "trans_id don\'t repeat"
   enum trade_type: ['I', 'S']
+  enum status: [:unprocess, :process]
+
+  scope :unprocess, -> (datetime) { where("status = ? and policy_start_date <= ? and policy_end_date >= ?", 0, datetime.strftime("%F 00:00:00"), datetime.strftime("%F 23:59:00")) }
+
   def self.build raw_post
     guarante_hash = MultiJson.load raw_post rescue {}
     Sneakers.logger.info guarante_hash
@@ -28,12 +31,13 @@ class Guarante < ActiveRecord::Base
     item.source = guarante_hash['source']
     item.policy_no = guarante_hash['policyNo']
     item.product_no = guarante_hash['productNo']
-    # item.liabilities = guarante_hash['policyNo']
+    item.liabilities = guarante_hash['liabilityList']
     item.policy_start_date = DateTime.parse(guarante_hash['policyStartDate'])
     item.policy_end_date = DateTime.parse(guarante_hash['policyEndDate'])
     item.destination = guarante_hash['destination']
     item.region_code = guarante_hash['regionCode']
     item.trade_type = guarante_hash['tradeType']
+    item.status = 0
     item.save
   end
 
@@ -59,6 +63,7 @@ class Guarante < ActiveRecord::Base
           t.string :destination
           t.string :region_code
           t.integer :trade_type
+          t.integer :status
 
           t.timestamps null: false
         end
