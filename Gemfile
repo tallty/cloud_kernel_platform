@@ -52,6 +52,9 @@ gem "faraday"
 # A ruby web server built for concurrency
 gem 'puma'
 
+# Version Cake is an unobtrusive way to version APIs in your Rails or Rack apps
+gem 'versioncake'
+
 gem 'ohai'
 gem 'usagewatch'
 gem 'vmstat'
