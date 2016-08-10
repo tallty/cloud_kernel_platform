@@ -20,6 +20,8 @@ class MinuteStation < ActiveRecord::Base
   def as_json(options=nil)
     {
       datetime: datetime.strftime('%F %H:%M:%S'),
+      site_number: site_number,
+      site_name: StationInfo.find_by_redis(site_number).try(:name),
       tempe: tempe,
       max_tempe: max_tempe,
       min_tempe: min_tempe,
