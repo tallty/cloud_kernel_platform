@@ -17,6 +17,10 @@ every 1.minutes do
 end
 
 every 1.minutes do
+  runner "MinuteStation.process"
+end
+
+every 1.minutes do
   runner "CommunityWarning.new.process"
 end
 
