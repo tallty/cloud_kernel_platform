@@ -33,6 +33,7 @@ class MinuteStation < ActiveRecord::Base
     end
 
     def parse local_file
+      p local_file
       File.foreach(local_file, encoding: 'gbk') do |line|
         line = line.encode('utf-8')
         line = line.strip
