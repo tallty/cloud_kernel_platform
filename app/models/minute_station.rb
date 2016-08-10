@@ -34,7 +34,8 @@ class MinuteStation < ActiveRecord::Base
 
     def parse local_file
       File.foreach(local_file, encoding: 'gbk') do |line|
-        line = line.encode('utf-8').strip
+        line = line.encode('utf-8')
+        line = line.strip
         line_contents = line.split(',')
         datetime = DateTime.parse(line_contents[0])
         site_number = line_contents[2]
