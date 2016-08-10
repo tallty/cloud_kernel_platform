@@ -29,6 +29,7 @@ class MinuteStation < ActiveRecord::Base
     end
 
     def get_report_time_string file_name
+      p file_name
       File.ctime(file_name).strftime("%Y-%m-%d %H:%M:%S")  
     end
 
