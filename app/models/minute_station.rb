@@ -13,6 +13,8 @@
 #
 
 class MinuteStation < ActiveRecord::Base
+  # validates :datetime, uniqueness: { scope: :site_number }
+  
   default_scope { order(datetime: :asc) }
 
   def as_json(options=nil)
@@ -45,23 +47,27 @@ class MinuteStation < ActiveRecord::Base
     end
 
     def parse local_file
+      @datetime = nil
       File.foreach(local_file, encoding: 'gbk') do |line|
         line = line.encode('utf-8')
         line = line.strip
         line_contents = line.split(',')
-        datetime = DateTime.parse(line_contents[0])
+        @datetime = Time.zone.parse(line_contents[0])
         site_number = line_contents[2]
-        MinuteStation.find_or_create_by datetime: datetime, site_number: site_number
-        item = MinuteStation.where(datetime: datetime, site_number: site_number).update_all(
+        MinuteStation.find_or_create_by(datetime: @datetime, site_number: site_number)
+        MinuteStation.where(datetime: @datetime, site_number: site_number)
+        .update_all(
           tempe: line_contents[3],
           max_tempe: line_contents[4],
           min_tempe: line_contents[5],
           rain: line_contents[6]
         )
-        p item.to_json
-        $redis.hset @redis_key, site_number, item.to_json
       end
+    end
 
+    def after_process
+      items = MinuteStation.where(datetime: @datetime)
+      $redis.set @redis_key, items.to_json
     end
 
   end
