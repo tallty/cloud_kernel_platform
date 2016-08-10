@@ -23,7 +23,7 @@ class StationInfo < ActiveRecord::Base
   def as_json(options=nil)
     {
       site_number: site_number,
-      name: alias_name,
+      name: name,
       district: district,
       site_type: site_type,
       lon: lon,
