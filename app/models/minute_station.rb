@@ -15,6 +15,16 @@
 class MinuteStation < ActiveRecord::Base
   default_scope { order(datetime: :asc) }
 
+  def as_json(options=nil)
+    {
+      datetime: datetime.strftime('%F %H:%M:%S'),
+      tempe: tempe,
+      max_tempe: max_tempe,
+      min_tempe: min_tempe,
+      rain: rain
+    }
+  end
+
   def self.process
     StationProcess.new.process  
   end
@@ -22,6 +32,8 @@ class MinuteStation < ActiveRecord::Base
   class StationProcess < BaseLocalFile
     def initialize
       super
+      @redis_last_report_time_key = "one_minute_station_last_report_time"
+      @redis_key = "one_minute_stations"
     end
 
     def file_format
@@ -29,12 +41,10 @@ class MinuteStation < ActiveRecord::Base
     end
 
     def get_report_time_string file_name
-      p file_name
       File.ctime(file_name).strftime("%Y-%m-%d %H:%M:%S")  
     end
 
     def parse local_file
-      p local_file
       File.foreach(local_file, encoding: 'gbk') do |line|
         line = line.encode('utf-8')
         line = line.strip
@@ -42,13 +52,16 @@ class MinuteStation < ActiveRecord::Base
         datetime = DateTime.parse(line_contents[0])
         site_number = line_contents[2]
         MinuteStation.find_or_create_by datetime: datetime, site_number: site_number
-        MinuteStation.where(datetime: datetime, site_number: site_number).update_all(
+        item = MinuteStation.where(datetime: datetime, site_number: site_number).update_all(
           tempe: line_contents[3],
           max_tempe: line_contents[4],
           min_tempe: line_contents[5],
           rain: line_contents[6]
         )
+        p item.to_json
+        $redis.hset @redis_key, site_number, item.to_json
       end
+
     end
 
   end
