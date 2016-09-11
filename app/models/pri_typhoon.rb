@@ -118,8 +118,9 @@ class PriTyphoon < ActiveRecord::Base
         typhoon.year = _year
         typhoon.save
       end
-      typhoon.update_attributes(status: 1)
-      typhoon.refresh_typhoon_detail item
+      is_current = item['is_current']
+      typhoon.update_attributes(status: is_current)
+      typhoon.refresh_typhoon_detail item if is_current == 1
     end
   end
 
@@ -161,7 +162,7 @@ class PriTyphoon < ActiveRecord::Base
     self.update_attributes(last_report_time: last_report_time)
 
     last_real_location = real_location.last
-    forecast_sets = last_real_location['forecast']
+    forecast_sets = last_real_location['forecast'] || []
     forecast_sets.each do |forecast_set|
       unit = forecast_set['sets']
       forecast_location = forecast_set['points']
