@@ -141,7 +141,7 @@ class PriTyphoon < ActiveRecord::Base
     end
     result = MultiJson.load(response.body)
 
-    real_location = result['points']
+    real_location = result.first['points']
 
     last_forecast_time = {}
     last_report_time = nil
