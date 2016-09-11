@@ -106,7 +106,6 @@ class PriTyphoon < ActiveRecord::Base
       request.url _url
       request.headers['Content-Type'] = 'application/json'
       request.headers['Accept'] = 'application/json'
-      request_params = { year: _year }
     end
     typhoons = MultiJson.load(response.body)
     typhoons.each do |item|
@@ -139,7 +138,6 @@ class PriTyphoon < ActiveRecord::Base
       request.url _url
       request.headers['Content-Type'] = 'application/json'
       request.headers['Accept'] = 'application/json'
-      request_params = { year: _year }
     end
     result = MultiJson.load(response.body)
 
