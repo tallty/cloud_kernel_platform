@@ -42,37 +42,37 @@ class PriTyphoon < ActiveRecord::Base
     $redis.hset("pri_typhoon_cache", self.serial_number, typhoon_hash.to_json)
   end
 
-  def self.get_typhoon_list serial_number
-    _year = DateTime.now.year
-    params_hash = {year: _year}
-    typhoons = PriTyphoon::PriTyphoonProcess.new.fetch params_hash
-    now_typhoon = nil
-    typhoons.each do |item|
-      typhoon = PriTyphoon.find_or_create_by serial_number: item['TFBH'][-4, 4]
-      typhoon.cname = item['TFM'] if typhoon.cname.blank?
-      typhoon.ename = item['TFME'] if typhoon.ename.blank?
-      typhoon.year = _year
-      typhoon.save
-      if typhoon.serial_number.eql?(serial_number)
-        now_typhoon = typhoon
-      end
-    end
-    now_typhoon
-  end
+  # def self.get_typhoon_list serial_number
+  #   _year = DateTime.now.year
+  #   params_hash = {year: _year}
+  #   typhoons = PriTyphoon::PriTyphoonProcess.new.fetch params_hash
+  #   now_typhoon = nil
+  #   typhoons.each do |item|
+  #     typhoon = PriTyphoon.find_or_create_by serial_number: item['TFBH'][-4, 4]
+  #     typhoon.cname = item['TFM'] if typhoon.cname.blank?
+  #     typhoon.ename = item['TFME'] if typhoon.ename.blank?
+  #     typhoon.year = _year
+  #     typhoon.save
+  #     if typhoon.serial_number.eql?(serial_number)
+  #       now_typhoon = typhoon
+  #     end
+  #   end
+  #   now_typhoon
+  # end
 
-  def self.refresh_history year
-    params_hash = {year: year}
-    typhoons = PriTyphoon::PriTyphoonProcess.new.fetch params_hash
-    now_typhoon = nil
-    typhoons.each do |item|
-      typhoon = PriTyphoon.find_or_create_by serial_number: item['TFBH'][-4, 4]
-      typhoon.cname = item['TFM'] if typhoon.cname.blank?
-      typhoon.ename = item['TFME'] if typhoon.ename.blank?
-      typhoon.year = year
-      typhoon.save
-      typhoon.refresh_typhoon_detail({"TFBH" => "20#{typhoon.serial_number}"})
-    end
-  end
+  # def self.refresh_history year
+  #   params_hash = {year: year}
+  #   typhoons = PriTyphoon::PriTyphoonProcess.new.fetch params_hash
+  #   now_typhoon = nil
+  #   typhoons.each do |item|
+  #     typhoon = PriTyphoon.find_or_create_by serial_number: item['TFBH'][-4, 4]
+  #     typhoon.cname = item['TFM'] if typhoon.cname.blank?
+  #     typhoon.ename = item['TFME'] if typhoon.ename.blank?
+  #     typhoon.year = year
+  #     typhoon.save
+  #     typhoon.refresh_typhoon_detail({"TFBH" => "20#{typhoon.serial_number}"})
+  #   end
+  # end
 
   # def self.get_now_typhoon
   #   typhoons = PriTyphoon::PriTyphoonProcess.new.fetch({action: 'nowtyphoon'})
@@ -167,7 +167,7 @@ class PriTyphoon < ActiveRecord::Base
       unit = forecast_set['sets']
       forecast_location = forecast_set['points']
       forecast_location.each do |item|
-        _item = pri_typhoon_items.find_or_create_by info: 1, cur_time: Time.zone.parse(last_real_location['time']), report_time: Time.zone.parse(item['time']), unit: unit
+        _item = pri_typhoon_items.find_or_create_by info: 1, cur_time: Time.zone.parse(item['time']), report_time: Time.zone.parse(last_real_location['time']), unit: unit
         _item.lon = item['longitude']
         _item.lat = item['latitude']
         _item.min_pressure = item['pressure']
