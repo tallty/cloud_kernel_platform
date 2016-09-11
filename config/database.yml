@@ -7,10 +7,10 @@
 default: &default
   adapter: mysql2
   encoding: utf8
-  pool: 5
+  pool: 25
   username: root
-  password: 123456
-  host: localhost
+  password: just4you
+  host: 10.228.96.121
   timeout: 5000
 
 development:
@@ -34,3 +34,4 @@ old_database:
   host: 10.228.96.121
   username: root
   password: just4you
+  database: sh_weather_production
