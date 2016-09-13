@@ -52,6 +52,15 @@ class BaseLocalFile
 
   # 遍历目录
   def process
+    # 防止多个进程同时处理相同的数据，导致服务器资源被耗尽
+    _redis_process_key = self.class
+    if $redis.get(_redis_process_key).present?
+      puts "#{_redis_process_key} is processing now, return"
+      return
+    else
+      $redis.set _redis_process_key, "processing"
+    end
+
     time_string = $redis.get(@redis_last_report_time_key)
     today = Time.now.to_date
     day_to_fetch = @day_to_fetch || 1
@@ -84,6 +93,9 @@ class BaseLocalFile
     @file_list.clear
 
     after_process if respond_to?(:after_process, true)
+
+    # 处理成功后，删除key
+    $redis.del _redis_process_key
   end
 
   def push_task_log info

@@ -52,6 +52,15 @@ class BaseForecast
   end
 
   def process
+    # 防止多个进程同时处理相同的数据，导致服务器资源被耗尽
+    _redis_process_key = self.class
+    if $redis.get(_redis_process_key).present?
+      puts "#{_redis_process_key} is processing now, return"
+      return
+    else
+      $redis.set _redis_process_key, "processing"
+    end
+
     today = Time.now.to_date
     today_string = to_date_string today
     day_to_fetch = @day_to_fetch || 1
@@ -115,6 +124,9 @@ class BaseForecast
 
     after_process if respond_to?(:after_process, true)
     file_infos.clear
+
+    # 处理成功后，删除key
+    $redis.del _redis_process_key
   end
 
   def push_task_log info
