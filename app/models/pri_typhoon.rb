@@ -167,7 +167,11 @@ class PriTyphoon < ActiveRecord::Base
       unit = forecast_set['tm']
       forecast_location = forecast_set['forecastpoints']
       forecast_location.each do |item|
-        _item = pri_typhoon_items.find_or_create_by info: 1, cur_time: Time.zone.parse(item['time']), report_time: Time.zone.parse(last_real_location['time']), unit: unit
+        _cur_time = Time.zone.parse(item['time'])
+        _report_time = Time.zone.parse(last_real_location['time'])
+        # 如果预报的时间比当前点时间还早，就去掉这个预报
+        next if _cur_time <= _report_time
+        _item = pri_typhoon_items.find_or_create_by info: 1, cur_time: _cur_time, report_time: _report_time, unit: unit
         _item.lon = item['lng']
         _item.lat = item['lat']
         _item.min_pressure = item['pressure']
