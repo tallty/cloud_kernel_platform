@@ -242,7 +242,7 @@ class PriTyphoon < ActiveRecord::Base
   # end
 
   def build_content last_forecast_time
-    real_path = pri_typhoon_items.where(info: 0)
+    real_path = pri_typhoon_items.where(info: 0).order(cur_time: :asc)
     json_result = {
       name: serial_number,
       cname: cname,
