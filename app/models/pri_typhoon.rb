@@ -126,8 +126,8 @@ class PriTyphoon < ActiveRecord::Base
 
   def refresh_typhoon_detail params
 
-    _host = "http://typhoon.shmmc.cn"
-    _url = "/TyphoonLine/PatrolHandler.ashx?provider=Readearth.PublicSrviceGIS.BLL.TyphoonBLL&assembly=Readearth.PublicSrviceGIS.BLL&method=GetTyphoonDetail&sno=#{params['tfbh']}"
+    _host = "http://typhoon.zjwater.gov.cn"
+    _url = "/Api/TyphoonInfo/#{params['tfbh']}"
 
     connect = Faraday.new(url: _host) do |faraday|
       faraday.request :url_encoded
@@ -148,12 +148,12 @@ class PriTyphoon < ActiveRecord::Base
     last_report_time = nil
     real_location.each do |item|
       _item = pri_typhoon_items.find_or_create_by info: 0, cur_time: Time.zone.parse(item['time'])
-      _item.lon = item['longitude']
-      _item.lat = item['latitude']
+      _item.lon = item['lng']
+      _item.lat = item['lat']
       _item.min_pressure = item['pressure']
       _item.max_wind = item['speed']
-      _item.move_speed = item['move_speed']
-      _item.move_direction = item['move_dir']
+      _item.move_speed = item['movespeed']
+      _item.move_direction = item['movedirection']
       _item.seven_radius = item['radius7']
       _item.ten_radius = item['radius10']
       last_report_time = _item.cur_time
@@ -164,18 +164,18 @@ class PriTyphoon < ActiveRecord::Base
     last_real_location = real_location.last
     forecast_sets = last_real_location['forecast'] || []
     forecast_sets.each do |forecast_set|
-      unit = forecast_set['sets']
-      forecast_location = forecast_set['points']
+      unit = forecast_set['tm']
+      forecast_location = forecast_set['forecastpoints']
       forecast_location.each do |item|
         _item = pri_typhoon_items.find_or_create_by info: 1, cur_time: Time.zone.parse(item['time']), report_time: Time.zone.parse(last_real_location['time']), unit: unit
-        _item.lon = item['longitude']
-        _item.lat = item['latitude']
+        _item.lon = item['lng']
+        _item.lat = item['lat']
         _item.min_pressure = item['pressure']
         _item.max_wind = item['speed']
-        _item.move_speed = item['move_speed']
-        _item.move_direction = item['move_dir']
-        _item.seven_radius = item['radius7']
-        _item.ten_radius = item['radius10']
+        # _item.move_speed = item['move_speed']
+        # _item.move_direction = item['move_dir']
+        # _item.seven_radius = item['radius7']
+        # _item.ten_radius = item['radius10']
         last_forecast_time[_item.unit] = _item.report_time
         _item.save
       end
