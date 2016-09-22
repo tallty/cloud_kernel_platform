@@ -102,13 +102,13 @@ class AutoStation < ActiveRecord::Base
     def hour_process_by_time time
       format_date = time.strftime("%y年%m月%d日 %H时")
       datas = AutoStation.hour_rain_by_time(time)
-      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时雨量", "sh/station/rainhour", "#{now_date.strftime('%y%m%d%H')}")
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时雨量", "sh/station/rainhour", "#{time.strftime('%y%m%d%H')}")
       datas = AutoStation.hour_min_visibility_by_time(time)
-      write_data_to_excel(datas, "#{format_date} 全市自动站最低能见度", "sh/station/vid", "#{now_date.strftime('%y%m%d%H')}")
+      write_data_to_excel(datas, "#{format_date} 全市自动站最低能见度", "sh/station/vid", "#{time.strftime('%y%m%d%H')}")
       datas = AutoStation.hour_max_win_speed_by_time(time)
-      write_data_to_excel(datas, "#{format_date} 全市自动站最大风速", "sh/station/wind", "#{now_date.strftime('%y%m%d%H')}")
+      write_data_to_excel(datas, "#{format_date} 全市自动站最大风速", "sh/station/wind", "#{time.strftime('%y%m%d%H')}")
       datas = AutoStation.hour_tempe_all_station_by_time(time)
-      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时温度", "sh/station/temphour", "#{now_date.strftime('%y%m%d%H')}")
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时温度", "sh/station/temphour", "#{time.strftime('%y%m%d%H')}")
     end
 
     def write_data_to_excel(datas, type, dir, filename)
