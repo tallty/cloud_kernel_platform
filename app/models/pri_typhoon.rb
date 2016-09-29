@@ -93,8 +93,8 @@ class PriTyphoon < ActiveRecord::Base
   # 20160912
   def self.get_now_typhoon
     _year = DateTime.now.year
-    _host = "http://typhoon.shmmc.cn"
-    _url = "/TyphoonLine/PatrolHandler.ashx?provider=Readearth.PublicSrviceGIS.BLL.TyphoonBLL&assembly=Readearth.PublicSrviceGIS.BLL&method=GetTyhoonByYear&year=#{_year}"
+    _host = "http://typhoon.zjwater.gov.cn"
+    _url = "/Api/TyphoonList/#{params['tfbh']}"
 
     connect = Faraday.new(url: _host) do |faraday|
       faraday.request :url_encoded
@@ -109,16 +109,16 @@ class PriTyphoon < ActiveRecord::Base
     end
     typhoons = MultiJson.load(response.body)
     typhoons.each do |item|
-      serial_number = item['tfbh'][-4, 4]
+      serial_number = item['tfid'][-4, 4]
       typhoon = PriTyphoon.find_by(serial_number: serial_number)
       if typhoon.blank?
         typhoon = PriTyphoon.find_or_create_by serial_number: serial_number
         typhoon.cname = item['name'] if typhoon.cname.blank?
-        typhoon.ename = item['ename'] if typhoon.ename.blank?
+        typhoon.ename = item['enname'] if typhoon.ename.blank?
         typhoon.year = _year
         typhoon.save
       end
-      is_current = item['is_current']
+      is_current = item['isactive'].to_i
       typhoon.update_attributes(status: is_current)
       typhoon.refresh_typhoon_detail item if is_current == 1
     end
