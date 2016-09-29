@@ -58,6 +58,8 @@ gem 'versioncake'
 gem 'ohai'
 gem 'usagewatch'
 gem 'vmstat'
+# i18n
+gem 'rails-i18n', '~> 4.0.0'
 # gem 'usagewatch_ext'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
