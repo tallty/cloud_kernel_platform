@@ -51,6 +51,7 @@ class BaseLocalFile
   end
 
   def process_by partern
+    @last_report_time = Time.zone-1.year
     self.traverse_folder @resource_folder
     @file_list.each do |report_time_string, file|
       next unless file.include? partern
