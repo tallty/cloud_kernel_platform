@@ -50,6 +50,24 @@ class BaseLocalFile
     date_string = datetime.strftime('%Y%m%d')
   end
 
+  def process_by partern
+    self.traverse_folder @resource_folder
+    @file_list.each do |report_time_string, file|
+      next unless file.include? partern
+      # if @is_backup
+      #   backup_file = file.gsub(@resource_folder, @backup_folder)
+      #   backup_dir = File.dirname(backup_file)
+      #   FileUtils.makedirs(backup_dir) unless File.exist? backup_dir
+      #   FileUtils.cp("#{file}", backup_dir)
+      # end
+      parse file
+      # FileUtils.rm(file) if @file_delete
+    end
+    @file_list.clear
+
+    after_process if respond_to?(:after_process, true)
+  end
+
   # 遍历目录
   def process
     # 防止多个进程同时处理相同的数据，导致服务器资源被耗尽
