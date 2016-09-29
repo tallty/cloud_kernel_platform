@@ -54,10 +54,13 @@ class BaseLocalFile
   def process
     # 防止多个进程同时处理相同的数据，导致服务器资源被耗尽
     _redis_process_key = self.class
+    logger.info "=====begin to process #{_redis_process_key}====="
     if $redis.get(_redis_process_key).present?
       puts "#{_redis_process_key} is processing now, return"
       return
     else
+      # expire in 0.5 hour
+      $redis.expire _redis_process_key, 1800
       $redis.set _redis_process_key, "processing"
     end
 
@@ -96,6 +99,7 @@ class BaseLocalFile
 
     # 处理成功后，删除key
     $redis.del _redis_process_key
+    logger.info "=====finish & leave #{_redis_process_key}====="
   end
 
   def push_task_log info
