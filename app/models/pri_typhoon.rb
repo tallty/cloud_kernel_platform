@@ -127,7 +127,7 @@ class PriTyphoon < ActiveRecord::Base
   def refresh_typhoon_detail params
 
     _host = "http://typhoon.zjwater.gov.cn"
-    _url = "/Api/TyphoonInfo/#{params['tfbh']}"
+    _url = "/Api/TyphoonInfo/#{params['tfid']}"
 
     connect = Faraday.new(url: _host) do |faraday|
       faraday.request :url_encoded
