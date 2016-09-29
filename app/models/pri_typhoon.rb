@@ -94,7 +94,7 @@ class PriTyphoon < ActiveRecord::Base
   def self.get_now_typhoon
     _year = DateTime.now.year
     _host = "http://typhoon.zjwater.gov.cn"
-    _url = "/Api/TyphoonList/#{params['tfbh']}"
+    _url = "/Api/TyphoonList/#{_year}"
 
     connect = Faraday.new(url: _host) do |faraday|
       faraday.request :url_encoded
