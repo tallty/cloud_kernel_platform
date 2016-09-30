@@ -115,7 +115,7 @@ class BaseLocalFile
     @file_list.clear
 
     after_process if respond_to?(:after_process, true)
-
+  ensure
     # 处理成功后，删除key
     $redis.del _redis_process_key
     p "#{Time.now}: =====finish & leave #{_redis_process_key}====="
