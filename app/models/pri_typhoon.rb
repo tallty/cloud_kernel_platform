@@ -120,6 +120,9 @@ class PriTyphoon < ActiveRecord::Base
       end
       is_current = item['isactive'].to_i
       typhoon.update_attributes(status: is_current)
+      typhoon.cname = item['name'] if typhoon.cname.blank?
+      typhoon.ename = item['enname'] if typhoon.ename.blank?
+      typhoon.save
       typhoon.refresh_typhoon_detail item if is_current == 1
     end
   end
