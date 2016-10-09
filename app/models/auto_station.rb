@@ -15,6 +15,8 @@ class AutoStation < ActiveRecord::Base
   scope :hour_rain, -> { where("datetime = ?", Time.zone.now.strftime("%Y%m%d%H00")).pluck(:sitenumber, :rain)}
   scope :hour_min_visibility, -> { where("datetime like ? and visibility <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).minimum(:visibility) }
   scope :hour_max_win_speed, ->  { where("datetime like ? and max_speed <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).maximum(:max_speed) }
+  scope :hour_max_tempe, ->  { where("datetime like ? and max_tempe <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).maximum(:max_tempe) }
+  scope :hour_min_tempe, ->  { where("datetime like ? and min_tempe <> '////'", "#{Time.zone.now.strftime('%Y%m%d%H')}%").group(:sitenumber).maximum(:min_tempe) }
   
   scope :average_tempe, -> (day) { where("datetime in ('#{day}0200', '#{day}0800', '#{day}1400', #{day}2000)").group(:sitenumber).average(:tempe) }
   #
@@ -22,6 +24,8 @@ class AutoStation < ActiveRecord::Base
   scope :hour_rain_by_time, ->(time) { where("datetime = ?", time.strftime("%Y%m%d%H00")).pluck(:sitenumber, :rain)}
   scope :hour_min_visibility_by_time, ->(time) { where("datetime like ? and visibility <> '////'", "#{time.strftime('%Y%m%d%H')}%").group(:sitenumber).minimum(:visibility) }
   scope :hour_max_win_speed_by_time, ->(time)  { where("datetime like ? and max_speed <> '////'", "#{time.strftime('%Y%m%d%H')}%").group(:sitenumber).maximum(:max_speed) }
+  scope :hour_max_tempe_by_time, ->(time)  { where("datetime like ? and max_tempe <> '////'", "#{time.strftime('%Y%m%d%H')}%").group(:sitenumber).maximum(:max_tempe) }
+  scope :hour_min_tempe_by_time, ->(time)  { where("datetime like ? and min_tempe <> '////'", "#{time.strftime('%Y%m%d%H')}%").group(:sitenumber).maximum(:min_tempe) }
   scope :hour_tempe_all_station_by_time, ->(time) { where("datetime = ?", time.strftime("%Y%m%d%H00")).group(:sitenumber).pluck(:sitenumber, :tempe) }
 
   def clear_redis
@@ -97,6 +101,10 @@ class AutoStation < ActiveRecord::Base
       write_data_to_excel(datas, "#{format_date} 全市自动站最大风速", "sh/station/wind", "#{now_date.strftime('%y%m%d%H')}")
       datas = AutoStation.hour_tempe_all_station
       write_data_to_excel(datas, "#{format_date} 全市自动站逐小时温度", "sh/station/temphour", "#{now_date.strftime('%y%m%d%H')}")
+      datas = AutoStation.hour_max_tempe
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时最高温度", "sh/station/temphour_max", "#{now_date.strftime('%y%m%d%H')}"
+      datas = AutoStation.hour_min_tempe
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时最低温度", "sh/station/temphour_min", "#{now_date.strftime('%y%m%d%H')}"
     end
 
     def hour_process_by_time time
@@ -109,6 +117,10 @@ class AutoStation < ActiveRecord::Base
       write_data_to_excel(datas, "#{format_date} 全市自动站最大风速", "sh/station/wind", "#{time.strftime('%y%m%d%H')}")
       datas = AutoStation.hour_tempe_all_station_by_time(time)
       write_data_to_excel(datas, "#{format_date} 全市自动站逐小时温度", "sh/station/temphour", "#{time.strftime('%y%m%d%H')}")
+      datas = AutoStation.hour_max_tempe_by_time(time)
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时最高温度", "sh/station/temphour_max", "#{time.strftime('%y%m%d%H')}")
+      datas = AutoStation.hour_min_tempe_by_time(time)
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时最低温度", "sh/station/temphour_min", "#{time.strftime('%y%m%d%H')}")
     end
 
     def write_data_to_excel(datas, type, dir, filename)
@@ -126,7 +138,7 @@ class AutoStation < ActiveRecord::Base
 
         end
         folder = File.join("/home/deploy/ftp/weathers/", dir)
-        FileUtils.mkdir(folder) unless File.exist?(folder)
+        FileUtils.mkdir_p(folder) unless File.exist?(folder)
         p.serialize("#{folder}/#{filename}.xlsx")
       end
     end
