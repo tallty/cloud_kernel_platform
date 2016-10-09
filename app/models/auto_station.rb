@@ -102,9 +102,9 @@ class AutoStation < ActiveRecord::Base
       datas = AutoStation.hour_tempe_all_station
       write_data_to_excel(datas, "#{format_date} 全市自动站逐小时温度", "sh/station/temphour", "#{now_date.strftime('%y%m%d%H')}")
       datas = AutoStation.hour_max_tempe
-      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时最高温度", "sh/station/temphour_max", "#{now_date.strftime('%y%m%d%H')}"
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时最高温度", "sh/station/temphour_max", "#{now_date.strftime('%y%m%d%H')}")
       datas = AutoStation.hour_min_tempe
-      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时最低温度", "sh/station/temphour_min", "#{now_date.strftime('%y%m%d%H')}"
+      write_data_to_excel(datas, "#{format_date} 全市自动站逐小时最低温度", "sh/station/temphour_min", "#{now_date.strftime('%y%m%d%H')}")
     end
 
     def hour_process_by_time time
