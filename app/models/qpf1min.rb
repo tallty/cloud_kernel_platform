@@ -13,6 +13,10 @@ class Qpf1min
 
     def file_format
       "*.*"
+      file_format = ".*\\.("
+      (0..90).each do |index|
+        
+      end
     end
 
     def get_report_time_string file_name
@@ -28,17 +32,17 @@ class Qpf1min
       lat_count = 0
       arr = []
       FileUtils.makedirs(@dest_folder) unless File.exist?(@dest_folder)
-      dest_file_path = File.join(@dest_folder, File.basename(file))
-      dest_file = File.new(dest_file_path, "w")
+      # dest_file_path = File.join(@dest_folder, File.basename(file))
+      # dest_file = File.new(dest_file_path, "w")
 
       File.foreach(file) do |line|
         contents = line.split(' ')
         type = line_type contents
         if type == :data_info
-          exchange_content = "#{Time.now.strftime('%y')} #{Time.now.strftime('%m')} "
-          (1..contents.size).each {|i| exchange_content << "#{contents[i]} " }
-          exchange_content << "\r\n"
-          dest_file.write(exchange_content)
+          # exchange_content = "#{Time.now.strftime('%y')} #{Time.now.strftime('%m')} "
+          # (1..contents.size).each {|i| exchange_content << "#{contents[i]} " }
+          # exchange_content << "\r\n"
+          # dest_file.write(exchange_content)
           $redis.multi do
             $redis.hset "qpf_1min_info", "origin_lon", contents[8]
             $redis.hset "qpf_1min_info", "term_lon", contents[9]
@@ -48,7 +52,7 @@ class Qpf1min
             $redis.hset "qpf_1min_info", "lat_count", contents[13]
           end
         elsif type == :data
-          dest_file.write(line)
+          # dest_file.write(line)
           arr << contents
           lon_count += 1
           if lon_count >= 44
@@ -58,10 +62,10 @@ class Qpf1min
             arr.clear
           end
         else
-          dest_file.write(line)
+          # dest_file.write(line)
         end
       end
-      dest_file.close
+      # dest_file.close
     end
 
     def after_process
