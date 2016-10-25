@@ -12,11 +12,7 @@ class Qpf1min
     end
 
     def file_format
-      "*.*"
-      file_format = ".*\\.("
-      (0..90).each do |index|
-        
-      end
+      ".*"
     end
 
     def get_report_time_string file_name
