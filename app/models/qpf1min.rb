@@ -40,12 +40,12 @@ class Qpf1min
           # exchange_content << "\r\n"
           # dest_file.write(exchange_content)
           $redis.multi do
-            $redis.hset "qpf_1min_info", "origin_lon", contents[8]
-            $redis.hset "qpf_1min_info", "term_lon", contents[9]
-            $redis.hset "qpf_1min_info", "origin_lat", contents[10]
-            $redis.hset "qpf_1min_info", "term_lat", contents[11]
-            $redis.hset "qpf_1min_info", "lon_count", contents[12]
-            $redis.hset "qpf_1min_info", "lat_count", contents[13]
+            $redis.hset "qpf_1min_info", "origin_lon", contents[7]
+            $redis.hset "qpf_1min_info", "term_lon", contents[8]
+            $redis.hset "qpf_1min_info", "origin_lat", contents[9]
+            $redis.hset "qpf_1min_info", "term_lat", contents[10]
+            $redis.hset "qpf_1min_info", "lon_count", contents[11]
+            $redis.hset "qpf_1min_info", "lat_count", contents[12]
           end
         elsif type == :data
           # dest_file.write(line)
