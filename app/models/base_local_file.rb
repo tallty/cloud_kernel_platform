@@ -73,9 +73,11 @@ class BaseLocalFile
   def process
     # 防止多个进程同时处理相同的数据，导致服务器资源被耗尽
     _redis_process_key = self.class
+    is_processing = false
     p "#{Time.now}: =====begin to process #{_redis_process_key}====="
     if $redis.get(_redis_process_key).present?
       puts "#{_redis_process_key} is processing now, return"
+      is_processing = true
       return
     else
       # expire in 0.5 hour
@@ -117,7 +119,7 @@ class BaseLocalFile
     after_process if respond_to?(:after_process, true)
   ensure
     # 处理成功后，删除key
-    $redis.del _redis_process_key
+    $redis.del _redis_process_key unless is_processing
     p "#{Time.now}: =====finish & leave #{_redis_process_key}====="
   end
 
