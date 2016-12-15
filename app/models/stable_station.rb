@@ -39,6 +39,19 @@ class StableStation < ActiveRecord::Base
     StableStationProcess.new.process    
   end
 
+  # 导出某天的数据到csv文件
+  def self.to_csv date_string
+    date = DateTime.parse date_string
+    records = proxy( {data_time: date_string} ).where(date_time: @selected_date.beginning_of_day..@selected_date.end_of_day)
+
+    CSV.open("station_#{date_string}.csv", "wb") do |csv|
+      csv << column_names
+      records.each do |record|
+        csv << record.attributes.values_at(*column_names)
+      end
+    end
+  end
+
   class StableStationProcess < BaseLocalFile
     def initialize
       super
@@ -65,7 +78,7 @@ class StableStation < ActiveRecord::Base
         line_content = line.split(' ')
         datetime = Time.parse(line_content[0]) if datetime.blank?
         
-        item = StableStation.proxy({:data_time => line_content[0]}).find_or_create_by datetime: datetime, site_number: line_content[1]
+        item = StableStation.proxy({data_time: line_content[0]}).find_or_create_by datetime: datetime, site_number: line_content[1]
         item.site_name = line_content[2]
         item.site_code = line_content[1]
         item.tempe = line_content[3].eql?('////') ? 99999 : line_content[3].to_f
