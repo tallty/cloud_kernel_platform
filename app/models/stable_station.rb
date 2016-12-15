@@ -16,6 +16,7 @@
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #
+require "csv"
 
 class StableStation < ActiveRecord::Base
   attr_accessor :site_code
