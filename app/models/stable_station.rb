@@ -42,7 +42,7 @@ class StableStation < ActiveRecord::Base
   # 导出某天的数据到csv文件
   def self.to_csv date_string
     date = DateTime.parse date_string
-    records = proxy( {data_time: date_string} ).where(date_time: @selected_date.beginning_of_day..@selected_date.end_of_day)
+    records = proxy( {data_time: date_string} ).where(date_time: date.beginning_of_day..date.end_of_day)
 
     CSV.open("station_#{date_string}.csv", "wb") do |csv|
       csv << column_names
