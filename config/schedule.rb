@@ -8,9 +8,9 @@ set :output, "./log/cron_log.log"
 
 # Learn more: http://github.com/javan/whenever
 
-every 1.minutes do
-  runner 'MachineInfo.new.keep_send_real_time_info'
-end
+# every 1.minutes do
+#   runner 'MachineInfo.new.keep_send_real_time_info'
+# end
 
 every 1.minutes do
   runner "StableStation.process"

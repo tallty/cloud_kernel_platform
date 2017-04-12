@@ -33,12 +33,20 @@ class NationwideStation < ActiveRecord::Base
     end
 
     def process
-      content = get_data
+      content = ''
+      begin
+        Timeout.timeout(3) do
+          content = get_data
+        end
+      rescue
+        p 'get data fail'
+      end
       ds = content["DS"]
       report_time_string = ds.first["Datetime"]
       report_time = Time.parse(report_time_string) # + 8.hour
-      group = NationwideStation.find_or_create_by report_date: report_time
-
+    p ' group is ====='
+    p  group = NationwideStation.find_or_create_by report_date: report_time
+    p ' group ====='
       count = 0
       datas = []
       ds.each do |obj|
@@ -106,13 +114,13 @@ class NationwideStation < ActiveRecord::Base
     end
 
     def push_task_log
-      conn = Faraday.new(:url => 'http://mcu.buoyantec.com') do |faraday|
-        faraday.request  :url_encoded
-        faraday.adapter  Faraday.default_adapter
-      end
-      Rails.logger.warn @process_result_info
-      # 提交任务处理情况
-      response = conn.post "http://mcu.buoyantec.com/task_logs/fetch", {task_log: { task_identifier: "vysJxTkG", process_result: @process_result_info } }
+      # conn = Faraday.new(:url => 'http://mcu.buoyantec.com') do |faraday|
+      #   faraday.request  :url_encoded
+      #   faraday.adapter  Faraday.default_adapter
+      # end
+      # Rails.logger.warn @process_result_info
+      # # 提交任务处理情况
+      # response = conn.post "http://mcu.buoyantec.com/task_logs/fetch", {task_log: { task_identifier: "vysJxTkG", process_result: @process_result_info } }
     end
 
     # 数据写入excel
