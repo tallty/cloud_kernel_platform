@@ -34,12 +34,8 @@ class NationwideStation < ActiveRecord::Base
 
     def process
       content = ''
-      begin
-        Timeout.timeout(3) do
-          content = get_data
-        end
-      rescue
-        p 'get data fail'
+      Timeout.timeout(3) do
+        content = get_data
       end
       ds = content["DS"]
       report_time_string = ds.first["Datetime"]
@@ -79,6 +75,8 @@ class NationwideStation < ActiveRecord::Base
       ds.clear
       datas.clear
       after_process
+    rescue Timeout::Error
+      p 'get data fail'
     end
 
     def get_data
