@@ -39,13 +39,13 @@ class TotalInterface
 
   def push_message
     # conn = Faraday.new(:url => 'http://shtzr1984.tunnel.mobi') do |faraday|
-    conn = Faraday.new(:url => 'http://139.196.105.29') do |faraday|
-      faraday.request  :url_encoded
-      faraday.adapter  Faraday.default_adapter
-    end
+    # conn = Faraday.new(:url => 'http://139.196.105.29') do |faraday|
+    #   faraday.request  :url_encoded
+    #   faraday.adapter  Faraday.default_adapter
+    # end
 
-    # 提交任务处理情况
-    response = conn.post "http://139.196.105.29/total_interfaces/fetch", {total_interfaces: {identifier: 'v7XGbzhd', data: @push_message_data.to_json } }
-    @push_message_data.clear
+    # # 提交任务处理情况
+    # response = conn.post "http://139.196.105.29/total_interfaces/fetch", {total_interfaces: {identifier: 'v7XGbzhd', data: @push_message_data.to_json } }
+    # @push_message_data.clear
   end
 end
