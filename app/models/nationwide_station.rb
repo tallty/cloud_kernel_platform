@@ -41,7 +41,7 @@ class NationwideStation < ActiveRecord::Base
       report_time_string = ds.first["Datetime"]
       report_time = Time.parse(report_time_string) # + 8.hour
     p ' group is ====='
-    p  group = NationwideStation.find_or_create_by report_date: report_time
+    p  group = NationwideStation.find_or_create_by(report_date: report_time)
     p ' group ====='
       count = 0
       datas = []
