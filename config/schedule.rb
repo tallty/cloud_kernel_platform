@@ -12,13 +12,13 @@ set :output, "./log/cron_log.log"
 #   runner 'MachineInfo.new.keep_send_real_time_info'
 # end
 
-every 1.minutes do
-  runner "StableStation.process"
-end
+# every 1.minutes do
+#   runner "StableStation.process"
+# end
 
-every 1.minutes do
-  runner "MinuteStation.process"
-end
+# every 1.minutes do
+#   runner "MinuteStation.process"
+# end
 
 every 1.minutes do
   runner "CommunityWarning.new.process"
@@ -28,12 +28,12 @@ every 1.minutes do
   runner "GridLive.process"
 end
 
-every 3.minutes do
-  # runner "QPF.new.process"
-  # runner "QPF::QpfProcess.new.process"
-  # runner "QPF::QpfJsonProcess.new.process"
-  runner "Qpf1min.process"
-end
+# every 3.minutes do
+#   # runner "QPF.new.process"
+#   # runner "QPF::QpfProcess.new.process"
+#   # runner "QPF::QpfJsonProcess.new.process"
+#   runner "Qpf1min.process"
+# end
 
 every 5.minutes do 
   runner "PriTyphoon.process"
@@ -75,9 +75,9 @@ every 1.hours do
   runner "HealthWeather.new.process"
 end
 
-every 1.minutes do
-  runner "TotalInterface.new.process"
-end
+# every 1.minutes do
+#   runner "TotalInterface.new.process"
+# end
 
 every 1.hours, :at => 30 do
   runner "CountryRealAqi.process"
