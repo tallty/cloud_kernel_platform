@@ -24,9 +24,9 @@ every 1.minutes do
   runner "CommunityWarning.new.process"
 end
 
-every 1.minutes do
-  runner "GridLive.process"
-end
+# every 1.minutes do
+#   runner "GridLive.process"
+# end
 
 # every 3.minutes do
 #   # runner "QPF.new.process"
@@ -55,9 +55,9 @@ every 5.minutes do
   runner "WorldForecast.new.process"
 end
 
-every 5.minutes do
-  runner "Typhoon.process"
-end
+# every 5.minutes do
+  # runner "Typhoon.process"
+# end
 
 every 10.minutes do
   runner "ExchangeFile.process"
