@@ -50,7 +50,7 @@ class AqiForecast
         if line =~ /日/ && line_index > 3
           item = AqiItem.new
           period = contents.size == 5 ? contents[0] + contents[1] : contents[0]
-          item = aqi.items.find_or_create_by publishtime: report_time_string, period: period
+          item.period = period
           item.aqi_value = contents[-3]
           item.level = contents[-2]
           item.pripoll = contents[-1]
