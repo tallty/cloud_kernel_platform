@@ -54,6 +54,7 @@ class AqiForecast
           item.aqi_value = contents[-3]
           item.level = contents[-2]
           item.pripoll = contents[-1]
+          items << item
         end
 
         # if line =~ /^今天夜间/ || line =~ /^明天上午/ || line =~ /^明天下午/ || line =~ /^明天夜间/ || line =~ /^后天白天/
