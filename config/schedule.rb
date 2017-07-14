@@ -16,9 +16,9 @@ set :output, "./log/cron_log.log"
 #   runner "StableStation.process"
 # end
 
-# every 1.minutes do
-#   runner "MinuteStation.process"
-# end
+every 1.minutes do
+  runner "MinuteStation.process"
+end
 
 every 1.minutes do
   runner "CommunityWarning.new.process"
