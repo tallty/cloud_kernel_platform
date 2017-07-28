@@ -54,7 +54,7 @@ class Typhoon < ActiveRecord::Base
     
     get_file_list folder
   end
-  
+
 
   def self.analyzed_file typhoon_file
     file_name = File.basename typhoon_file, '.dat'
@@ -175,6 +175,10 @@ class Typhoon < ActiveRecord::Base
     protected
 
     def get_report_time_string filename
+      Time.zone.now.to_s
+    end
+
+    def get_report_time_string_from_ftp filename
       Time.zone.now.to_s
     end
 
