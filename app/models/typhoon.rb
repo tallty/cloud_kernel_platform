@@ -83,7 +83,7 @@ class Typhoon < ActiveRecord::Base
         typhoon.year = "20#{line_contents[1][0,2]}"
         typhoon.save
       elsif _type == :typhoon_content
-        report_time = Time.zone.parse("20#{line_contents[0, 3].join('-')} #{line_contents[3]}")
+        report_time = Time.zone.parse("20#{line_contents[0, 2].join('-')} #{line_contents[3]}")
         p line_contents
         if line_contents[4].to_i == 0
           p "最新预报时间: #{report_time.strftime("%F %H:%M")}"
@@ -128,7 +128,7 @@ class Typhoon < ActiveRecord::Base
     Dir.entries(f).each do |sub|         
       if sub != '.' && sub != '..'  
         if File.directory?("#{f}/#{sub}")  
-          get_file_list("#{f}/#{sub}")  
+          get_file_list("#{f}/#{sub}")
         else
           analyzed_file "#{f}/#{sub}"
         end  
@@ -200,7 +200,7 @@ class Typhoon < ActiveRecord::Base
         line = line.strip
         line_contents = line.split(' ')
         _type = line_type line_contents.size
-        
+
         if _type == :typhoon_title
           _matcher = /(\(+)(.*?)(\)+)/.match(line_contents[-1])
           return if _matcher.blank?
@@ -211,7 +211,7 @@ class Typhoon < ActiveRecord::Base
           typhoon.year = "20#{line_contents[1][0,2]}"
           typhoon.save
         elsif _type == :typhoon_content
-          report_time = Time.zone.parse("20#{line_contents[0, 3].join('-')} #{line_contents[3]}")
+          report_time = Time.zone.parse("20#{line_contents[0, 2].join('-')} #{line_contents[3]}")
           # report_time = ("20#{line_contents[0, 3].join('-')} #{line_contents[3]}").to_datetime
           if line_contents[4].to_i == 0
             typhoon.last_report_time = report_time
