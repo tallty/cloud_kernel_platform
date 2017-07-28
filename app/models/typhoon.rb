@@ -83,7 +83,7 @@ class Typhoon < ActiveRecord::Base
         typhoon.year = "20#{line_contents[1][0,2]}"
         typhoon.save
       elsif _type == :typhoon_content
-        report_time = Time.zone.parse("20#{line_contents[0, 2].join('-')} #{line_contents[3]}")
+        report_time = Time.zone.parse("20#{line_contents[0, 3].join('-')} #{line_contents[3]}")
         p line_contents
         if line_contents[4].to_i == 0
           p "最新预报时间: #{report_time.strftime("%F %H:%M")}"
@@ -190,7 +190,7 @@ class Typhoon < ActiveRecord::Base
       p "typhoon file: #{local_file}"
       file_name = File.basename local_file, '.dat'
       file_name_contents = file_name.split('_')
-      
+
       location = file_name_contents[0]
       typhoon_id = file_name_contents[-1]
       return if file_name_contents.size != 2 or typhoon_id.size != 4 or typhoon_id.to_i.to_s.rjust(4, '0') != typhoon_id
@@ -211,7 +211,7 @@ class Typhoon < ActiveRecord::Base
           typhoon.year = "20#{line_contents[1][0,2]}"
           typhoon.save
         elsif _type == :typhoon_content
-          report_time = Time.zone.parse("20#{line_contents[0, 2].join('-')} #{line_contents[3]}")
+          report_time = Time.zone.parse("20#{line_contents[0, 3].join('-')} #{line_contents[3]}")
           # report_time = ("20#{line_contents[0, 3].join('-')} #{line_contents[3]}").to_datetime
           if line_contents[4].to_i == 0
             typhoon.last_report_time = report_time
@@ -229,7 +229,7 @@ class Typhoon < ActiveRecord::Base
           typhoon_item.speed        = line_contents[12].to_f
           typhoon_item.save
         else
-          return
+          next
         end
             
       end

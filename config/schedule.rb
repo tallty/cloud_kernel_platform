@@ -55,9 +55,9 @@ every 5.minutes do
   runner "WorldForecast.new.process"
 end
 
-# every 5.minutes do
-  # runner "Typhoon.process"
-# end
+every 5.minutes do
+  runner "Typhoon.process"
+end
 
 every 10.minutes do
   runner "ExchangeFile.process"
