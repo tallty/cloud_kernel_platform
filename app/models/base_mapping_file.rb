@@ -1,4 +1,4 @@
-class BaseMappingFile < BaseForcast
+class BaseMappingFile < BaseForecast
  
   Mappings = {
     '10.228.38.2' => '/home/deploy/iws/',
