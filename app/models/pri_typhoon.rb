@@ -187,7 +187,7 @@ class PriTyphoon < ActiveRecord::Base
         _item.save
       end
     end
-    
+
 
     build_content last_forecast_time
 
@@ -270,11 +270,11 @@ class PriTyphoon < ActiveRecord::Base
 
       sh_typhoon = Typhoon.where(name: serial_number, location: 'bcsh').first
       if sh_typhoon.present?
-        sh_typhoon_forecast = sh_typhoon.typhoon_items.where.not(effective: 0).last(2)
+        sh_typhoon_forecast = sh_typhoon.typhoon_items.where.not(effective: 0).last(3)
 
         forecast_location['上海'] = []
         sh_typhoon_forecast.each do |item|
-          if item.effective != 72
+          # if item.effective != 72
             forecast_location['上海'] << {
               report_time: item.report_time,
               time: item.report_time.strftime("%Y年%m月%d日 %H时"),
@@ -289,7 +289,7 @@ class PriTyphoon < ActiveRecord::Base
               speed: item.speed
             }
           end
-        end
+        # end
       end
       json_result['forecast_location'] = forecast_location
     end
