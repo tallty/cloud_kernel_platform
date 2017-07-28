@@ -154,7 +154,7 @@ class Typhoon < ActiveRecord::Base
     items
   end
 
-  class TyphoonProcess < BaseForecast
+  class TyphoonProcess < BaseMappingFile
     def initialize
       super
       @redis_key = "typhoon"
