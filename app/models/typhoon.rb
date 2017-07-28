@@ -183,7 +183,8 @@ class Typhoon < ActiveRecord::Base
     end
 
     def ftpfile_format day
-      "*.dat"
+      year = day.year - 2000
+      "bcsh_#{year}*.dat"
     end
 
     def parse local_file
