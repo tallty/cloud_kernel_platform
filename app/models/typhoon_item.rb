@@ -22,8 +22,6 @@
 class TyphoonItem < ActiveRecord::Base
   belongs_to :typhoon
 
-  default_scope { order(:updated_at, :asc) }
-
   def as_json options=nil
     {
       report_time: (report_time - 8.hour).strftime('%Y%m%d%H'),
