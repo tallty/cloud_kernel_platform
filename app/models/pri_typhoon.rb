@@ -270,7 +270,8 @@ class PriTyphoon < ActiveRecord::Base
 
       sh_typhoon = Typhoon.where(name: serial_number, location: 'bcsh').first
       if sh_typhoon.present?
-        sh_typhoon_forecast = sh_typhoon.typhoon_items.where.not(effective: 0).last(2)
+        last_point = sh_typhoon.typhoon_items.where(effective: 0).last
+        sh_typhoon_forecast = sh_typhoon.typhoon_items.where("id > ?", last_point.id)
 
         forecast_location['上海'] = []
         sh_typhoon_forecast.each do |item|
