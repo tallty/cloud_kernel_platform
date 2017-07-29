@@ -113,15 +113,15 @@ class PriTyphoon < ActiveRecord::Base
       typhoon = PriTyphoon.find_by(serial_number: serial_number)
       if typhoon.blank?
         typhoon = PriTyphoon.find_or_create_by serial_number: serial_number
-        typhoon.cname = item['name'] if typhoon.cname.blank?
-        typhoon.ename = item['enname'] if typhoon.ename.blank?
+        typhoon.cname = item['name']
+        typhoon.ename = item['enname']
         typhoon.year = _year
         typhoon.save
       end
       is_current = item['isactive'].to_i
       typhoon.update_attributes(status: is_current)
-      typhoon.cname = item['name'] if typhoon.cname.blank?
-      typhoon.ename = item['enname'] if typhoon.ename.blank?
+      typhoon.cname = item['name']
+      typhoon.ename = item['enname']
       typhoon.save
       typhoon.refresh_typhoon_detail item if is_current == 1
     end
