@@ -204,7 +204,7 @@ class Typhoon < ActiveRecord::Base
 
         if _type == :typhoon_title
           _matcher = /(\(+)(.*?)(\)+)/.match(line_contents[-1])
-          return if _matcher.blank?
+          next if _matcher.blank?
           typhoon.cname = _matcher[2]
         elsif _type == :typhoon_info
           _matcher = /(.*?)\(+/.match(line_contents[0])
