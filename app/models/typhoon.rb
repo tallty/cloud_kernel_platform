@@ -184,7 +184,7 @@ class Typhoon < ActiveRecord::Base
 
     def ftpfile_format day
       year = day.year - 2000
-      "*#{year}*.dat"
+      "bcsh_*#{year}*.dat"
     end
 
     def parse local_file
@@ -212,7 +212,7 @@ class Typhoon < ActiveRecord::Base
           typhoon.year = "20#{line_contents[1][0,2]}"
           typhoon.save
         elsif _type == :typhoon_content
-          report_time = Time.zone.parse("20#{line_contents[0, 3].join('-')} #{line_contents[3]}")
+          report_time = Time.zone.parse("20#{line_contents[0, 3].join('-')} #{line_contents[3]}") rescue next
           # report_time = ("20#{line_contents[0, 3].join('-')} #{line_contents[3]}").to_datetime
           if line_contents[4].to_i == 0
             typhoon.last_report_time = report_time
