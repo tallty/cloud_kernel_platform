@@ -13,7 +13,7 @@
 #  updated_at       :datetime         not null
 #
 
-class PriTyphoon < ApplicationRecord
+class PriTyphoon < ActiveRecord::Base
   enum status: { stop: 0, active: 1 }
 
   has_many :pri_typhoon_items, autosave: false
