@@ -99,24 +99,23 @@ class PriTyphoon < ActiveRecord::Base
     end
 
     def fetch_forecast_set result
+      forecast_set = {}
       last_point = result.first['points'].last
-      (last_point['forecast'] || []).map do |forecast|
-        {
-          forecast['tm'] => forecast['forecastpoints'].map do |item|
-            pri_typhoon_items.new(
-              info: 0,
-              cur_time: Time.zone.parse(item['time']),
-              unit:  forecast['tm'],
-              lon: item['lng'],
-              lat: item['lat'],
-              min_pressure: item['pressure'],
-              max_wind: item['speed'],
-            )
-          end
-        }
-      end.push{
-        { '上海' => fetch_shanghai_forecast_points }
-      }
+      (last_point['forecast'] || []).each do |forecast|
+        forecast_set[forecast['tm']] = forecast['forecastpoints'].map do |item|
+          pri_typhoon_items.new(
+            info: 0,
+            cur_time: Time.zone.parse(item['time']),
+            unit:  forecast['tm'],
+            lon: item['lng'],
+            lat: item['lat'],
+            min_pressure: item['pressure'],
+            max_wind: item['speed'],
+          )
+        end
+      end
+      forecast_set['上海'] = fetch_shanghai_forecast_points
+      forecast_set
     end
 
     def fetch_shanghai_forecast_points
