@@ -103,7 +103,6 @@ class PriTyphoon < ActiveRecord::Base
       (last_point['forecast'] || []).map do |forecast|
         {
           forecast['tm'] => forecast['forecastpoints'].map do |item|
-            next if Time.zone.parse(item['time']) < Time.zone.now
             pri_typhoon_items.new(
               info: 0,
               cur_time: Time.zone.parse(item['time']),
