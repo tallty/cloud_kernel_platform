@@ -41,6 +41,22 @@ class CountryRealAqi < ActiveRecord::Base
     }
   end
 
+  def self.export_to_csv year, area
+    datas = where(area: area, datetime: Date.new(year, 1, 1)...Date.new(year+1, 1, 1))
+    
+    CSV.open("./public/#{area}_#{year}_aqi.csv", "wb") do |csv|
+      csv << column_names
+      datas.each do |item|
+        datetime = Time.parse(item.datetime)
+        if datetime.min == 0
+          csv << item.attributes.values_at(*column_names)
+        end
+      end
+    end
+
+    "ok"
+  end
+  
   def self.process
     p "#{Time.now}: process country real aqi task"
     CountryRealAqiProcess.new.fetch
