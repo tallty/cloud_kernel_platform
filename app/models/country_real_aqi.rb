@@ -47,10 +47,7 @@ class CountryRealAqi < ActiveRecord::Base
     CSV.open("./public/#{area}_#{year}_aqi.csv", "wb") do |csv|
       csv << column_names
       datas.each do |item|
-        datetime = Time.parse(item.datetime)
-        if datetime.min == 0
-          csv << item.attributes.values_at(*column_names)
-        end
+        csv << item.attributes.values_at(*column_names)
       end
     end
 
