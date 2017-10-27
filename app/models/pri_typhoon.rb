@@ -77,7 +77,7 @@ class PriTyphoon < ActiveRecord::Base
           cname: item['name'],
           ename: item['enname'],
         )
-        typhoon.refresh_detail #if is_current == 1
+        typhoon.refresh_detail if typhoon.status_was == PriTyphoon.statuses.invert[1]
       end
     end
 
