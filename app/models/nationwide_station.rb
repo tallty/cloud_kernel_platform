@@ -52,7 +52,7 @@ class NationwideStation < ActiveRecord::Base
           item = group.nationwide_station_items.find_or_create_by report_date: report_time, sitenumber: sitenumber.to_s
           item.city_name      = city["name"]
           item.tempe          = obj['TEM'].to_f
-          item.rain           = obj['PRE'].to_f
+          item.rain           = obj['PRE_1h'].to_f
           item.wind_direction = obj['WIN_D_INST'].to_f
           item.wind_speed     = obj['WIN_S_INST'].to_f
           item.visibility     = obj['VIS_HOR_1MI'].to_f
@@ -94,7 +94,7 @@ class NationwideStation < ActiveRecord::Base
                             interfaceId: 'getAllStationDataBytimes',
                             minStaid: '50134',
                             maxStaid: '59985',
-                            elements: 'Datetime,Station_Id_C,PRE,TEM,WIN_D_INST,WIN_S_INST,VIS_HOR_1MI,PRS,RHU',
+                            elements: 'Datetime,Station_Id_C,PRE_1h,TEM,WIN_D_INST,WIN_S_INST,VIS_HOR_1MI,PRS,RHU',
                             timeRange: "(#{from_datetime},#{to_datetime})",
                             orderby: 'Station_ID_C:ASC',
                             dataCode: 'SURF_CHN_MUL_HOR_N',
