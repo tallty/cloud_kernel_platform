@@ -71,13 +71,15 @@ class PriTyphoon < ActiveRecord::Base
             year: year,
           )
         end
+        status_was = typhoon.status
         is_current = item['isactive'].to_i
         typhoon.update_attributes(
           status: is_current,
           cname: item['name'],
           ename: item['enname'],
         )
-        typhoon.refresh_detail if typhoon.status_was == PriTyphoon.statuses.invert[1]
+        # status_was 返回错误 !
+        typhoon.refresh_detail if status_was == PriTyphoon.statuses.invert[1]
       end
     end
 
