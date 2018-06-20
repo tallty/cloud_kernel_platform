@@ -81,8 +81,7 @@ class BaseLocalFile
       return
     else
       # expire in 0.5 hour
-      $redis.expire _redis_process_key, 1800
-      $redis.set _redis_process_key, "processing"
+      $redis.setex _redis_process_key, 1800, "processing"
     end
 
     time_string = $redis.get(@redis_last_report_time_key)
@@ -94,7 +93,7 @@ class BaseLocalFile
     self.traverse_folder @resource_folder
 
     exception = {}
-    @file_list.each do |report_time_string, file|
+    @file_list.sort_by(&:first).each do |report_time_string, file|
       begin
         if @is_backup
           backup_file = file.gsub(@resource_folder, @backup_folder)
