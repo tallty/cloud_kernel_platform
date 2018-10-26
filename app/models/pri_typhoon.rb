@@ -49,12 +49,11 @@ class PriTyphoon < ActiveRecord::Base
       }
     )
     $redis.hset "pri_typhoon_cache", serial_number, json_hash.to_json
-  rescue
   end
 
   private
     def self.refresh_typhoon_list
-      list = PriTyphoon.where("year > ?", DateTime.now.year - 2).order(serial_number: :desc)
+      list = PriTyphoon.where.not(last_report_time: nil).where("year > ?", DateTime.now.year - 2).order(serial_number: :desc)
       $redis.set("pri_typhoon_list_cache", list.to_json)
     end
 
