@@ -79,7 +79,7 @@ class PriTyphoon < ActiveRecord::Base
           ename: item['enname'],
         )
         # status_was 返回错误 !
-        typhoon.refresh_detail if status_was == PriTyphoon.statuses.invert[1]
+        typhoon.refresh_detail if status_was == PriTyphoon.statuses.invert[1] rescue next
       end
     end
 
