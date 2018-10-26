@@ -49,6 +49,7 @@ class PriTyphoon < ActiveRecord::Base
       }
     )
     $redis.hset "pri_typhoon_cache", serial_number, json_hash.to_json
+  rescue
   end
 
   private
@@ -79,7 +80,7 @@ class PriTyphoon < ActiveRecord::Base
           ename: item['enname'],
         )
         # status_was 返回错误 !
-        typhoon.refresh_detail if status_was == PriTyphoon.statuses.invert[1] rescue next
+        typhoon.refresh_detail if status_was == PriTyphoon.statuses.invert[1]
       end
     end
 
